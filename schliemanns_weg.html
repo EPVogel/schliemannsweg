@@ -115,6 +115,36 @@
     .hide-editors .editor{ display:none }
     .hide-editors .controls{ display:none }
 
+    /* === SESSION SIDEBAR =================================================== */
+    .sidebar{ position:fixed; left:0; top:0; bottom:0; width:320px; background:var(--card); border-right:1px solid var(--line); box-shadow:var(--shadow-2); transform:translateX(-100%); transition:transform .3s ease; z-index:100; display:flex; flex-direction:column }
+    .sidebar.open{ transform:translateX(0) }
+    .sidebar-header{ padding:16px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,var(--grad-top),var(--card)) }
+    .sidebar-header h3{ margin:0 0 8px; font-size:16px; font-weight:600 }
+    .sidebar-actions{ display:flex; gap:6px; flex-wrap:wrap }
+    .sidebar-actions .btn{ font-size:12px; padding:6px 10px }
+    .sidebar-content{ flex:1; overflow-y:auto; padding:12px }
+    .session-list{ display:flex; flex-direction:column; gap:8px }
+    .session-item{ border:1px solid var(--line); border-radius:12px; background:var(--bg); padding:12px; cursor:pointer; transition:all .2s ease }
+    .session-item:hover{ background:var(--hl); border-color:var(--accent) }
+    .session-item.active{ background:var(--hl); border-color:var(--accent); box-shadow:0 0 0 2px var(--accent)20 }
+    .session-title{ font-weight:600; font-size:14px; margin:0 0 4px; cursor:text; padding:2px 4px; border-radius:4px; min-height:20px }
+    .session-title:hover{ background:var(--line) }
+    .session-title[contenteditable="true"]{ background:var(--card); outline:2px solid var(--accent) }
+    .session-preview{ font-size:12px; color:var(--ink-soft); margin:0 0 6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+    .session-meta{ display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--ink-soft) }
+    .session-actions{ display:flex; gap:4px }
+    .session-actions .btn{ font-size:10px; padding:4px 6px; opacity:0; transition:opacity .2s }
+    .session-item:hover .session-actions .btn{ opacity:1 }
+    .sidebar-toggle{ position:fixed; left:12px; top:50%; transform:translateY(-50%); z-index:101; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px; cursor:pointer; box-shadow:var(--shadow-2); transition:left .3s ease }
+    .sidebar.open + .sidebar-toggle{ left:332px }
+    .sidebar-toggle:hover{ background:var(--hl) }
+    .empty-sessions{ text-align:center; color:var(--ink-soft); font-size:14px; padding:40px 20px }
+    .file-input{ display:none }
+
+    /* Adjust main content when sidebar is open */
+    body.sidebar-open main{ margin-left:320px; transition:margin-left .3s ease }
+    body.sidebar-open header{ margin-left:320px; transition:margin-left .3s ease }
+
     footer{ max-width:1200px; margin:24px auto; padding:0 20px 40px; color:#6b6b66; font-size:12px }
     body.dark footer{ color:#a3a29e }
     footer a{ color:inherit }
@@ -171,6 +201,36 @@
       </div>
     </div>
   </header>
+
+  <!-- Session Management Sidebar -->
+  <aside class="sidebar" id="sessionSidebar" aria-label="Session Management">
+    <div class="sidebar-header">
+      <h3 data-i18n="sessions.title">Lesesitzungen</h3>
+      <div class="sidebar-actions">
+        <button class="btn primary" id="btnNewSession" data-i18n="sessions.new">Neue Sitzung</button>
+        <button class="btn" id="btnExportSessions" data-i18n="sessions.export">Exportieren</button>
+        <button class="btn" id="btnImportSessions" data-i18n="sessions.import">Importieren</button>
+      </div>
+    </div>
+    <div class="sidebar-content">
+      <div class="session-list" id="sessionList">
+        <div class="empty-sessions" data-i18n="sessions.empty">Keine Sitzungen vorhanden. Erstellen Sie eine neue Sitzung, um zu beginnen.</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Sessions Panel" title="Sitzungen ein/ausblenden" data-i18n-title="sessions.toggle">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <line x1="9" y1="9" x2="15" y2="9"/>
+      <line x1="9" y1="12" x2="15" y2="12"/>
+      <line x1="9" y1="15" x2="15" y2="15"/>
+    </svg>
+  </button>
+
+  <!-- Hidden file input for importing sessions -->
+  <input type="file" id="fileInput" class="file-input" accept=".json" />
 
   <main>
     <section class="panel active" id="panel-lesen" role="tabpanel" aria-labelledby="tab-lesen">
@@ -651,6 +711,26 @@
         'lang.spanish': 'Spanisch',
         'lang.italian': 'Italienisch',
 
+        // Session Management
+        'sessions.title': 'Lesesitzungen',
+        'sessions.new': 'Neue Sitzung',
+        'sessions.export': 'Exportieren',
+        'sessions.import': 'Importieren',
+        'sessions.toggle': 'Sitzungen ein/ausblenden',
+        'sessions.empty': 'Keine Sitzungen vorhanden. Erstellen Sie eine neue Sitzung, um zu beginnen.',
+        'sessions.load': 'Laden',
+        'sessions.delete': 'Löschen',
+        'sessions.rename': 'Umbenennen',
+        'sessions.confirmDelete': 'Sitzung "{title}" wirklich löschen?',
+        'sessions.saved': 'Sitzung gespeichert.',
+        'sessions.loaded': 'Sitzung geladen.',
+        'sessions.deleted': 'Sitzung gelöscht.',
+        'sessions.exported': 'Sitzungen exportiert.',
+        'sessions.imported': 'Sitzungen importiert.',
+        'sessions.importError': 'Fehler beim Importieren: {error}',
+        'sessions.defaultTitle': 'Neue Sitzung',
+        'sessions.untitled': 'Unbenannte Sitzung',
+
         // HOW-TO Section
         'howto.title': 'Schliemann\'s Way（シュリーマンの道）',
         'howto.subtitle': '<strong>Ein leichtgewichtiges, rein clientseitiges Übungstool für Sprachlernende nach der Schliemann-Methode</strong> (Heinrich Schliemann, der Archäologe).<br>Fokus: <strong>paralleles Lesen</strong>, <strong>satzweise Rückübersetzung</strong>, <strong>lautes Lesen</strong> — mit <strong>Furigana</strong>, <strong>Fokus-Modus</strong> und <strong>Dark Mode</strong>.',
@@ -818,6 +898,26 @@
         'lang.spanish': 'Spanish',
         'lang.italian': 'Italian',
 
+        // Session Management
+        'sessions.title': 'Reading Sessions',
+        'sessions.new': 'New Session',
+        'sessions.export': 'Export',
+        'sessions.import': 'Import',
+        'sessions.toggle': 'Show/hide sessions',
+        'sessions.empty': 'No sessions available. Create a new session to get started.',
+        'sessions.load': 'Load',
+        'sessions.delete': 'Delete',
+        'sessions.rename': 'Rename',
+        'sessions.confirmDelete': 'Really delete session "{title}"?',
+        'sessions.saved': 'Session saved.',
+        'sessions.loaded': 'Session loaded.',
+        'sessions.deleted': 'Session deleted.',
+        'sessions.exported': 'Sessions exported.',
+        'sessions.imported': 'Sessions imported.',
+        'sessions.importError': 'Import error: {error}',
+        'sessions.defaultTitle': 'New Session',
+        'sessions.untitled': 'Untitled Session',
+
         // HOW-TO Section
         'howto.title': 'Schliemann\'s Way（シュリーマンの道）',
         'howto.subtitle': '<strong>A lightweight, purely client-side practice tool for language learners following the Schliemann method</strong> (Heinrich Schliemann, the archaeologist).<br>Focus: <strong>parallel reading</strong>, <strong>sentence-by-sentence back-translation</strong>, <strong>reading aloud</strong> — with <strong>Furigana</strong>, <strong>Focus Mode</strong> and <strong>Dark Mode</strong>.',
@@ -963,7 +1063,9 @@
       hideEditors: localStorage.getItem('sw_hideEditors') === '1',
       focusFontPx: parseInt(localStorage.getItem('sw_focusFontPx') || '18', 10),
       dark: localStorage.getItem('sw_dark') === '1',
-      focusMode: localStorage.getItem('sw_focusMode') === '1'
+      focusMode: localStorage.getItem('sw_focusMode') === '1',
+      sidebarOpen: localStorage.getItem('sw_sidebarOpen') === '1',
+      currentSessionId: localStorage.getItem('sw_currentSessionId') || null
     };
 
     const el = {
@@ -1268,6 +1370,321 @@
       if(state.focusMode){ updateFocusOverlay(); }
     }
 
+    // === Session Management ===================================================
+    function generateSessionId() {
+      return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function getSessionTitle(sourceText) {
+      if (!sourceText) return t('sessions.defaultTitle');
+      const words = sourceText.trim().split(/\s+/).slice(0, 4).join(' ');
+      return words.length > 30 ? words.substring(0, 30) + '...' : words || t('sessions.untitled');
+    }
+
+    function saveCurrentSession() {
+      const sourceText = el.srcInput.value.trim();
+      const japaneseText = el.jpInput.value.trim();
+      
+      if (!sourceText && !japaneseText) {
+        setStatus('Keine Inhalte zum Speichern vorhanden.', 'err');
+        return null;
+      }
+
+      const sessionId = state.currentSessionId || generateSessionId();
+      const session = {
+        id: sessionId,
+        title: getSessionTitle(sourceText),
+        sourceText: sourceText,
+        japaneseText: japaneseText,
+        currentIndex: state.currentIndex,
+        metadata: {
+          created: new Date().toISOString(),
+          modified: new Date().toISOString(),
+          motherLang: settings.mother
+        }
+      };
+
+      const sessions = getSessions();
+      const existingIndex = sessions.findIndex(s => s.id === sessionId);
+      
+      if (existingIndex >= 0) {
+        session.metadata.created = sessions[existingIndex].metadata.created;
+        sessions[existingIndex] = session;
+      } else {
+        sessions.push(session);
+      }
+
+      localStorage.setItem('sw_sessions', JSON.stringify(sessions));
+      state.currentSessionId = sessionId;
+      localStorage.setItem('sw_currentSessionId', sessionId);
+      
+      renderSessionList();
+      setStatus(t('sessions.saved'), 'ok');
+      return session;
+    }
+
+    function getSessions() {
+      try {
+        return JSON.parse(localStorage.getItem('sw_sessions') || '[]');
+      } catch (e) {
+        console.error('Error parsing sessions:', e);
+        return [];
+      }
+    }
+
+    function loadSession(sessionId) {
+      const sessions = getSessions();
+      const session = sessions.find(s => s.id === sessionId);
+      
+      if (!session) {
+        setStatus('Sitzung nicht gefunden.', 'err');
+        return;
+      }
+
+      // Load session data
+      state.srcText = session.sourceText || '';
+      state.jpText = session.japaneseText || '';
+      state.currentIndex = session.currentIndex || 0;
+      state.currentSessionId = sessionId;
+
+      // Update UI
+      el.srcInput.value = state.srcText;
+      el.jpInput.value = state.jpText;
+      
+      // Re-render and persist
+      renderAll();
+      persist();
+      renderSessionList();
+      
+      setStatus(t('sessions.loaded'), 'ok');
+    }
+
+    function deleteSession(sessionId) {
+      const sessions = getSessions();
+      const session = sessions.find(s => s.id === sessionId);
+      
+      if (!session) return;
+      
+      const title = session.title || t('sessions.untitled');
+      if (!confirm(t('sessions.confirmDelete').replace('{title}', title))) {
+        return;
+      }
+
+      const filteredSessions = sessions.filter(s => s.id !== sessionId);
+      localStorage.setItem('sw_sessions', JSON.stringify(filteredSessions));
+      
+      // If we deleted the current session, clear current session ID
+      if (state.currentSessionId === sessionId) {
+        state.currentSessionId = null;
+        localStorage.removeItem('sw_currentSessionId');
+      }
+      
+      renderSessionList();
+      setStatus(t('sessions.deleted'), 'ok');
+    }
+
+    function createNewSession() {
+      // Save current session if it has content
+      if (el.srcInput.value.trim() || el.jpInput.value.trim()) {
+        saveCurrentSession();
+      }
+      
+      // Clear current session
+      state.currentSessionId = null;
+      state.srcText = '';
+      state.jpText = '';
+      state.currentIndex = 0;
+      
+      el.srcInput.value = '';
+      el.jpInput.value = '';
+      
+      localStorage.removeItem('sw_currentSessionId');
+      renderAll();
+      persist();
+      renderSessionList();
+      
+      setStatus('Neue Sitzung erstellt.', 'ok');
+    }
+
+    function exportSessions() {
+      const sessions = getSessions();
+      if (sessions.length === 0) {
+        setStatus('Keine Sitzungen zum Exportieren vorhanden.', 'err');
+        return;
+      }
+
+      const dataStr = JSON.stringify(sessions, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `schliemanns_weg_sessions_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      setStatus(t('sessions.exported'), 'ok');
+    }
+
+    function importSessions() {
+      const fileInput = qs('#fileInput');
+      fileInput.click();
+    }
+
+    function handleFileImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedSessions = JSON.parse(e.target.result);
+          
+          if (!Array.isArray(importedSessions)) {
+            throw new Error('Ungültiges Dateiformat');
+          }
+
+          // Validate session structure
+          for (const session of importedSessions) {
+            if (!session.id || typeof session.title !== 'string') {
+              throw new Error('Ungültige Sitzungsstruktur');
+            }
+          }
+
+          const existingSessions = getSessions();
+          const mergedSessions = [...existingSessions];
+          
+          // Merge sessions, avoiding duplicates by ID
+          for (const importedSession of importedSessions) {
+            const existingIndex = mergedSessions.findIndex(s => s.id === importedSession.id);
+            if (existingIndex >= 0) {
+              mergedSessions[existingIndex] = importedSession;
+            } else {
+              mergedSessions.push(importedSession);
+            }
+          }
+
+          localStorage.setItem('sw_sessions', JSON.stringify(mergedSessions));
+          renderSessionList();
+          setStatus(t('sessions.imported'), 'ok');
+          
+        } catch (error) {
+          setStatus(t('sessions.importError').replace('{error}', error.message), 'err');
+        }
+      };
+      
+      reader.readAsText(file);
+      // Clear the input so the same file can be imported again
+      event.target.value = '';
+    }
+
+    function renderSessionList() {
+      const sessions = getSessions();
+      const sessionList = qs('#sessionList');
+      
+      if (sessions.length === 0) {
+        sessionList.innerHTML = `<div class="empty-sessions">${t('sessions.empty')}</div>`;
+        return;
+      }
+
+      sessionList.innerHTML = sessions.map(session => {
+        const isActive = session.id === state.currentSessionId;
+        const preview = (session.sourceText || session.japaneseText || '').substring(0, 50);
+        const date = new Date(session.metadata.modified).toLocaleDateString();
+        
+        return `
+          <div class="session-item ${isActive ? 'active' : ''}" data-session-id="${session.id}">
+            <div class="session-title" contenteditable="false">${escapeHTML(session.title)}</div>
+            <div class="session-preview">${escapeHTML(preview)}${preview.length >= 50 ? '...' : ''}</div>
+            <div class="session-meta">
+              <span>${date}</span>
+              <div class="session-actions">
+                <button class="btn" onclick="loadSession('${session.id}')">${t('sessions.load')}</button>
+                <button class="btn" onclick="renameSession('${session.id}')">${t('sessions.rename')}</button>
+                <button class="btn warn" onclick="deleteSession('${session.id}')">${t('sessions.delete')}</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renameSession(sessionId) {
+      const sessions = getSessions();
+      const session = sessions.find(s => s.id === sessionId);
+      if (!session) return;
+
+      const sessionItem = qs(`[data-session-id="${sessionId}"]`);
+      const titleElement = sessionItem.querySelector('.session-title');
+      
+      titleElement.contentEditable = 'true';
+      titleElement.focus();
+      
+      // Select all text
+      const range = document.createRange();
+      range.selectNodeContents(titleElement);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      function finishRename() {
+        titleElement.contentEditable = 'false';
+        const newTitle = titleElement.textContent.trim() || t('sessions.untitled');
+        
+        session.title = newTitle;
+        session.metadata.modified = new Date().toISOString();
+        
+        localStorage.setItem('sw_sessions', JSON.stringify(sessions));
+        renderSessionList();
+      }
+
+      titleElement.addEventListener('blur', finishRename, { once: true });
+      titleElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          titleElement.blur();
+        }
+        if (e.key === 'Escape') {
+          titleElement.textContent = session.title;
+          titleElement.blur();
+        }
+      }, { once: true });
+    }
+
+    function toggleSidebar() {
+      state.sidebarOpen = !state.sidebarOpen;
+      localStorage.setItem('sw_sidebarOpen', state.sidebarOpen ? '1' : '0');
+      
+      const sidebar = qs('#sessionSidebar');
+      sidebar.classList.toggle('open', state.sidebarOpen);
+      document.body.classList.toggle('sidebar-open', state.sidebarOpen);
+    }
+
+    function applySidebarState() {
+      const sidebar = qs('#sessionSidebar');
+      sidebar.classList.toggle('open', state.sidebarOpen);
+      document.body.classList.toggle('sidebar-open', state.sidebarOpen);
+    }
+
+    // Auto-save current session when content changes
+    function setupAutoSave() {
+      let saveTimeout;
+      
+      function scheduleAutoSave() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          if (el.srcInput.value.trim() || el.jpInput.value.trim()) {
+            saveCurrentSession();
+          }
+        }, 2000); // Auto-save after 2 seconds of inactivity
+      }
+
+      el.srcInput.addEventListener('input', scheduleAutoSave);
+      el.jpInput.addEventListener('input', scheduleAutoSave);
+    }
+
     // === Events ===============================================================
     qsa('.tab').forEach(btn => btn.addEventListener('click', () => {
       qsa('.tab').forEach(b => b.classList.remove('active'));
@@ -1360,6 +1777,13 @@
     });
     qs('#btnTest').addEventListener('click', testConnection);
 
+    // Session management event handlers
+    qs('#sidebarToggle').addEventListener('click', toggleSidebar);
+    qs('#btnNewSession').addEventListener('click', createNewSession);
+    qs('#btnExportSessions').addEventListener('click', exportSessions);
+    qs('#btnImportSessions').addEventListener('click', importSessions);
+    qs('#fileInput').addEventListener('change', handleFileImport);
+
     // Bootstrap
     (function init(){
       // Persisted theme & focus mode
@@ -1401,6 +1825,11 @@
 
       // Apply persisted focus zoom
       updateFocusFont();
+
+      // Initialize session management
+      applySidebarState();
+      renderSessionList();
+      setupAutoSave();
     })();
 
     // Click sentence to set focus
