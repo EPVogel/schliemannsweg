@@ -69,7 +69,8 @@
     .btn.ghost{ background:var(--btn-ghost-bg) }
 
     .iconbtn{ width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border-radius:12px }
-    .icon{ width:24px; height:24px; display:block }
+    .icon{ width:28px; height:28px; display:block }
+    .icon.large{ width:32px; height:32px }
 
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start }
     @media (max-width:1000px){ .row{ grid-template-columns:1fr } }
@@ -138,12 +139,13 @@
     .sidebar-toggle{ position:fixed; left:12px; top:50%; transform:translateY(-50%); z-index:101; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px; cursor:pointer; box-shadow:var(--shadow-2); transition:left .3s ease }
     .sidebar.open + .sidebar-toggle{ left:332px }
     .sidebar-toggle:hover{ background:var(--hl) }
+    .sidebar-toggle .icon{ stroke:var(--ink); stroke-width:2.5 }
+    body.dark .sidebar-toggle .icon{ stroke:var(--ink); stroke-width:2.5 }
     .empty-sessions{ text-align:center; color:var(--ink-soft); font-size:14px; padding:40px 20px }
     .file-input{ display:none }
 
     /* Adjust main content when sidebar is open */
     body.sidebar-open main{ margin-left:320px; transition:margin-left .3s ease }
-    body.sidebar-open header{ margin-left:320px; transition:margin-left .3s ease }
 
     footer{ max-width:1200px; margin:24px auto; padding:0 20px 40px; color:#6b6b66; font-size:12px }
     body.dark footer{ color:#a3a29e }
