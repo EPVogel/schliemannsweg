@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Schliemanns Weg（シュリーマンの道）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* === THEME TOKENS ====================================================== */
+    :root{
+      --bg:#f5f3f1; --ink:#20201e; --ink-soft:#40403c; --line:#e4e0dc; --accent:#8a8f87; --hl:#e9efe6; --danger:#9d4b4b; --ok:#4e7a5a; --card:#ffffff; --grad-top:#fffcf8;
+      --btn-ghost-bg:transparent; --shadow-1:0 1px 0 #fff, 0 1px 1px #00000006; --shadow-2:0 4px 16px #00000008;
+    }
+    body.dark{
+      --bg:#0f1113; --ink:#eae9e6; --ink-soft:#b5b3ae; --line:#23272b; --accent:#9aa09a; --hl:#1a2a1f; --danger:#b86a6a; --ok:#5ba279; --card:#14171a; --grad-top:#15191d;
+      --btn-ghost-bg:transparent; --shadow-1:0 1px 0 #000, 0 1px 1px #00000040; --shadow-2:0 6px 20px #00000055;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial }
+
+    /* === HEADER & TOP BAR ================================================== */
+    header{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,var(--grad-top),var(--bg)) }
+    .brand{display:flex; gap:12px; align-items:center}
+    .brand .logo{width:36px;height:36px;border-radius:8px;background:radial-gradient(60% 60% at 40% 40%,#d7d2cc 0,#bfb8b0 50%,#8a8f87 100%);box-shadow:inset 0 0 0 1px #a7a7a750, 0 1px 2px #0001}
+    body.dark .brand .logo{background:radial-gradient(60% 60% at 40% 40%,#3a3f43 0,#2c3136 50%,#8a8f87 100%);box-shadow:inset 0 0 0 1px #00000080}
+    .brand h1{margin:0;font-size:18px;letter-spacing:.4px;font-weight:600}
+
+    .top-controls{display:flex; align-items:center; gap:10px}
+    .toggle{display:flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid var(--line); border-radius:12px; background:var(--card)}
+    .toggle label{font-size:12px; color:var(--ink-soft)}
+    .toggle input{appearance:none; width:36px; height:22px; border-radius:999px; background:#e7e3df; position:relative; outline:none; cursor:pointer; border:1px solid #d8d1cc}
+    .toggle input:after{ content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; background:#fff; border-radius:50%; box-shadow:0 1px 2px #00000020; transition:left .15s ease }
+    .toggle input:checked{ background:#cdd5cc }
+    .toggle input:checked:after{ left:18px }
+    body.dark .toggle input{ background:#1f2428; border-color:#2a2f34 }
+    body.dark .toggle input:checked{ background:#2b3b2f }
+
+    .tabs{display:flex;gap:8px}
+    .tab{padding:8px 14px;border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;background:var(--card);cursor:pointer;color:var(--ink-soft)}
+    .tab.active{background:var(--bg);color:var(--ink);font-weight:600}
+
+    main{ max-width:1200px; margin:0 auto; padding:14px 20px 28px }
+    .panel{ display:none }
+    .panel.active{ display:block }
+
+    /* === GENERIC UI ======================================================== */
+    .bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:14px 0 18px }
+    .bar input, .bar select, .bar textarea, .bar label{ padding:8px 10px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink) }
+    .bar label{ background:transparent; border:none; padding:0; font-size:12px; color:var(--ink-soft) }
+    .bar textarea{ min-height:88px; width:100% }
+    .bar .grow{ flex:1 1 320px }
+
+    .btn{ appearance:none; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:10px 16px; cursor:pointer; box-shadow:var(--shadow-1); transition:transform .02s ease, box-shadow .2s; font-size:14px }
+    .btn:hover{ box-shadow:0 2px 8px #00000010 }
+    .btn:active{ transform:translateY(1px) }
+    .btn.primary{ background:linear-gradient(180deg,#ffffff,#f3f0ed); border-color:#dcd6d2 }
+    body.dark .btn.primary{ background:linear-gradient(180deg,#1a1f23,#171b1f); border-color:#2a2f34 }
+    .btn.good{ color:#fff; background:var(--ok); border-color:#40634c }
+    .btn.warn{ color:#fff; background:var(--danger); border-color:#7b3a3a }
+    .btn.ghost{ background:var(--btn-ghost-bg) }
+
+    .iconbtn{ width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border-radius:12px }
+    .icon{ width:24px; height:24px; display:block }
+
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start }
+    @media (max-width:1000px){ .row{ grid-template-columns:1fr } }
+
+    .reader{ border:1px solid var(--line); border-radius:16px; background:var(--card); box-shadow:0 1px 0 #fff, var(--shadow-2); overflow:hidden }
+    body.dark .reader{ box-shadow:var(--shadow-2) }
+    .reader header{ display:flex; gap:10px; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,var(--card),rgba(0,0,0,0)) }
+    .reader header .left{ display:flex; gap:10px; align-items:center }
+    .reader header .right{ display:flex; gap:6px; align-items:center }
+    .reader header h3{ margin:0; font-size:14px; font-weight:700; letter-spacing:.4px }
+    .tag{ font-size:12px; padding:3px 8px; border-radius:999px; background:var(--hl); color:#cfe3d2; border:1px solid #2b3a2d }
+    body:not(.dark) .tag{ color:#3b463a; border-color:#dfe7da }
+
+    .focusline{ padding:12px 14px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line); background:var(--card); font: 500 18px/1.7 "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; letter-spacing:.2px; transition: font-size .2s ease }
+    .focusline .placeholder{ color:#9aa098 }
+
+    .editor{ width:100%; min-height:140px; resize:vertical; border:none; padding:12px 14px; outline:none; font: 400 15px/1.6 "Noto Serif JP", serif; background:var(--card); color:var(--ink) }
+    .controls{ display:flex; flex-wrap:wrap; gap:8px; padding:8px 12px; border-top:1px dashed var(--line); background:var(--card) }
+
+    .render{ padding:18px 16px 22px; border-top:1px solid var(--line); background:repeating-linear-gradient(180deg,var(--card),var(--card) 28px,rgba(255,253,251,.03) 28px,rgba(255,253,251,.03) 56px) }
+    body.dark .render{ background:repeating-linear-gradient(180deg,var(--card),var(--card) 28px,rgba(255,255,255,.02) 28px,rgba(255,255,255,.02) 56px) }
+    .render p{ margin:0 0 16px }
+    .render .sent{ padding:2px 3px; border-radius:6px; transition:background-color .15s ease }
+    .render .sent.current{ background:var(--hl) }
+
+    .reader.active{ outline:2px dashed var(--accent); outline-offset:2px }
+
+    .switch{ display:inline-flex; align-items:center; gap:6px }
+    .switch input{ appearance:none; width:36px; height:22px; border-radius:999px; background:#e7e3df; position:relative; outline:none; cursor:pointer; border:1px solid #d8d1cc }
+    .switch input:after{ content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; background:#fff; border-radius:50%; box-shadow:0 1px 2px #00000020; transition:left .15s ease }
+    .switch input:checked{ background:#cdd5cc }
+    .switch input:checked:after{ left:18px }
+    body.dark .switch input{ background:#1f2428; border-color:#2a2f34 }
+
+    .status{ margin:6px 0 0; font-size:12px; color:var(--ink-soft) }
+    .status.ok{ color:var(--ok) }
+    .status.err{ color:var(--danger) }
+
+    .furigana-off rt{ display:none }
+    ruby{ ruby-position:over }
+
+    /* Hide editors flag */
+    .hide-editors .editor{ display:none }
+    .hide-editors .controls{ display:none }
+
+    footer{ max-width:1200px; margin:24px auto; padding:0 20px 40px; color:#6b6b66; font-size:12px }
+    body.dark footer{ color:#a3a29e }
+    footer a{ color:inherit }
+
+    /* === FOKUSMODUS OVERLAY =============================================== */
+    .focus-overlay{ position:fixed; inset:0; background:var(--bg); display:none; z-index:1000; padding:20px }
+    body.focus-mode .focus-overlay{ display:flex; flex-direction:column; gap:14px }
+    .focus-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; border:1px solid var(--line); border-radius:14px; background:var(--card) }
+    .focus-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; flex:1; min-height:0 }
+    @media (max-width:1000px){ .focus-grid{ grid-template-columns:1fr } }
+    .focus-panel{ border:1px solid var(--line); border-radius:16px; background:var(--card); box-shadow:var(--shadow-2); padding:12px 14px; display:flex; flex-direction:column }
+    .focus-panel h4{ margin:0 0 8px; font-size:13px; color:var(--ink-soft); letter-spacing:.3px }
+    .focus-content{ flex:1; overflow:auto; font: 600 22px/1.7 "Noto Sans JP", system-ui; padding:6px 4px }
+    .focus-content .sent.current{ background:var(--hl); border-radius:6px; padding:2px 3px }
+
+    /* In Fokusmodus: verstecke restliche UI außer Header (für Toggles) */
+    body.focus-mode main, body.focus-mode footer{ display:none }
+
+    /* === ADMIN (neu organisiert) ========================================== */
+    .section{ border:1px solid var(--line); background:var(--card); border-radius:16px; padding:14px; margin:12px 0; box-shadow:var(--shadow-2) }
+    .section h3{ margin:0 0 12px; font-size:14px }
+    .formstack{ display:grid; grid-template-columns:1fr; gap:10px }
+    .field{ display:flex; flex-direction:column; gap:6px }
+    .field label{ font-size:12px; color:var(--ink-soft) }
+    .field input[type="text"], .field input[type="password"], .field input[type="url"], .field input[type="number"], .field select, .field textarea{ padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); width:100% }
+    .stack-actions{ display:flex; gap:8px; align-items:center }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>Schliemanns Weg（シュリーマンの道）</h1>
+    </div>
+    <div class="top-controls">
+      <div class="toggle" title="Darkmode umschalten">
+        <label for="toggleDark">Dark</label>
+        <input id="toggleDark" type="checkbox" aria-label="Darkmode" />
+      </div>
+      <div class="toggle" title="Fokusmodus umschalten">
+        <label for="toggleFocusMode">Fokus</label>
+        <input id="toggleFocusMode" type="checkbox" aria-label="Fokusmodus" />
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Ansichten">
+        <button class="tab active" data-tab="lesen" role="tab" aria-selected="true">Lese-Tab</button>
+        <button class="tab" data-tab="admin" role="tab" aria-selected="false">Admin</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel active" id="panel-lesen" role="tabpanel" aria-labelledby="tab-lesen">
+      <div class="bar" aria-label="Prompt-Leiste">
+        <input id="promptInput" class="grow" type="text" placeholder="Prompt: z.B. 'Schreibe einen kurzen Dialog über das Einkaufen'" />
+        <span class="switch">
+          <label for="genLang">Generieren in:</label>
+          <select id="genLang">
+            <option value="ja">Zielsprache 日本語</option>
+            <option value="src">Muttersprache</option>
+          </select>
+        </span>
+        <button class="btn primary" id="btnGenerate">Generieren</button>
+        <span class="switch">
+          <label for="toggleHL">Satz-Highlighting</label>
+          <input id="toggleHL" type="checkbox" checked>
+        </span>
+        <span class="switch" title="Fokuszeilen-Zoom">
+          <label>Fokus-Zoom</label>
+          <button class="btn iconbtn" id="focusZoomMinus" aria-label="Fokus kleiner">A-</button>
+          <button class="btn iconbtn" id="focusZoomPlus" aria-label="Fokus größer">A+</button>
+        </span>
+        <button class="btn iconbtn" id="toggleEditors" title="Editoren ein/ausblenden" aria-label="Editoren ein/ausblenden"></button>
+      </div>
+
+      <div class="row">
+        <article class="reader" id="reader-src" tabindex="0" aria-label="Reader Muttersprache">
+          <header>
+            <div class="left">
+              <h3>Muttersprache</h3>
+              <span class="tag" id="motherTag">DE</span>
+            </div>
+            <div class="right" aria-label="Navigation Sätze">
+              <button class="btn iconbtn" id="prevSrc" title="Zurück" aria-label="Zurück">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="btn iconbtn" id="nextSrc" title="Vor" aria-label="Vor">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <button class="btn" id="btnSrcToJp" title="Übersetzen → 日本語">→ 日本語</button>
+            </div>
+          </header>
+          <textarea id="srcInput" class="editor" placeholder="Hier Text in der Muttersprache eingeben oder einfügen…"></textarea>
+          <div class="controls">
+            <button class="btn" id="btnRenderSrc">Rendern ⤵</button>
+            <button class="btn ghost" id="btnClearSrc">Leeren</button>
+            <button class="btn" id="btnStripSrcBreaks" title="Zeilenumbrüche im Muttersprache-Text entfernen">Umbrüche entfernen</button>
+          </div>
+          <div class="focusline" id="srcFocus"><span class="placeholder">Aktiver Satz (Muttersprache) …</span></div>
+          <div class="render" id="srcRender" aria-live="polite"></div>
+        </article>
+
+        <article class="reader" id="reader-jp" tabindex="0" aria-label="Reader Japanisch">
+          <header>
+            <div class="left">
+              <h3>日本語</h3>
+              <span class="tag">Zielsprache</span>
+            </div>
+            <div class="right" aria-label="Navigation Sätze">
+              <button class="btn iconbtn" id="prevJp" title="戻る" aria-label="戻る">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="btn iconbtn" id="nextJp" title="進む" aria-label="進む">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <button class="btn" id="btnJpToSrc" title="Übersetzen ← Muttersprache">← Muttersprache</button>
+            </div>
+          </header>
+          <textarea id="jpInput" class="editor" placeholder="Hier japanischen Text eingeben oder einfügen… 例: 私(わたし)は東京(とうきょう)に住(す)んでいます。"></textarea>
+          <div class="controls">
+            <button class="btn" id="btnRenderJp">Rendern ⤵</button>
+            <button class="btn ghost" id="btnClearJp">Leeren</button>
+            <span class="switch" style="margin-left:auto">
+              <label for="toggleFuri">Furigana anzeigen</label>
+              <input id="toggleFuri" type="checkbox" checked>
+            </span>
+            <button class="btn" id="btnAddFuri">Furigana hinzufügen</button>
+          </div>
+          <div class="focusline" id="jpFocus"><span class="placeholder">現在の文（日本語）…</span></div>
+          <div class="render" id="jpRender" aria-live="polite"></div>
+        </article>
+      </div>
+
+      <div class="status" id="status"></div>
+    </section>
+
+    <!-- ADMIN: NEU ORGANISIERT -->
+    <section class="panel" id="panel-admin" role="tabpanel" aria-labelledby="tab-admin">
+      <div class="section">
+        <h3>Zugang</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="apiBase">API Base URL (z.B. https://api.openai.com)</label>
+            <input id="apiBase" type="url" placeholder="API Base URL"/>
+          </div>
+          <div class="field">
+            <label for="apiKey">API-Schlüssel</label>
+            <input id="apiKey" type="password" placeholder="API-Schlüssel"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Modelle</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="modelGen" title="Wird zum Generieren von neuen Texten verwendet">Modell (Generierung)</label>
+            <input id="modelGen" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
+          </div>
+          <div class="field">
+            <label for="modelTrans" title="Wird für Übersetzungen verwendet">Modell (Übersetzung)</label>
+            <input id="modelTrans" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
+          </div>
+          <div class="field">
+            <label for="modelAnno" title="Wird zum Annotieren mit Furigana verwendet">Modell (Annotation/Furigana)</label>
+            <input id="modelAnno" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Parameter</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="tempGen">Temperatur (Generierung)</label>
+            <input id="tempGen" type="number" step="0.1" min="0" max="2">
+          </div>
+          <div class="field">
+            <label for="maxGen">Max Tokens (Generierung)</label>
+            <input id="maxGen" type="number" step="1" min="1">
+          </div>
+          <div class="field">
+            <label for="tempTrans">Temperatur (Übersetzung)</label>
+            <input id="tempTrans" type="number" step="0.1" min="0" max="2">
+          </div>
+          <div class="field">
+            <label for="maxTrans">Max Tokens (Übersetzung)</label>
+            <input id="maxTrans" type="number" step="1" min="1">
+          </div>
+          <div class="field">
+            <label for="tempAnno">Temperatur (Annotation)</label>
+            <input id="tempAnno" type="number" step="0.1" min="0" max="2">
+          </div>
+          <div class="field">
+            <label for="maxAnno">Max Tokens (Annotation)</label>
+            <input id="maxAnno" type="number" step="1" min="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Prompts (bearbeitbar)</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="promptGen">Prompt: Generierung (Japanisch mit Furigana)</label>
+            <textarea id="promptGen" placeholder="Prompt für Generieren in Japanisch mit Furigana"></textarea>
+          </div>
+          <div class="field">
+            <label for="promptTrans">Prompt: Übersetzung (→ Japanisch mit Furigana)</label>
+            <textarea id="promptTrans" placeholder="Prompt für Übersetzen ins Japanische mit Furigana"></textarea>
+          </div>
+          <div class="field">
+            <label for="promptAnno">Prompt: Annotation (bestehenden Text mit Furigana versehen)</label>
+            <textarea id="promptAnno" placeholder="Annotiere den folgenden japanischen Text vollständig mit Furigana …"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Weitere Einstellungen</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="motherLang">Muttersprache</label>
+            <select id="motherLang">
+              <option value="Deutsch" selected>Deutsch</option>
+              <option value="Englisch">Englisch</option>
+              <option value="Französisch">Französisch</option>
+              <option value="Spanisch">Spanisch</option>
+              <option value="Italienisch">Italienisch</option>
+            </select>
+          </div>
+          <div class="stack-actions">
+            <button class="btn" id="btnSave">Speichern</button>
+            <button class="btn primary" id="btnTest">Verbindung testen</button>
+          </div>
+        </div>
+        <p class="status">Die Zugangsdaten & Einstellungen werden nur lokal im Browser (localStorage) gespeichert.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Furigana werden jetzt <strong>direkt</strong> vom Sprachmodell als HTML-<code>&lt;ruby&gt;</code> erzeugt. Du kannst weiterhin Klammer-Notation wie <code>漢字(かんじ)</code> oder <code>{漢字|かんじ}</code> eingeben.</p>
+  </footer>
+
+  <!-- Fokusmodus Overlay (nur die zwei Fokuszeilen nebeneinander) -->
+  <div class="focus-overlay" id="focusOverlay" aria-live="polite">
+    <div class="focus-toolbar">
+      <div style="display:flex; gap:8px; align-items:center">
+        <button class="btn iconbtn" id="focusPrev" title="Vorheriger Satz">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="btn iconbtn" id="focusNext" title="Nächster Satz">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="switch" title="Fokus-Zoom">
+          <label>Zoom</label>
+          <button class="btn iconbtn" id="focusZoomMinus2" aria-label="Fokus kleiner">A-</button>
+          <button class="btn iconbtn" id="focusZoomPlus2" aria-label="Fokus größer">A+</button>
+        </span>
+      </div>
+      <div class="toggle" title="Fokusmodus beenden">
+        <label for="toggleFocusMode2">Fokus</label>
+        <input id="toggleFocusMode2" type="checkbox" aria-label="Fokusmodus" />
+      </div>
+    </div>
+    <div class="focus-grid">
+      <div class="focus-panel">
+        <h4>Muttersprache</h4>
+        <div class="focus-content" id="focusSrc"></div>
+      </div>
+      <div class="focus-panel">
+        <h4>日本語</h4>
+        <div class="focus-content" id="focusJp"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === Utilities & State ====================================================
+    const qs = s => document.querySelector(s);
+    const qsa = s => Array.from(document.querySelectorAll(s));
+
+    const stripNewlines = (txt) => (txt||'').replace(/\r?\n+/g, ' ').trim();
+
+    const settings = {
+      apiBase: localStorage.getItem('sw_apiBase') || '',
+      apiKey:  localStorage.getItem('sw_apiKey')  || '',
+      mother:  localStorage.getItem('sw_mother') || 'Deutsch',
+
+      modelGen:  localStorage.getItem('sw_modelGen')  || 'gpt-4o-mini',
+      modelTrans:localStorage.getItem('sw_modelTrans')|| 'gpt-4o-mini',
+      modelAnno: localStorage.getItem('sw_modelAnno') || 'gpt-4o-mini',
+
+      tempGen:  parseFloat(localStorage.getItem('sw_tempGen')  ?? '0.7'),
+      tempTrans:parseFloat(localStorage.getItem('sw_tempTrans')?? '0.2'),
+      tempAnno: parseFloat(localStorage.getItem('sw_tempAnno') ?? '0.0'),
+
+      maxGen:   parseInt(localStorage.getItem('sw_maxGen')   ?? '2000'),
+      maxTrans: parseInt(localStorage.getItem('sw_maxTrans') ?? '4000'),
+      maxAnno:  parseInt(localStorage.getItem('sw_maxAnno')  ?? '4000'),
+
+      promptGen:  localStorage.getItem('sw_promptGen')  || (
+        `Du bist ein Lehrtext-Generator. Schreibe in Japanisch und statte alle Kanji mit Furigana als HTML <ruby><rt> aus. Antworte nur mit dem Text, ohne Erklärungen. Jeder Satz in einer neuen Zeile. Stil: natürlich, alltagsnah.`
+      ),
+      promptTrans:localStorage.getItem('sw_promptTrans')|| (
+        `Du bist ein präziser Übersetzer. Übersetze Satz für Satz aus {MUTTERSPRACHE} ins Japanische. Behalte die Anzahl der Sätze exakt bei. Gib nur den Zieltext zurück, mit Furigana als HTML <ruby><rt>. Jeder Satz in einer neuen Zeile. Keine Erklärungen.`
+      ),
+      promptAnno: localStorage.getItem('sw_promptAnno') || (
+        `Annotiere den folgenden japanischen Text vollständig mit Furigana: Versehe alle Kanji mit Furigana als HTML <ruby><rt>. Behalte Inhalt, Reihenfolge und Zeilenumbrüche exakt bei. Gib nur den annotierten Text zurück.`
+      )
+    };
+
+    const state = {
+      srcText: stripNewlines(localStorage.getItem('sw_src') || ''),
+      jpText:  localStorage.getItem('sw_jp')  || '',
+      srcSent: [], jpSent: [],
+      furiganaHTMLByIndex: {},
+      showFuri: true, highlightOn: true,
+      currentIndex: 0,
+      hideEditors: localStorage.getItem('sw_hideEditors') === '1',
+      focusFontPx: parseInt(localStorage.getItem('sw_focusFontPx') || '18', 10),
+      dark: localStorage.getItem('sw_dark') === '1',
+      focusMode: localStorage.getItem('sw_focusMode') === '1'
+    };
+
+    const el = {
+      tabs:qsa('.tab'),
+      status:qs('#status'),
+      // readers
+      srcInput:qs('#srcInput'), jpInput:qs('#jpInput'),
+      srcRender:qs('#srcRender'), jpRender:qs('#jpRender'),
+      btnRenderSrc:qs('#btnRenderSrc'), btnRenderJp:qs('#btnRenderJp'),
+      btnClearSrc:qs('#btnClearSrc'), btnClearJp:qs('#btnClearJp'),
+      btnAddFuri:qs('#btnAddFuri'), toggleFuri:qs('#toggleFuri'),
+      toggleHL:qs('#toggleHL'), toggleEditors:qs('#toggleEditors'),
+      btnSrcToJp:qs('#btnSrcToJp'), btnJpToSrc:qs('#btnJpToSrc'),
+      prevSrc:qs('#prevSrc'), nextSrc:qs('#nextSrc'), prevJp:qs('#prevJp'), nextJp:qs('#nextJp'),
+      srcFocus:qs('#srcFocus'), jpFocus:qs('#jpFocus'),
+      btnStripSrcBreaks:qs('#btnStripSrcBreaks'),
+      // admin
+      apiBase:qs('#apiBase'), apiKey:qs('#apiKey'),
+      modelGen:qs('#modelGen'), modelTrans:qs('#modelTrans'), modelAnno:qs('#modelAnno'),
+      tempGen:qs('#tempGen'), tempTrans:qs('#tempTrans'), tempAnno:qs('#tempAnno'),
+      maxGen:qs('#maxGen'), maxTrans:qs('#maxTrans'), maxAnno:qs('#maxAnno'),
+      promptGen:qs('#promptGen'), promptTrans:qs('#promptTrans'), promptAnno:qs('#promptAnno'),
+      motherLang:qs('#motherLang'), motherTag:qs('#motherTag'),
+      // focus zoom
+      focusZoomMinus:qs('#focusZoomMinus'), focusZoomPlus:qs('#focusZoomPlus'),
+      // new toggles
+      toggleDark:qs('#toggleDark'),
+      toggleFocusMode:qs('#toggleFocusMode'), toggleFocusMode2:qs('#toggleFocusMode2'),
+      // overlay
+      focusOverlay:qs('#focusOverlay'), focusSrc:qs('#focusSrc'), focusJp:qs('#focusJp'),
+      focusPrev:qs('#focusPrev'), focusNext:qs('#focusNext'),
+      focusZoomMinus2:qs('#focusZoomMinus2'), focusZoomPlus2:qs('#focusZoomPlus2')
+    };
+
+    function setStatus(msg, kind=''){
+      el.status.textContent = msg; el.status.className = 'status ' + (kind||'');
+    }
+
+    // === Sentence handling ====================================================
+    function splitSentences(text, isJapanese = false) {
+      if (!text) return [];
+      const norm = text.replace(/\r?\n/g, '\n').trim();
+      const re = isJapanese
+        ? /[^。！？\n]+[。！？]*|\n/g
+        : /[^.!?…;:\n]+[.!?…;:]*?/g;
+      const parts = (norm.match(re) || []).map(s => s.trim()).filter(Boolean);
+      return parts;
+    }
+
+    function renderReader(container, sentences, {isJapanese=false}={}){
+      container.innerHTML = '';
+      let idx = 0;
+      for(const s of sentences){
+        if(isJapanese && s==='\n'){ const p=document.createElement('p'); p.innerHTML='&nbsp;'; container.appendChild(p); continue; }
+        const span=document.createElement('span'); span.className='sent'; span.dataset.idx=String(idx);
+        if(isJapanese && state.furiganaHTMLByIndex[idx] && state.showFuri){ span.innerHTML = state.furiganaHTMLByIndex[idx]; }
+        else { span.textContent = s; }
+        const p=document.createElement('p'); p.appendChild(span); container.appendChild(p); idx++;
+      }
+      updateHighlights();
+    }
+
+    function updateFocusFont(){
+      qsa('.focusline').forEach(f => { f.style.fontSize = state.focusFontPx + 'px'; });
+      // Overlay font (slightly larger base)
+      el.focusSrc.style.fontSize = (state.focusFontPx + 4) + 'px';
+      el.focusJp.style.fontSize  = (state.focusFontPx + 4) + 'px';
+    }
+
+    function updateFocusOverlay(){
+      // Mirror focus lines into overlay
+      el.focusSrc.innerHTML = qs('#srcFocus').innerHTML;
+      el.focusJp.innerHTML  = qs('#jpFocus').innerHTML;
+    }
+
+    function updateFocuslines(){
+      const i = state.currentIndex;
+      const srcRaw = state.srcSent[i] ?? '';
+      const jpRaw  = state.jpSent[i] ?? '';
+      const src = stripNewlines(srcRaw);
+      const jp  = stripNewlines(jpRaw);
+      const escapeHTML = (s)=> (s||'').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+
+      // Muttersprache
+      el.srcFocus.innerHTML = src
+        ? `<span class="sent current">${escapeHTML(src)}</span>`
+        : '<span class="placeholder">Aktiver Satz (Muttersprache) …</span>';
+
+      // Japanisch mit Furigana-Option
+      if(jp){
+        if(/<ruby>/i.test(state.jpText) && state.showFuri){
+          const html = state.furiganaHTMLByIndex[i] || escapeHTML(jp);
+          const cleaned = sanitizeRubyHTML(html).replace(/\r?\n+/g, ' ');
+          el.jpFocus.innerHTML = `<span class="sent current">${cleaned}</span>`;
+        } else {
+          el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(jp)}</span>`;
+        }
+      } else {
+        el.jpFocus.innerHTML = '<span class="placeholder">現在の文（日本語）…</span>';
+      }
+      updateFocusFont();
+      updateFocusOverlay();
+    }
+
+    function updateHighlights(){
+      qsa('.render .sent').forEach(n=>n.classList.remove('current'));
+      if(!state.highlightOn) { updateFocuslines(); return; }
+      const i = state.currentIndex;
+      [el.srcRender, el.jpRender].forEach(cont=>{
+        const node = cont.querySelector(`.sent[data-idx="${i}"]`);
+        if(node) node.classList.add('current');
+      });
+      updateFocuslines();
+    }
+
+    // === OpenAI-compatible API helpers =======================================
+    function buildChatBody(model, messages, opts={}){
+      const body = { model, messages };
+      if (/gpt-5/i.test(model)) {
+        body.temperature = 1;
+        if (typeof opts.max_tokens === 'number') body.max_completion_tokens = opts.max_tokens;
+      } else {
+        if (typeof opts.temperature === 'number') body.temperature = opts.temperature;
+        if (typeof opts.max_tokens === 'number') body.max_tokens = opts.max_tokens;
+      }
+      return body;
+    }
+
+    async function callLLM(messages, {model, temperature=0.2, max_tokens=2048}={}){
+      const base = settings.apiBase?.trim();
+      const key  = settings.apiKey?.trim();
+      const useModel = (model||settings.modelGen||'gpt-4o-mini').trim();
+      if(!base || !key) throw new Error('API-Konfiguration fehlt. Bitte im Admin-Tab eintragen.');
+      const url = base.replace(/\/$/,'') + '/v1/chat/completions';
+      const body = buildChatBody(useModel, messages, {temperature, max_tokens});
+      const res = await fetch(url, { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+key }, body: JSON.stringify(body) });
+      if(!res.ok){ const t = await res.text(); throw new Error(`LLM-Fehler: ${res.status} ${t||res.statusText}`); }
+      const data = await res.json();
+      return (data.choices?.[0]?.message?.content||'').trim();
+    }
+
+    async function testConnection(){
+      try{
+        setStatus('Teste Verbindung …');
+        const reply = await callLLM([{role:'user', content:'PING'}], {model: settings.modelGen, temperature:0, max_tokens:8});
+        setStatus(`OK: ${reply.slice(0,60)}…`,'ok');
+      }catch(err){ setStatus('Fehler: '+err.message,'err'); }
+    }
+
+    // === Ruby helpers =========================================================
+    function sanitizeRubyHTML(html){
+      const t=document.createElement('template'); t.innerHTML=html; const ok=new Set(['RUBY','RB','RT','RP','BR','SPAN']);
+      (function walk(n){ for(const c of Array.from(n.childNodes)){ if(c.nodeType===1){ if(!ok.has(c.tagName)){ c.replaceWith(document.createTextNode(c.textContent||'')); continue;} for(const a of Array.from(c.attributes)) c.removeAttribute(a.name); walk(c);} } })(t.content);
+      return t.innerHTML;
+    }
+
+    function escapeHTML(s){
+      return (s||'').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    }
+
+    // === Persist & Render =====================================================
+    function persist(){
+      localStorage.setItem('sw_apiBase', settings.apiBase);
+      localStorage.setItem('sw_apiKey',  settings.apiKey);
+      localStorage.setItem('sw_mother',  settings.mother);
+
+      localStorage.setItem('sw_modelGen',  settings.modelGen);
+      localStorage.setItem('sw_modelTrans',settings.modelTrans);
+      localStorage.setItem('sw_modelAnno', settings.modelAnno);
+
+      localStorage.setItem('sw_tempGen',  String(settings.tempGen));
+      localStorage.setItem('sw_tempTrans',String(settings.tempTrans));
+      localStorage.setItem('sw_tempAnno', String(settings.tempAnno));
+
+      localStorage.setItem('sw_maxGen',  String(settings.maxGen));
+      localStorage.setItem('sw_maxTrans',String(settings.maxTrans));
+      localStorage.setItem('sw_maxAnno', String(settings.maxAnno));
+
+      localStorage.setItem('sw_promptGen',  settings.promptGen);
+      localStorage.setItem('sw_promptTrans',settings.promptTrans);
+      localStorage.setItem('sw_promptAnno', settings.promptAnno);
+
+      localStorage.setItem('sw_src', state.srcText);
+      localStorage.setItem('sw_jp',  state.jpText);
+      localStorage.setItem('sw_hideEditors', state.hideEditors ? '1' : '0');
+      localStorage.setItem('sw_focusFontPx', String(state.focusFontPx));
+      localStorage.setItem('sw_dark', state.dark ? '1' : '0');
+      localStorage.setItem('sw_focusMode', state.focusMode ? '1' : '0');
+    }
+
+    function renderAll(){
+      const srcNormalized = stripNewlines(state.srcText);
+      state.srcSent = splitSentences(srcNormalized,false);
+      state.jpSent  = splitSentences(state.jpText,true);
+      state.furiganaHTMLByIndex = {};
+      state.jpSent.forEach((s,i)=>{ if(/<ruby>/i.test(state.jpText)) state.furiganaHTMLByIndex[i] = sanitizeRubyHTML(s); });
+      renderReader(el.srcRender, state.srcSent, {isJapanese:false});
+      renderReader(el.jpRender,  state.jpSent,  {isJapanese:true});
+      updateFocuslines();
+    }
+
+    // === Core actions =========================================================
+    async function translateSrcToJp(){
+      const src = stripNewlines(el.srcInput.value.trim());
+      if(!src){ setStatus('Kein Quelltext vorhanden.'); return; }
+      setStatus('Übersetze nach 日本語 (mit Furigana) …');
+      try{
+        const sys = settings.promptTrans.replace('{MUTTERSPRACHE}', settings.mother);
+        const out = await callLLM([
+          {role:'system', content: sys},
+          {role:'user', content: src}
+        ], {model: settings.modelTrans, temperature: settings.tempTrans, max_tokens: settings.maxTrans});
+        state.jpText = sanitizeRubyHTML(out); el.jpInput.value = state.jpText;
+        renderAll(); setStatus('Fertig.','ok');
+      }catch(err){ setStatus(err.message,'err'); }
+      persist();
+    }
+
+    async function translateJpToSrc(){
+      const jp = el.jpInput.value.trim(); if(!jp){ setStatus('Kein japanischer Text vorhanden.'); return; }
+      setStatus(`Übersetze ins ${settings.mother} …`);
+      try{
+        const sys = `Du bist ein präziser Übersetzer. Übersetze Satz für Satz aus dem Japanischen ins ${settings.mother}. Behalte die Anzahl der Sätze exakt bei. Gib NUR den Zieltext zurück, jeder Satz in einer neuen Zeile.`;
+        const out = await callLLM([{role:'system',content:sys},{role:'user',content:jp}], {model: settings.modelTrans, temperature: settings.tempTrans, max_tokens: settings.maxTrans});
+        state.srcText = stripNewlines(out); el.srcInput.value = state.srcText;
+        renderAll(); setStatus('Fertig.','ok');
+      }catch(err){ setStatus(err.message,'err'); }
+      persist();
+    }
+
+    async function generateText(){
+      const prompt = qs('#promptInput').value.trim(); if(!prompt){ setStatus('Bitte Prompt eingeben.'); return; }
+      const inLang = qs('#genLang').value; const target = inLang==='ja'? 'Japanisch' : settings.mother;
+      setStatus(`Generiere Text in ${target} …`);
+      try{
+        if(inLang==='ja'){
+          const sys = settings.promptGen;
+          const user = `Aufgabe: ${prompt}`;
+          const out = await callLLM([{role:'system',content:sys},{role:'user',content:user}], {model: settings.modelGen, temperature: settings.tempGen, max_tokens: settings.maxGen});
+          state.jpText = sanitizeRubyHTML(out); el.jpInput.value = state.jpText;
+        } else {
+          const sys = 'Du bist ein Lehrtext-Generator. Antworte nur mit dem Text. Jeder Satz in einer neuen Zeile.';
+          const user = `Sprache: ${settings.mother}. Aufgabe: ${prompt}`;
+          const out = await callLLM([{role:'system',content:sys},{role:'user',content:user}], {model: settings.modelGen, temperature: settings.tempGen, max_tokens: settings.maxGen});
+          state.srcText = stripNewlines(out); el.srcInput.value = state.srcText;
+        }
+        renderAll(); setStatus('Fertig.','ok');
+      }catch(err){ setStatus(err.message,'err'); }
+      persist();
+    }
+
+    async function addFurigana(){
+      const jp = el.jpInput.value.trim(); if(!jp){ setStatus('Kein japanischer Text zum Annotieren.'); return; }
+      setStatus('Annotiere gesamten Text mit Furigana …');
+      try{
+        const sys = settings.promptAnno;
+        const out = await callLLM([{role:'system',content:sys},{role:'user',content:jp}], {model: settings.modelAnno, temperature: settings.tempAnno, max_tokens: settings.maxAnno});
+        state.jpText = sanitizeRubyHTML(out); el.jpInput.value = state.jpText; renderAll(); setStatus('Fertig.','ok');
+      }catch(err){ setStatus(err.message,'err'); }
+      persist();
+    }
+
+    // === Navigation (Prev/Next) ==============================================
+    function clampIndex(i){
+      const max = Math.max(state.srcSent.length, state.jpSent.length) - 1;
+      if(max < 0) return 0;
+      return Math.min(Math.max(0, i), max);
+    }
+    function setIndex(i){
+      state.currentIndex = clampIndex(i);
+      updateHighlights();
+      persist();
+    }
+
+    // === Toggle Editors (eye icon) ===========================================
+    function eye(open){
+      return open
+        ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+        : '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94C16.06 19.24 14.08 20 12 20 5 20 1 12 1 12c.74-1.33 1.67-2.55 2.75-3.62"/><path d="M10.58 5.08C11.04 5.03 11.51 5 12 5c7 0 11 7 11 7-.6 1.08-1.3 2.1-2.09 3"/><path d="M1 1l22 22"/></svg>';
+    }
+    function updateEyeIcon(){
+      const btn = qs('#toggleEditors');
+      btn.innerHTML = eye(!state.hideEditors);
+      document.body.classList.toggle('hide-editors', state.hideEditors);
+      persist();
+    }
+
+    // === Dark mode ============================================================
+    function applyDark(){
+      document.body.classList.toggle('dark', state.dark);
+      const t = qs('#toggleDark');
+      if (t) t.checked = state.dark;
+    }
+
+    // === Fokusmodus ===========================================================
+    function applyFocusMode(){
+      document.body.classList.toggle('focus-mode', state.focusMode);
+      const t1 = qs('#toggleFocusMode');
+      const t2 = qs('#toggleFocusMode2');
+      if (t1) t1.checked = state.focusMode;
+      if (t2) t2.checked = state.focusMode;
+      if(state.focusMode){ updateFocusOverlay(); }
+    }
+
+    // === Events ===============================================================
+    qsa('.tab').forEach(btn => btn.addEventListener('click', () => {
+      qsa('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      qs('#panel-lesen').classList.remove('active');
+      qs('#panel-admin').classList.remove('active');
+      if(tab==='lesen'){ qs('#panel-lesen').classList.add('active'); }
+      if(tab==='admin'){ qs('#panel-admin').classList.add('active'); }
+    }));
+
+    // Readers
+    qs('#btnRenderSrc').addEventListener('click',()=>{
+      state.srcText = stripNewlines(el.srcInput.value);
+      renderAll(); persist();
+    });
+    qs('#btnRenderJp').addEventListener('click',()=>{
+      state.jpText  = el.jpInput.value;
+      renderAll(); persist();
+    });
+    qs('#btnClearSrc').addEventListener('click',()=>{ el.srcInput.value=''; state.srcText=''; renderAll(); persist(); });
+    qs('#btnClearJp').addEventListener('click',()=>{ el.jpInput.value=''; state.jpText=''; state.furiganaHTMLByIndex={}; renderAll(); persist(); });
+    qs('#btnSrcToJp').addEventListener('click', translateSrcToJp);
+    qs('#btnJpToSrc').addEventListener('click', translateJpToSrc);
+    qs('#btnGenerate').addEventListener('click', generateText);
+    qs('#btnAddFuri').addEventListener('click', addFurigana);
+
+    el.btnStripSrcBreaks.addEventListener('click', ()=>{
+      el.srcInput.value = stripNewlines(el.srcInput.value);
+      state.srcText = el.srcInput.value;
+      renderAll(); persist();
+      setStatus('Zeilenumbrüche in Muttersprache entfernt.','ok');
+    });
+
+    el.toggleFuri?.addEventListener('change',()=>{ state.showFuri = el.toggleFuri.checked; if(el.toggleFuri.checked) el.jpRender.classList.remove('furigana-off'); else el.jpRender.classList.add('furigana-off'); renderAll(); persist(); });
+    el.toggleHL.addEventListener('change',()=>{ state.highlightOn = el.toggleHL.checked; updateHighlights(); persist(); });
+
+    // Prev/Next – beide Header steuern denselben Index
+    el.prevSrc.addEventListener('click', ()=> setIndex(state.currentIndex - 1));
+    el.nextSrc.addEventListener('click', ()=> setIndex(state.currentIndex + 1));
+    el.prevJp.addEventListener('click',  ()=> setIndex(state.currentIndex - 1));
+    el.nextJp.addEventListener('click',  ()=> setIndex(state.currentIndex + 1));
+
+    // Overlay Nav buttons
+    el.focusPrev.addEventListener('click', ()=> setIndex(state.currentIndex - 1));
+    el.focusNext.addEventListener('click', ()=> setIndex(state.currentIndex + 1));
+
+    // Auge: Editoren ein/aus
+    qs('#toggleEditors').addEventListener('click', ()=>{
+      state.hideEditors = !state.hideEditors;
+      updateEyeIcon();
+    });
+
+    // Fokus-Zoom global & overlay
+    const zoomMinus = ()=>{ state.focusFontPx = Math.max(10, state.focusFontPx - 2); updateFocusFont(); persist(); };
+    const zoomPlus  = ()=>{ state.focusFontPx = Math.min(40, state.focusFontPx + 2); updateFocusFont(); persist(); };
+    qs('#focusZoomMinus').addEventListener('click', zoomMinus);
+    qs('#focusZoomPlus').addEventListener('click', zoomPlus);
+    qs('#focusZoomMinus2').addEventListener('click', zoomMinus);
+    qs('#focusZoomPlus2').addEventListener('click', zoomPlus);
+
+    // Dark toggle
+    qs('#toggleDark').addEventListener('change', (e)=>{ state.dark = e.target.checked; applyDark(); persist(); });
+
+    // Fokusmodus toggles
+    qs('#toggleFocusMode').addEventListener('change', (e)=>{ state.focusMode = e.target.checked; applyFocusMode(); persist(); });
+    qs('#toggleFocusMode2').addEventListener('change', (e)=>{ state.focusMode = e.target.checked; applyFocusMode(); persist(); });
+
+    // Admin save/test
+    qs('#btnSave').addEventListener('click',()=>{
+      settings.apiBase = el.apiBase.value.trim();
+      settings.apiKey  = el.apiKey.value.trim();
+      settings.modelGen   = el.modelGen.value.trim();
+      settings.modelTrans = el.modelTrans.value.trim();
+      settings.modelAnno  = el.modelAnno.value.trim();
+      settings.tempGen  = parseFloat(el.tempGen.value||settings.tempGen);
+      settings.tempTrans= parseFloat(el.tempTrans.value||settings.tempTrans);
+      settings.tempAnno = parseFloat(el.tempAnno.value||settings.tempAnno);
+      settings.maxGen  = parseInt(el.maxGen.value||settings.maxGen);
+      settings.maxTrans= parseInt(el.maxTrans.value||settings.maxTrans);
+      settings.maxAnno = parseInt(el.maxAnno.value||settings.maxAnno);
+      settings.promptGen   = el.promptGen.value || settings.promptGen;
+      settings.promptTrans = el.promptTrans.value || settings.promptTrans;
+      settings.promptAnno  = el.promptAnno.value || settings.promptAnno;
+      settings.mother = el.motherLang.value;
+      persist(); setStatus('Gespeichert.','ok');
+      qs('#motherTag').textContent = {Deutsch:'DE',Englisch:'EN',Französisch:'FR',Spanisch:'ES',Italienisch:'IT'}[settings.mother]||'SRC';
+    });
+    qs('#btnTest').addEventListener('click', testConnection);
+
+    // Bootstrap
+    (function init(){
+      // Persisted theme & focus mode
+      applyDark();
+      applyFocusMode();
+
+      // Prefill Admin
+      el.apiBase.value = settings.apiBase; el.apiKey.value = settings.apiKey; el.motherLang.value = settings.mother;
+      el.modelGen.value = settings.modelGen; el.modelTrans.value = settings.modelTrans; el.modelAnno.value = settings.modelAnno;
+      el.tempGen.value = settings.tempGen; el.tempTrans.value = settings.tempTrans; el.tempAnno.value = settings.tempAnno;
+      el.maxGen.value = settings.maxGen; el.maxTrans.value = settings.maxTrans; el.maxAnno.value = settings.maxAnno;
+      el.promptGen.value = settings.promptGen; el.promptTrans.value = settings.promptTrans; el.promptAnno.value = settings.promptAnno;
+
+      // Prefill readers
+      el.srcInput.value = state.srcText; el.jpInput.value = state.jpText;
+
+      // Tag
+      qs('#motherTag').textContent = {Deutsch:'DE',Englisch:'EN',Französisch:'FR',Spanisch:'ES',Italienisch:'IT'}[settings.mother]||'SRC';
+
+      // Render + Focus
+      renderAll();
+
+      // Apply hidden editors state + set eye icon
+      updateEyeIcon();
+
+      // Apply persisted focus zoom
+      updateFocusFont();
+    })();
+
+    // Click sentence to set focus
+    el.srcRender.addEventListener('click', (e)=>{
+      const t = e.target.closest('.sent'); if(!t) return; setIndex(parseInt(t.dataset.idx,10)||0);
+    });
+    el.jpRender.addEventListener('click', (e)=>{
+      const t = e.target.closest('.sent'); if(!t) return; setIndex(parseInt(t.dataset.idx,10)||0);
+    });
+
+    // Keyboard arrows
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='ArrowLeft'){ setIndex(state.currentIndex-1); }
+      if(e.key==='ArrowRight'){ setIndex(state.currentIndex+1); }
+      if(e.key==="Escape" && state.focusMode){ state.focusMode=false; applyFocusMode(); persist(); }
+    });
+  </script>
+</body>
+</html>
