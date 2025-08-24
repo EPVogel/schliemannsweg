@@ -43,6 +43,11 @@
     .tab{padding:8px 14px;border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;background:var(--card);cursor:pointer;color:var(--ink-soft)}
     .tab.active{background:var(--bg);color:var(--ink);font-weight:600}
 
+    .language-selector{display:flex;align-items:center;margin:0 8px}
+    .language-selector select{padding:4px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:12px;cursor:pointer;outline:none}
+    .language-selector select:hover{box-shadow:0 1px 4px #00000010}
+    body.dark .language-selector select{background:var(--card);border-color:var(--line)}
+
     main{ max-width:1200px; margin:0 auto; padding:14px 20px 28px }
     .panel{ display:none }
     .panel.active{ display:block }
@@ -146,16 +151,22 @@
     </div>
     <div class="top-controls">
       <nav class="tabs" role="tablist" aria-label="Ansichten">
-        <button class="tab active" data-tab="lesen" role="tab" aria-selected="true">Lese-Tab</button>
-        <button class="tab" data-tab="howto" role="tab" aria-selected="false">How-to</button>
-        <button class="tab" data-tab="admin" role="tab" aria-selected="false">Admin</button>
+        <button class="tab active" data-tab="lesen" role="tab" aria-selected="true" data-i18n="tab.reading">Lese-Tab</button>
+        <button class="tab" data-tab="howto" role="tab" aria-selected="false" data-i18n="tab.howto">How-to</button>
+        <button class="tab" data-tab="admin" role="tab" aria-selected="false" data-i18n="tab.admin">Admin</button>
       </nav>
-      <div class="toggle" title="Darkmode umschalten">
-        <label for="toggleDark">Dark</label>
+      <div class="language-selector">
+        <select id="languageSelect" aria-label="Language">
+          <option value="de">🇩🇪 DE</option>
+          <option value="en">🇬🇧 EN</option>
+        </select>
+      </div>
+      <div class="toggle" title="Darkmode umschalten" data-i18n-title="tooltip.darkMode">
+        <label for="toggleDark" data-i18n="toggle.dark">Dark</label>
         <input id="toggleDark" type="checkbox" aria-label="Darkmode" />
       </div>
-      <div class="toggle" title="Fokusmodus umschalten">
-        <label for="toggleFocusMode">Fokus</label>
+      <div class="toggle" title="Fokusmodus umschalten" data-i18n-title="tooltip.focusMode">
+        <label for="toggleFocusMode" data-i18n="toggle.focus">Fokus</label>
         <input id="toggleFocusMode" type="checkbox" aria-label="Fokusmodus" />
       </div>
     </div>
@@ -164,49 +175,49 @@
   <main>
     <section class="panel active" id="panel-lesen" role="tabpanel" aria-labelledby="tab-lesen">
       <div class="bar" aria-label="Prompt-Leiste">
-        <input id="promptInput" class="grow" type="text" placeholder="Prompt: z.B. 'Schreibe einen kurzen Dialog über das Einkaufen'" />
+        <input id="promptInput" class="grow" type="text" placeholder="Prompt: z.B. 'Schreibe einen kurzen Dialog über das Einkaufen'" data-i18n="prompt.placeholder" />
         <span class="switch">
-          <label for="genLang">Generieren in:</label>
+          <label for="genLang" data-i18n="generate.label">Generieren in:</label>
           <select id="genLang">
-            <option value="ja">Zielsprache 日本語</option>
-            <option value="src">Muttersprache</option>
+            <option value="ja" data-i18n="generate.target">Zielsprache 日本語</option>
+            <option value="src" data-i18n="generate.source">Muttersprache</option>
           </select>
         </span>
-        <button class="btn primary" id="btnGenerate">Generieren</button>
+        <button class="btn primary" id="btnGenerate" data-i18n="generate.button">Generieren</button>
         <span class="switch">
-          <label for="toggleHL">Satz-Highlighting</label>
+          <label for="toggleHL" data-i18n="highlight.label">Satz-Highlighting</label>
           <input id="toggleHL" type="checkbox" checked>
         </span>
         <span class="switch" title="Fokuszeilen-Zoom">
-          <label>Fokus-Zoom</label>
-          <button class="btn iconbtn" id="focusZoomMinus" aria-label="Fokus kleiner">A-</button>
-          <button class="btn iconbtn" id="focusZoomPlus" aria-label="Fokus größer">A+</button>
+          <label data-i18n="focus.zoom">Fokus-Zoom</label>
+          <button class="btn iconbtn" id="focusZoomMinus" aria-label="Fokus kleiner" data-i18n-title="focus.smaller">A-</button>
+          <button class="btn iconbtn" id="focusZoomPlus" aria-label="Fokus größer" data-i18n-title="focus.larger">A+</button>
         </span>
-        <button class="btn iconbtn" id="toggleEditors" title="Editoren ein/ausblenden" aria-label="Editoren ein/ausblenden"></button>
+        <button class="btn iconbtn" id="toggleEditors" title="Editoren ein/ausblenden" aria-label="Editoren ein/ausblenden" data-i18n-title="editors.toggle"></button>
       </div>
 
       <div class="row">
         <article class="reader" id="reader-src" tabindex="0" aria-label="Reader Muttersprache">
           <header>
             <div class="left">
-              <h3>Muttersprache</h3>
+              <h3 data-i18n="reader.source">Muttersprache</h3>
               <span class="tag" id="motherTag">DE</span>
             </div>
             <div class="right" aria-label="Navigation Sätze">
-              <button class="btn iconbtn" id="prevSrc" title="Zurück" aria-label="Zurück">
+              <button class="btn iconbtn" id="prevSrc" title="Zurück" aria-label="Zurück" data-i18n-title="nav.back">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
-              <button class="btn iconbtn" id="nextSrc" title="Vor" aria-label="Vor">
+              <button class="btn iconbtn" id="nextSrc" title="Vor" aria-label="Vor" data-i18n-title="nav.forward">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </button>
-              <button class="btn" id="btnSrcToJp" title="Übersetzen → 日本語">→ 日本語</button>
+              <button class="btn" id="btnSrcToJp" title="Übersetzen → 日本語" data-i18n="translate.toJp">→ 日本語</button>
             </div>
           </header>
-          <textarea id="srcInput" class="editor" placeholder="Hier Text in der Muttersprache eingeben oder einfügen…"></textarea>
+          <textarea id="srcInput" class="editor" placeholder="Hier Text in der Muttersprache eingeben oder einfügen…" data-i18n="placeholder.source"></textarea>
           <div class="controls">
-            <button class="btn" id="btnRenderSrc">Rendern ⤵</button>
-            <button class="btn ghost" id="btnClearSrc">Leeren</button>
-            <button class="btn" id="btnStripSrcBreaks" title="Zeilenumbrüche im Muttersprache-Text entfernen">Umbrüche entfernen</button>
+            <button class="btn" id="btnRenderSrc" data-i18n="editor.render">Rendern ⤵</button>
+            <button class="btn ghost" id="btnClearSrc" data-i18n="editor.clear">Leeren</button>
+            <button class="btn" id="btnStripSrcBreaks" title="Zeilenumbrüche im Muttersprache-Text entfernen" data-i18n="editor.stripBreaks">Umbrüche entfernen</button>
           </div>
           <div class="focusline" id="srcFocus"><span class="placeholder">Aktiver Satz (Muttersprache) …</span></div>
           <div class="render" id="srcRender" aria-live="polite"></div>
@@ -215,28 +226,28 @@
         <article class="reader" id="reader-jp" tabindex="0" aria-label="Reader Japanisch">
           <header>
             <div class="left">
-              <h3>日本語</h3>
-              <span class="tag">Zielsprache</span>
+              <h3 data-i18n="reader.target">日本語</h3>
+              <span class="tag" data-i18n="reader.targetLang">Zielsprache</span>
             </div>
             <div class="right" aria-label="Navigation Sätze">
-              <button class="btn iconbtn" id="prevJp" title="戻る" aria-label="戻る">
+              <button class="btn iconbtn" id="prevJp" title="戻る" aria-label="戻る" data-i18n-title="nav.backJp">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
-              <button class="btn iconbtn" id="nextJp" title="進む" aria-label="進む">
+              <button class="btn iconbtn" id="nextJp" title="進む" aria-label="進む" data-i18n-title="nav.forwardJp">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </button>
-              <button class="btn" id="btnJpToSrc" title="Übersetzen ← Muttersprache">← Muttersprache</button>
+              <button class="btn" id="btnJpToSrc" title="Übersetzen ← Muttersprache" data-i18n="translate.toSource">← Muttersprache</button>
             </div>
           </header>
-          <textarea id="jpInput" class="editor" placeholder="Hier japanischen Text eingeben oder einfügen… 例: 私(わたし)は東京(とうきょう)に住(す)んでいます。"></textarea>
+          <textarea id="jpInput" class="editor" placeholder="Hier japanischen Text eingeben oder einfügen… 例: 私(わたし)は東京(とうきょう)に住(す)んでいます。" data-i18n="placeholder.japanese"></textarea>
           <div class="controls">
-            <button class="btn" id="btnRenderJp">Rendern ⤵</button>
-            <button class="btn ghost" id="btnClearJp">Leeren</button>
+            <button class="btn" id="btnRenderJp" data-i18n="editor.render">Rendern ⤵</button>
+            <button class="btn ghost" id="btnClearJp" data-i18n="editor.clear">Leeren</button>
             <span class="switch" style="margin-left:auto">
-              <label for="toggleFuri">Furigana anzeigen</label>
+              <label for="toggleFuri" data-i18n="furigana.show">Furigana anzeigen</label>
               <input id="toggleFuri" type="checkbox" checked>
             </span>
-            <button class="btn" id="btnAddFuri">Furigana hinzufügen</button>
+            <button class="btn" id="btnAddFuri" data-i18n="furigana.add">Furigana hinzufügen</button>
           </div>
           <div class="focusline" id="jpFocus"><span class="placeholder">現在の文（日本語）…</span></div>
           <div class="render" id="jpRender" aria-live="polite"></div>
@@ -249,28 +260,28 @@
     <!-- HOW-TO: ANLEITUNG -->
     <section class="panel" id="panel-howto" role="tabpanel" aria-labelledby="tab-howto">
       <div class="section">
-        <h3>Schliemann's Way（シュリーマンの道）</h3>
-        <p><strong>Ein leichtgewichtiges, rein clientseitiges Übungstool für Sprachlernende nach der Schliemann-Methode</strong> (Heinrich Schliemann, der Archäologe).<br>
+        <h3 data-i18n="howto.title">Schliemann's Way（シュリーマンの道）</h3>
+        <p data-i18n-html="howto.subtitle"><strong>Ein leichtgewichtiges, rein clientseitiges Übungstool für Sprachlernende nach der Schliemann-Methode</strong> (Heinrich Schliemann, der Archäologe).<br>
         Fokus: <strong>paralleles Lesen</strong>, <strong>satzweise Rückübersetzung</strong>, <strong>lautes Lesen</strong> — mit <strong>Furigana</strong>, <strong>Fokus-Modus</strong> und <strong>Dark Mode</strong>.</p>
       </div>
 
       <div class="section">
-        <h3>Zweck & Lernprinzip</h3>
-        <p><strong>Schliemann's Way</strong> ist bewusst minimal: kein Kurs, keine Gamification — ein <strong>Werkzeug</strong> für die effiziente Arbeit mit <strong>eigenen Texten</strong> oder <strong>parallelen Sätzen</strong>. Es richtet sich an Lernende, die <strong>aktiv</strong> arbeiten wollen: lesen, vergleichen, <strong>satzweise übersetzen</strong>, wiederholen und laut sprechen.</p>
+        <h3 data-i18n="howto.purpose.title">Zweck & Lernprinzip</h3>
+        <p data-i18n-html="howto.purpose.intro"><strong>Schliemann's Way</strong> ist bewusst minimal: kein Kurs, keine Gamification — ein <strong>Werkzeug</strong> für die effiziente Arbeit mit <strong>eigenen Texten</strong> oder <strong>parallelen Sätzen</strong>. Es richtet sich an Lernende, die <strong>aktiv</strong> arbeiten wollen: lesen, vergleichen, <strong>satzweise übersetzen</strong>, wiederholen und laut sprechen.</p>
         
-        <h4>Warum die "Schliemann-Methode"?</h4>
-        <p>Heinrich Schliemann (Archäologe, 1822–1890) beschrieb, wie er Sprachen durch <strong>intensives Lesen</strong>, <strong>parallele Texte</strong>, besonders <strong>Rückübersetzung</strong> (aus der Zielsprache zurück in die Ausgangssprache) und <strong>tägliche Wiederholung</strong> lernte. Diese App ist <strong>von diesem Arbeitsablauf inspiriert</strong>:</p>
-        <ul>
+        <h4 data-i18n="howto.purpose.method.title">Warum die "Schliemann-Methode"?</h4>
+        <p data-i18n-html="howto.purpose.method.content">Heinrich Schliemann (Archäologe, 1822–1890) beschrieb, wie er Sprachen durch <strong>intensives Lesen</strong>, <strong>parallele Texte</strong>, besonders <strong>Rückübersetzung</strong> (aus der Zielsprache zurück in die Ausgangssprache) und <strong>tägliche Wiederholung</strong> lernte. Diese App ist <strong>von diesem Arbeitsablauf inspiriert</strong>:</p>
+        <ul data-i18n-html="howto.purpose.method.list">
           <li><strong>Parallelität:</strong> Quelle ↔︎ Ziel nebeneinander angezeigt</li>
           <li><strong>Satztreue:</strong> ein Satz links entspricht genau einem rechts</li>
           <li><strong>Rückübersetzung:</strong> bewusst den aktiven Satz in die andere Sprache umwandeln</li>
           <li><strong>Lautes Lesen & Fokus:</strong> einen Satz im Blick behalten, klar artikulieren, rhythmisch wiederholen</li>
           <li><strong>Wiederholung:</strong> schnell navigieren und schwierige Stellen gezielt bearbeiten</li>
         </ul>
-        <p>Das Ziel ist <strong>aktive Produktion</strong> und <strong>präzises Verstehen</strong> — nicht passives Scrollen.</p>
+        <p data-i18n-html="howto.purpose.method.goal">Das Ziel ist <strong>aktive Produktion</strong> und <strong>präzises Verstehen</strong> — nicht passives Scrollen.</p>
 
-        <h4>Empfohlene Übungsroutine (10–20 Min)</h4>
-        <ol>
+        <h4 data-i18n="howto.purpose.routine.title">Empfohlene Übungsroutine (10–20 Min)</h4>
+        <ol data-i18n-html="howto.purpose.routine.list">
           <li><strong>Text laden/einfügen</strong> (parallel oder einseitig) und <strong>Rendern</strong>.</li>
           <li><strong>Satz auswählen</strong>, im <strong>Fokus-Modus</strong> laut lesen.</li>
           <li><strong>Rückübersetzen</strong> (z.B. JA → DE/EN oder DE/EN → JA) — erst selbst machen, dann mit dem <strong>Übersetzen</strong>-Button überprüfen.</li>
@@ -281,8 +292,8 @@
       </div>
 
       <div class="section">
-        <h3>Funktionen</h3>
-        <ul>
+        <h3 data-i18n="howto.features.title">Funktionen</h3>
+        <ul data-i18n-html="howto.features.list">
           <li>📖 <strong>Zwei-Spalten-Reader:</strong> Muttersprache links, Japanisch rechts — satz-synchronisiert</li>
           <li>🎯 <strong>Fokus-Modus (Overlay):</strong> Vollbild mit nur <strong>zwei Fokuszeilen</strong> + vor/zurück + Zoom</li>
           <li>🌓 <strong>Dark Mode:</strong> umschaltbar, lokal gespeichert</li>
@@ -296,8 +307,8 @@
       </div>
 
       <div class="section">
-        <h3>Schnellstart</h3>
-        <ol>
+        <h3 data-i18n="howto.quickstart.title">Schnellstart</h3>
+        <ol data-i18n-html="howto.quickstart.list">
           <li><strong>Datei öffnen:</strong> <code>schliemanns_weg.html</code> direkt im Browser (Chrome/Edge/Firefox) öffnen.</li>
           <li><strong>(Optional) API konfigurieren:</strong> Im <strong>Admin</strong>-Tab <code>API Base</code> & <code>API Key</code> ausfüllen, wenn Sie Generieren/Übersetzen/Annotieren verwenden möchten.</li>
           <li><strong>Eigene Texte einfügen:</strong> Links (Muttersprache) und/oder rechts (Japanisch) → <strong>Rendern</strong>.<br>
@@ -306,35 +317,35 @@
       </div>
 
       <div class="section">
-        <h3>Verwendung</h3>
+        <h3 data-i18n="howto.usage.title">Verwendung</h3>
         
-        <h4>Lesen & Navigation</h4>
-        <ul>
+        <h4 data-i18n="howto.usage.reading.title">Lesen & Navigation</h4>
+        <ul data-i18n-html="howto.usage.reading.list">
           <li>Klicken Sie auf einen Satz im Lesebereich, um ihn <strong>aktiv</strong> zu machen (beide Seiten synchronisieren).</li>
           <li>Navigieren Sie mit den Pfeil-Buttons oder den <strong>← / →</strong> Tasten.</li>
           <li>Die <strong>Fokuszeilen</strong> (unter den Editoren) spiegeln immer den aktiven Satz wider.</li>
         </ul>
 
-        <h4>Fokus-Modus</h4>
-        <ul>
+        <h4 data-i18n="howto.usage.focus.title">Fokus-Modus</h4>
+        <ul data-i18n-html="howto.usage.focus.list">
           <li><strong>"Fokus"</strong> oben links umschalten.</li>
           <li>Vollbild-Overlay mit <strong>nur zwei Zeilen</strong> (Muttersprache | 日本語), ideal zum <strong>lauten Lesen</strong>.</li>
           <li>Im Overlay: <strong>A− / A+:</strong> Zoom, <strong>← / →:</strong> Satz wechseln, <strong>Fokus-Toggle</strong> oder <strong>Esc:</strong> beenden</li>
         </ul>
 
-        <h4>Dark Mode</h4>
-        <ul>
+        <h4 data-i18n="howto.usage.dark.title">Dark Mode</h4>
+        <ul data-i18n-html="howto.usage.dark.list">
           <li><strong>"Dark"</strong> oben links umschalten; in <code>localStorage</code> gespeichert.</li>
         </ul>
 
-        <h4>Furigana</h4>
-        <ul>
+        <h4 data-i18n="howto.usage.furigana.title">Furigana</h4>
+        <ul data-i18n-html="howto.usage.furigana.list">
           <li><strong>"Furigana anzeigen"</strong> Checkbox im JP-Reader.</li>
           <li><strong>"Furigana hinzufügen"</strong> annotiert einen bestehenden JP-Text (<code>&lt;ruby&gt;&lt;rt&gt;</code>).</li>
         </ul>
 
-        <h4>Generieren / Übersetzen / Annotieren</h4>
-        <ul>
+        <h4 data-i18n="howto.usage.generate.title">Generieren / Übersetzen / Annotieren</h4>
+        <ul data-i18n-html="howto.usage.generate.list">
           <li><strong>Generieren:</strong> Prompt oben eingeben → <strong>Generieren</strong> klicken</li>
           <li><strong>Übersetzen → 日本語:</strong> linker Button (satz-erhaltend, mit Furigana)</li>
           <li><strong>Übersetzen ← Muttersprache:</strong> rechter Button (satz-erhaltend)</li>
@@ -343,16 +354,16 @@
       </div>
 
       <div class="section">
-        <h3>Tastaturkürzel</h3>
-        <ul>
+        <h3 data-i18n="howto.shortcuts.title">Tastaturkürzel</h3>
+        <ul data-i18n-html="howto.shortcuts.list">
           <li><code>←</code> / <code>→</code> — aktiven Satz wechseln</li>
           <li><code>Esc</code> — Fokus-Modus beenden</li>
         </ul>
       </div>
 
       <div class="section">
-        <h3>Bekannte Einschränkungen</h3>
-        <ul>
+        <h3 data-i18n="howto.limitations.title">Bekannte Einschränkungen</h3>
+        <ul data-i18n-html="howto.limitations.list">
           <li><strong>Satz-Aufteilung:</strong> robuste Heuristiken, aber nicht perfekt (Abkürzungen, Grenzfälle).</li>
           <li><strong>Modell-Limits:</strong> sehr lange Eingaben können Token-Limits erreichen (konfigurierbar).</li>
           <li><strong>Kosten:</strong> je nach verwendetem Modell können Kosten variieren.</li>
@@ -361,8 +372,8 @@
       </div>
 
       <div class="section">
-        <h3>Datenschutz & Sicherheit</h3>
-        <ul>
+        <h3 data-i18n="howto.privacy.title">Datenschutz & Sicherheit</h3>
+        <ul data-i18n-html="howto.privacy.list">
           <li><strong>Lokal gespeichert:</strong> API-Schlüssel, Texte & Einstellungen bleiben im Browser (<code>localStorage</code>), keine Server-DB.</li>
           <li><strong>API-Schlüssel im Client:</strong> wenn direkt im Browser verwendet, ist Ihr Schlüssel technisch sichtbar.</li>
         </ul>
@@ -372,146 +383,542 @@
     <!-- ADMIN: NEU ORGANISIERT -->
     <section class="panel" id="panel-admin" role="tabpanel" aria-labelledby="tab-admin">
       <div class="section">
-        <h3>Zugang</h3>
+        <h3 data-i18n="admin.access">Zugang</h3>
         <div class="formstack">
           <div class="field">
-            <label for="apiBase">API Base URL (z.B. https://api.openai.com)</label>
+            <label for="apiBase" data-i18n="admin.apiBase">API Base URL (z.B. https://api.openai.com)</label>
             <input id="apiBase" type="url" placeholder="API Base URL"/>
           </div>
           <div class="field">
-            <label for="apiKey">API-Schlüssel</label>
+            <label for="apiKey" data-i18n="admin.apiKey">API-Schlüssel</label>
             <input id="apiKey" type="password" placeholder="API-Schlüssel"/>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <h3>Modelle</h3>
+        <h3 data-i18n="admin.models">Modelle</h3>
         <div class="formstack">
           <div class="field">
-            <label for="modelGen" title="Wird zum Generieren von neuen Texten verwendet">Modell (Generierung)</label>
+            <label for="modelGen" title="Wird zum Generieren von neuen Texten verwendet" data-i18n="admin.modelGen">Modell (Generierung)</label>
             <input id="modelGen" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
           <div class="field">
-            <label for="modelTrans" title="Wird für Übersetzungen verwendet">Modell (Übersetzung)</label>
+            <label for="modelTrans" title="Wird für Übersetzungen verwendet" data-i18n="admin.modelTrans">Modell (Übersetzung)</label>
             <input id="modelTrans" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
           <div class="field">
-            <label for="modelAnno" title="Wird zum Annotieren mit Furigana verwendet">Modell (Annotation/Furigana)</label>
+            <label for="modelAnno" title="Wird zum Annotieren mit Furigana verwendet" data-i18n="admin.modelAnno">Modell (Annotation/Furigana)</label>
             <input id="modelAnno" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <h3>Parameter</h3>
+        <h3 data-i18n="admin.parameters">Parameter</h3>
         <div class="formstack">
           <div class="field">
-            <label for="tempGen">Temperatur (Generierung)</label>
+            <label for="tempGen" data-i18n="admin.tempGen">Temperatur (Generierung)</label>
             <input id="tempGen" type="number" step="0.1" min="0" max="2">
           </div>
           <div class="field">
-            <label for="maxGen">Max Tokens (Generierung)</label>
+            <label for="maxGen" data-i18n="admin.maxGen">Max Tokens (Generierung)</label>
             <input id="maxGen" type="number" step="1" min="1">
           </div>
           <div class="field">
-            <label for="tempTrans">Temperatur (Übersetzung)</label>
+            <label for="tempTrans" data-i18n="admin.tempTrans">Temperatur (Übersetzung)</label>
             <input id="tempTrans" type="number" step="0.1" min="0" max="2">
           </div>
           <div class="field">
-            <label for="maxTrans">Max Tokens (Übersetzung)</label>
+            <label for="maxTrans" data-i18n="admin.maxTrans">Max Tokens (Übersetzung)</label>
             <input id="maxTrans" type="number" step="1" min="1">
           </div>
           <div class="field">
-            <label for="tempAnno">Temperatur (Annotation)</label>
+            <label for="tempAnno" data-i18n="admin.tempAnno">Temperatur (Annotation)</label>
             <input id="tempAnno" type="number" step="0.1" min="0" max="2">
           </div>
           <div class="field">
-            <label for="maxAnno">Max Tokens (Annotation)</label>
+            <label for="maxAnno" data-i18n="admin.maxAnno">Max Tokens (Annotation)</label>
             <input id="maxAnno" type="number" step="1" min="1">
           </div>
         </div>
       </div>
 
       <div class="section">
-        <h3>Prompts (bearbeitbar)</h3>
+        <h3 data-i18n="admin.prompts">Prompts (bearbeitbar)</h3>
         <div class="formstack">
           <div class="field">
-            <label for="promptGen">Prompt: Generierung (Japanisch mit Furigana)</label>
+            <label for="promptGen" data-i18n="admin.promptGen">Prompt: Generierung (Japanisch mit Furigana)</label>
             <textarea id="promptGen" placeholder="Prompt für Generieren in Japanisch mit Furigana"></textarea>
           </div>
           <div class="field">
-            <label for="promptTrans">Prompt: Übersetzung (→ Japanisch mit Furigana)</label>
+            <label for="promptTrans" data-i18n="admin.promptTrans">Prompt: Übersetzung (→ Japanisch mit Furigana)</label>
             <textarea id="promptTrans" placeholder="Prompt für Übersetzen ins Japanische mit Furigana"></textarea>
           </div>
           <div class="field">
-            <label for="promptAnno">Prompt: Annotation (bestehenden Text mit Furigana versehen)</label>
+            <label for="promptAnno" data-i18n="admin.promptAnno">Prompt: Annotation (bestehenden Text mit Furigana versehen)</label>
             <textarea id="promptAnno" placeholder="Annotiere den folgenden japanischen Text vollständig mit Furigana …"></textarea>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <h3>Weitere Einstellungen</h3>
+        <h3 data-i18n="admin.settings">Weitere Einstellungen</h3>
         <div class="formstack">
           <div class="field">
-            <label for="motherLang">Muttersprache</label>
+            <label for="motherLang" data-i18n="admin.motherLang">Muttersprache</label>
             <select id="motherLang">
-              <option value="Deutsch" selected>Deutsch</option>
-              <option value="Englisch">Englisch</option>
-              <option value="Französisch">Französisch</option>
-              <option value="Spanisch">Spanisch</option>
-              <option value="Italienisch">Italienisch</option>
+              <option value="Deutsch" selected data-i18n="lang.german">Deutsch</option>
+              <option value="Englisch" data-i18n="lang.english">Englisch</option>
+              <option value="Französisch" data-i18n="lang.french">Französisch</option>
+              <option value="Spanisch" data-i18n="lang.spanish">Spanisch</option>
+              <option value="Italienisch" data-i18n="lang.italian">Italienisch</option>
             </select>
           </div>
           <div class="stack-actions">
-            <button class="btn" id="btnSave">Speichern</button>
-            <button class="btn primary" id="btnTest">Verbindung testen</button>
+            <button class="btn" id="btnSave" data-i18n="admin.save">Speichern</button>
+            <button class="btn primary" id="btnTest" data-i18n="admin.test">Verbindung testen</button>
           </div>
         </div>
-        <p class="status">Die Zugangsdaten & Einstellungen werden nur lokal im Browser (localStorage) gespeichert.</p>
+        <p class="status" data-i18n="admin.privacy">Die Zugangsdaten & Einstellungen werden nur lokal im Browser (localStorage) gespeichert.</p>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>Furigana werden jetzt <strong>direkt</strong> vom Sprachmodell als HTML-<code>&lt;ruby&gt;</code> erzeugt. Du kannst weiterhin Klammer-Notation wie <code>漢字(かんじ)</code> oder <code>{漢字|かんじ}</code> eingeben.</p>
+    <p data-i18n="footer.furiganaInfo">Furigana werden jetzt <strong>direkt</strong> vom Sprachmodell als HTML-<code>&lt;ruby&gt;</code> erzeugt. Du kannst weiterhin Klammer-Notation wie <code>漢字(かんじ)</code> oder <code>{漢字|かんじ}</code> eingeben.</p>
   </footer>
 
   <!-- Fokusmodus Overlay (nur die zwei Fokuszeilen nebeneinander) -->
   <div class="focus-overlay" id="focusOverlay" aria-live="polite">
     <div class="focus-toolbar">
       <div style="display:flex; gap:8px; align-items:center">
-        <button class="btn iconbtn" id="focusPrev" title="Vorheriger Satz">
+        <button class="btn iconbtn" id="focusPrev" title="Vorheriger Satz" data-i18n-title="focus.toolbar.prev">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button class="btn iconbtn" id="focusNext" title="Nächster Satz">
+        <button class="btn iconbtn" id="focusNext" title="Nächster Satz" data-i18n-title="focus.toolbar.next">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <span class="switch" title="Fokus-Zoom">
-          <label>Zoom</label>
-          <button class="btn iconbtn" id="focusZoomMinus2" aria-label="Fokus kleiner">A-</button>
-          <button class="btn iconbtn" id="focusZoomPlus2" aria-label="Fokus größer">A+</button>
+        <span class="switch" title="Fokus-Zoom" data-i18n-title="focus.toolbar.zoom">
+          <label data-i18n="focus.toolbar.zoom">Zoom</label>
+          <button class="btn iconbtn" id="focusZoomMinus2" aria-label="Fokus kleiner" data-i18n-title="focus.smaller">A-</button>
+          <button class="btn iconbtn" id="focusZoomPlus2" aria-label="Fokus größer" data-i18n-title="focus.larger">A+</button>
         </span>
       </div>
-      <div class="toggle" title="Fokusmodus beenden">
-        <label for="toggleFocusMode2">Fokus</label>
-        <input id="toggleFocusMode2" type="checkbox" aria-label="Fokusmodus" />
+      <div class="toggle" title="Fokusmodus beenden" data-i18n-title="focus.toolbar.exit">
+        <label for="toggleFocusMode2" data-i18n="toggle.focus">Fokus</label>
+        <input id="toggleFocusMode2" type="checkbox" aria-label="Fokusmodus" data-i18n-title="tooltip.focusMode" />
       </div>
     </div>
     <div class="focus-grid">
       <div class="focus-panel">
-        <h4>Muttersprache</h4>
+        <h4 data-i18n="focus.panel.source">Muttersprache</h4>
         <div class="focus-content" id="focusSrc"></div>
       </div>
       <div class="focus-panel">
-        <h4>日本語</h4>
+        <h4 data-i18n="focus.panel.japanese">日本語</h4>
         <div class="focus-content" id="focusJp"></div>
       </div>
     </div>
   </div>
 
   <script>
+    // === Internationalization (i18n) ==========================================
+    const translations = {
+      de: {
+        // Tabs
+        'tab.reading': 'Lese-Tab',
+        'tab.howto': 'How-to',
+        'tab.admin': 'Admin',
+        
+        // Toggles
+        'toggle.dark': 'Dark',
+        'toggle.focus': 'Fokus',
+        
+        // Tooltips
+        'tooltip.darkMode': 'Darkmode umschalten',
+        'tooltip.focusMode': 'Fokusmodus umschalten',
+        'tooltip.focusZoom': 'Fokuszeilen-Zoom',
+        'tooltip.editorsToggle': 'Editoren ein/ausblenden',
+        'tooltip.stripBreaks': 'Zeilenumbrüche im Muttersprache-Text entfernen',
+        'tooltip.translateToJp': 'Übersetzen → 日本語',
+        'tooltip.translateToSource': 'Übersetzen ← Muttersprache',
+        'tooltip.navBack': 'Zurück',
+        'tooltip.navForward': 'Vor',
+        'tooltip.navBackJp': '戻る',
+        'tooltip.navForwardJp': '進む',
+        'tooltip.focusPrev': 'Vorheriger Satz',
+        'tooltip.focusNext': 'Nächster Satz',
+        'tooltip.focusExit': 'Fokusmodus beenden',
+        'tooltip.modelGen': 'Wird zum Generieren von neuen Texten verwendet',
+        'tooltip.modelTrans': 'Wird für Übersetzungen verwendet',
+        'tooltip.modelAnno': 'Wird zum Annotieren mit Furigana verwendet',
+        
+        // Reading panel
+        'prompt.placeholder': 'Prompt: z.B. \'Schreibe einen kurzen Dialog über das Einkaufen\'',
+        'generate.label': 'Generieren in:',
+        'generate.target': 'Zielsprache 日本語',
+        'generate.source': 'Muttersprache',
+        'generate.button': 'Generieren',
+        'highlight.label': 'Satz-Highlighting',
+        'focus.zoom': 'Fokus-Zoom',
+        'focus.smaller': 'Fokus kleiner',
+        'focus.larger': 'Fokus größer',
+        'editors.toggle': 'Editoren ein/ausblenden',
+        
+        // Reader headers
+        'reader.source': 'Muttersprache',
+        'reader.target': '日本語',
+        'reader.targetLang': 'Zielsprache',
+        
+        // Navigation
+        'nav.back': 'Zurück',
+        'nav.forward': 'Vor',
+        'nav.backJp': '戻る',
+        'nav.forwardJp': '進む',
+        'translate.toJp': '→ 日本語',
+        'translate.toSource': '← Muttersprache',
+        
+        // Editor controls
+        'editor.render': 'Rendern ⤵',
+        'editor.clear': 'Leeren',
+        'editor.stripBreaks': 'Umbrüche entfernen',
+        'furigana.show': 'Furigana anzeigen',
+        'furigana.add': 'Furigana hinzufügen',
+        
+        // Placeholders
+        'placeholder.source': 'Hier Text in der Muttersprache eingeben oder einfügen…',
+        'placeholder.japanese': 'Hier japanischen Text eingeben oder einfügen… 例: 私(わたし)は東京(とうきょう)に住(す)んでいます。',
+        'placeholder.focusSource': 'Aktiver Satz (Muttersprache) …',
+        'placeholder.focusJapanese': '現在の文（日本語）…',
+        
+        // Focus mode
+        'focus.toolbar.prev': 'Vorheriger Satz',
+        'focus.toolbar.next': 'Nächster Satz',
+        'focus.toolbar.zoom': 'Zoom',
+        'focus.toolbar.exit': 'Fokusmodus beenden',
+        'focus.panel.source': 'Muttersprache',
+        'focus.panel.japanese': '日本語',
+        
+        // Admin panel
+        'admin.access': 'Zugang',
+        'admin.apiBase': 'API Base URL (z.B. https://api.openai.com)',
+        'admin.apiKey': 'API-Schlüssel',
+        'admin.models': 'Modelle',
+        'admin.modelGen': 'Modell (Generierung)',
+        'admin.modelTrans': 'Modell (Übersetzung)',
+        'admin.modelAnno': 'Modell (Annotation/Furigana)',
+        'admin.parameters': 'Parameter',
+        'admin.tempGen': 'Temperatur (Generierung)',
+        'admin.maxGen': 'Max Tokens (Generierung)',
+        'admin.tempTrans': 'Temperatur (Übersetzung)',
+        'admin.maxTrans': 'Max Tokens (Übersetzung)',
+        'admin.tempAnno': 'Temperatur (Annotation)',
+        'admin.maxAnno': 'Max Tokens (Annotation)',
+        'admin.prompts': 'Prompts (bearbeitbar)',
+        'admin.promptGen': 'Prompt: Generierung (Japanisch mit Furigana)',
+        'admin.promptTrans': 'Prompt: Übersetzung (→ Japanisch mit Furigana)',
+        'admin.promptAnno': 'Prompt: Annotation (bestehenden Text mit Furigana versehen)',
+        'admin.settings': 'Weitere Einstellungen',
+        'admin.motherLang': 'Muttersprache',
+        'admin.save': 'Speichern',
+        'admin.test': 'Verbindung testen',
+        'admin.privacy': 'Die Zugangsdaten & Einstellungen werden nur lokal im Browser (localStorage) gespeichert.',
+        
+        // Status messages
+        'status.testing': 'Teste Verbindung …',
+        'status.translatingToJp': 'Übersetze nach 日本語 (mit Furigana) …',
+        'status.translatingToSource': 'Übersetze ins {language} …',
+        'status.generating': 'Generiere Text in {language} …',
+        'status.annotating': 'Annotiere gesamten Text mit Furigana …',
+        'status.done': 'Fertig.',
+        'status.saved': 'Gespeichert.',
+        'status.noSource': 'Kein Quelltext vorhanden.',
+        'status.noJapanese': 'Kein japanischer Text vorhanden.',
+        'status.noJapaneseToAnnotate': 'Kein japanischer Text zum Annotieren.',
+        'status.enterPrompt': 'Bitte Prompt eingeben.',
+        'status.lineBreaksRemoved': 'Zeilenumbrüche in Muttersprache entfernt.',
+        'status.error': 'Fehler: {message}',
+        'status.ok': 'OK: {message}',
+        
+        // Footer
+        'footer.furiganaInfo': 'Furigana werden jetzt <strong>direkt</strong> vom Sprachmodell als HTML-<code>&lt;ruby&gt;</code> erzeugt. Du kannst weiterhin Klammer-Notation wie <code>漢字(かんじ)</code> oder <code>{漢字|かんじ}</code> eingeben.',
+        
+        // Native language options
+        'lang.german': 'Deutsch',
+        'lang.english': 'Englisch',
+        'lang.french': 'Französisch',
+        'lang.spanish': 'Spanisch',
+        'lang.italian': 'Italienisch',
+
+        // HOW-TO Section
+        'howto.title': 'Schliemann\'s Way（シュリーマンの道）',
+        'howto.subtitle': '<strong>Ein leichtgewichtiges, rein clientseitiges Übungstool für Sprachlernende nach der Schliemann-Methode</strong> (Heinrich Schliemann, der Archäologe).<br>Fokus: <strong>paralleles Lesen</strong>, <strong>satzweise Rückübersetzung</strong>, <strong>lautes Lesen</strong> — mit <strong>Furigana</strong>, <strong>Fokus-Modus</strong> und <strong>Dark Mode</strong>.',
+        
+        'howto.purpose.title': 'Zweck & Lernprinzip',
+        'howto.purpose.intro': '<strong>Schliemann\'s Way</strong> ist bewusst minimal: kein Kurs, keine Gamification — ein <strong>Werkzeug</strong> für die effiziente Arbeit mit <strong>eigenen Texten</strong> oder <strong>parallelen Sätzen</strong>. Es richtet sich an Lernende, die <strong>aktiv</strong> arbeiten wollen: lesen, vergleichen, <strong>satzweise übersetzen</strong>, wiederholen und laut sprechen.',
+        'howto.purpose.method.title': 'Warum die "Schliemann-Methode"?',
+        'howto.purpose.method.content': 'Heinrich Schliemann (Archäologe, 1822–1890) beschrieb, wie er Sprachen durch <strong>intensives Lesen</strong>, <strong>parallele Texte</strong>, besonders <strong>Rückübersetzung</strong> (aus der Zielsprache zurück in die Ausgangssprache) und <strong>tägliche Wiederholung</strong> lernte. Diese App ist <strong>von diesem Arbeitsablauf inspiriert</strong>:',
+        'howto.purpose.method.list': '<li><strong>Parallelität:</strong> Quelle ↔︎ Ziel nebeneinander angezeigt</li><li><strong>Satztreue:</strong> ein Satz links entspricht genau einem rechts</li><li><strong>Rückübersetzung:</strong> bewusst den aktiven Satz in die andere Sprache umwandeln</li><li><strong>Lautes Lesen & Fokus:</strong> einen Satz im Blick behalten, klar artikulieren, rhythmisch wiederholen</li><li><strong>Wiederholung:</strong> schnell navigieren und schwierige Stellen gezielt bearbeiten</li>',
+        'howto.purpose.method.goal': 'Das Ziel ist <strong>aktive Produktion</strong> und <strong>präzises Verstehen</strong> — nicht passives Scrollen.',
+        'howto.purpose.routine.title': 'Empfohlene Übungsroutine (10–20 Min)',
+        'howto.purpose.routine.list': '<li><strong>Text laden/einfügen</strong> (parallel oder einseitig) und <strong>Rendern</strong>.</li><li><strong>Satz auswählen</strong>, im <strong>Fokus-Modus</strong> laut lesen.</li><li><strong>Rückübersetzen</strong> (z.B. JA → DE/EN oder DE/EN → JA) — erst selbst machen, dann mit dem <strong>Übersetzen</strong>-Button überprüfen.</li><li><strong>Furigana umschalten</strong> um Kanji bei Bedarf zu verstärken.</li><li><strong>Nächster Satz (→)</strong> — schwierige mehrmals wiederholen.</li><li><strong>Kurz reflektieren:</strong> welche Strukturen waren schwer? Nächste Session damit beginnen.</li>',
+        
+        'howto.features.title': 'Funktionen',
+        'howto.features.list': '<li>📖 <strong>Zwei-Spalten-Reader:</strong> Muttersprache links, Japanisch rechts — satz-synchronisiert</li><li>🎯 <strong>Fokus-Modus (Overlay):</strong> Vollbild mit nur <strong>zwei Fokuszeilen</strong> + vor/zurück + Zoom</li><li>🌓 <strong>Dark Mode:</strong> umschaltbar, lokal gespeichert</li><li>🈶 <strong>Furigana:</strong> vollständige <code>&lt;ruby&gt;&lt;rt&gt;</code> Unterstützung + automatische Annotation bestehender japanischer Texte</li><li>🔁 <strong>Satz-erhaltende Übersetzung:</strong> behält Satzanzahl in beide Richtungen bei</li><li>🧠 <strong>Generieren:</strong> Übungstexte in Japanisch (mit Furigana) oder in der Muttersprache erstellen</li><li>⚙️ <strong>OpenAI-kompatibel:</strong> konfigurierbare API-Basis & Modelle (OpenAI, vLLM, Proxies, etc.)</li><li>💾 <strong>Lokale Persistierung (<code>localStorage</code>):</strong> Texte, UI-Status, Modelle & Prompts</li><li>🧰 <strong>Sauberer Admin-Tab:</strong> gestapelte Felder, klare Abschnitte</li>',
+        
+        'howto.quickstart.title': 'Schnellstart',
+        'howto.quickstart.list': '<li><strong>Datei öffnen:</strong> <code>schliemanns_weg.html</code> direkt im Browser (Chrome/Edge/Firefox) öffnen.</li><li><strong>(Optional) API konfigurieren:</strong> Im <strong>Admin</strong>-Tab <code>API Base</code> & <code>API Key</code> ausfüllen, wenn Sie Generieren/Übersetzen/Annotieren verwenden möchten.</li><li><strong>Eigene Texte einfügen:</strong> Links (Muttersprache) und/oder rechts (Japanisch) → <strong>Rendern</strong>.<br>Tipp: <strong>"Umbrüche entfernen"</strong> (linke Seite) hilft, die Satzausrichtung sauber zu halten.</li>',
+        
+        'howto.usage.title': 'Verwendung',
+        'howto.usage.reading.title': 'Lesen & Navigation',
+        'howto.usage.reading.list': '<li>Klicken Sie auf einen Satz im Lesebereich, um ihn <strong>aktiv</strong> zu machen (beide Seiten synchronisieren).</li><li>Navigieren Sie mit den Pfeil-Buttons oder den <strong>← / →</strong> Tasten.</li><li>Die <strong>Fokuszeilen</strong> (unter den Editoren) spiegeln immer den aktiven Satz wider.</li>',
+        'howto.usage.focus.title': 'Fokus-Modus',
+        'howto.usage.focus.list': '<li><strong>"Fokus"</strong> oben links umschalten.</li><li>Vollbild-Overlay mit <strong>nur zwei Zeilen</strong> (Muttersprache | 日本語), ideal zum <strong>lauten Lesen</strong>.</li><li>Im Overlay: <strong>A− / A+:</strong> Zoom, <strong>← / →:</strong> Satz wechseln, <strong>Fokus-Toggle</strong> oder <strong>Esc:</strong> beenden</li>',
+        'howto.usage.dark.title': 'Dark Mode',
+        'howto.usage.dark.list': '<li><strong>"Dark"</strong> oben links umschalten; in <code>localStorage</code> gespeichert.</li>',
+        'howto.usage.furigana.title': 'Furigana',
+        'howto.usage.furigana.list': '<li><strong>"Furigana anzeigen"</strong> Checkbox im JP-Reader.</li><li><strong>"Furigana hinzufügen"</strong> annotiert einen bestehenden JP-Text (<code>&lt;ruby&gt;&lt;rt&gt;</code>).</li>',
+        'howto.usage.generate.title': 'Generieren / Übersetzen / Annotieren',
+        'howto.usage.generate.list': '<li><strong>Generieren:</strong> Prompt oben eingeben → <strong>Generieren</strong> klicken</li><li><strong>Übersetzen → 日本語:</strong> linker Button (satz-erhaltend, mit Furigana)</li><li><strong>Übersetzen ← Muttersprache:</strong> rechter Button (satz-erhaltend)</li><li><strong>Annotieren:</strong> Furigana zu bestehendem JP-Text hinzufügen</li>',
+        
+        'howto.shortcuts.title': 'Tastaturkürzel',
+        'howto.shortcuts.list': '<li><code>←</code> / <code>→</code> — aktiven Satz wechseln</li><li><code>Esc</code> — Fokus-Modus beenden</li>',
+        
+        'howto.limitations.title': 'Bekannte Einschränkungen',
+        'howto.limitations.list': '<li><strong>Satz-Aufteilung:</strong> robuste Heuristiken, aber nicht perfekt (Abkürzungen, Grenzfälle).</li><li><strong>Modell-Limits:</strong> sehr lange Eingaben können Token-Limits erreichen (konfigurierbar).</li><li><strong>Kosten:</strong> je nach verwendetem Modell können Kosten variieren.</li><li><strong>Client-Schlüssel:</strong> für Produktionsnutzung einen Proxy bevorzugen.</li>',
+        
+        'howto.privacy.title': 'Datenschutz & Sicherheit',
+        'howto.privacy.list': '<li><strong>Lokal gespeichert:</strong> API-Schlüssel, Texte & Einstellungen bleiben im Browser (<code>localStorage</code>), keine Server-DB.</li><li><strong>API-Schlüssel im Client:</strong> wenn direkt im Browser verwendet, ist Ihr Schlüssel technisch sichtbar.</li>'
+      },
+      
+      en: {
+        // Tabs
+        'tab.reading': 'Reading',
+        'tab.howto': 'How-to',
+        'tab.admin': 'Admin',
+        
+        // Toggles
+        'toggle.dark': 'Dark',
+        'toggle.focus': 'Focus',
+        
+        // Tooltips
+        'tooltip.darkMode': 'Toggle dark mode',
+        'tooltip.focusMode': 'Toggle focus mode',
+        'tooltip.focusZoom': 'Focus line zoom',
+        'tooltip.editorsToggle': 'Show/hide editors',
+        'tooltip.stripBreaks': 'Remove line breaks in native language text',
+        'tooltip.translateToJp': 'Translate → 日本語',
+        'tooltip.translateToSource': 'Translate ← Native language',
+        'tooltip.navBack': 'Back',
+        'tooltip.navForward': 'Forward',
+        'tooltip.navBackJp': '戻る',
+        'tooltip.navForwardJp': '進む',
+        'tooltip.focusPrev': 'Previous sentence',
+        'tooltip.focusNext': 'Next sentence',
+        'tooltip.focusExit': 'Exit focus mode',
+        'tooltip.modelGen': 'Used for generating new texts',
+        'tooltip.modelTrans': 'Used for translations',
+        'tooltip.modelAnno': 'Used for annotating with Furigana',
+        
+        // Reading panel
+        'prompt.placeholder': 'Prompt: e.g. \'Write a short dialogue about shopping\'',
+        'generate.label': 'Generate in:',
+        'generate.target': 'Target language 日本語',
+        'generate.source': 'Native language',
+        'generate.button': 'Generate',
+        'highlight.label': 'Sentence highlighting',
+        'focus.zoom': 'Focus zoom',
+        'focus.smaller': 'Focus smaller',
+        'focus.larger': 'Focus larger',
+        'editors.toggle': 'Show/hide editors',
+        
+        // Reader headers
+        'reader.source': 'Native language',
+        'reader.target': '日本語',
+        'reader.targetLang': 'Target language',
+        
+        // Navigation
+        'nav.back': 'Back',
+        'nav.forward': 'Forward',
+        'nav.backJp': '戻る',
+        'nav.forwardJp': '進む',
+        'translate.toJp': '→ 日本語',
+        'translate.toSource': '← Native language',
+        
+        // Editor controls
+        'editor.render': 'Render ⤵',
+        'editor.clear': 'Clear',
+        'editor.stripBreaks': 'Remove line breaks',
+        'furigana.show': 'Show furigana',
+        'furigana.add': 'Add furigana',
+        
+        // Placeholders
+        'placeholder.source': 'Enter or paste text in your native language here…',
+        'placeholder.japanese': 'Enter or paste Japanese text here… 例: 私(わたし)は東京(とうきょう)に住(す)んでいます。',
+        'placeholder.focusSource': 'Active sentence (native language) …',
+        'placeholder.focusJapanese': '現在の文（日本語）…',
+        
+        // Focus mode
+        'focus.toolbar.prev': 'Previous sentence',
+        'focus.toolbar.next': 'Next sentence',
+        'focus.toolbar.zoom': 'Zoom',
+        'focus.toolbar.exit': 'Exit focus mode',
+        'focus.panel.source': 'Native language',
+        'focus.panel.japanese': '日本語',
+        
+        // Admin panel
+        'admin.access': 'Access',
+        'admin.apiBase': 'API Base URL (e.g. https://api.openai.com)',
+        'admin.apiKey': 'API Key',
+        'admin.models': 'Models',
+        'admin.modelGen': 'Model (Generation)',
+        'admin.modelTrans': 'Model (Translation)',
+        'admin.modelAnno': 'Model (Annotation/Furigana)',
+        'admin.parameters': 'Parameters',
+        'admin.tempGen': 'Temperature (Generation)',
+        'admin.maxGen': 'Max Tokens (Generation)',
+        'admin.tempTrans': 'Temperature (Translation)',
+        'admin.maxTrans': 'Max Tokens (Translation)',
+        'admin.tempAnno': 'Temperature (Annotation)',
+        'admin.maxAnno': 'Max Tokens (Annotation)',
+        'admin.prompts': 'Prompts (editable)',
+        'admin.promptGen': 'Prompt: Generation (Japanese with Furigana)',
+        'admin.promptTrans': 'Prompt: Translation (→ Japanese with Furigana)',
+        'admin.promptAnno': 'Prompt: Annotation (add Furigana to existing text)',
+        'admin.settings': 'Additional Settings',
+        'admin.motherLang': 'Native Language',
+        'admin.save': 'Save',
+        'admin.test': 'Test Connection',
+        'admin.privacy': 'Access credentials & settings are stored locally in the browser (localStorage) only.',
+        
+        // Status messages
+        'status.testing': 'Testing connection …',
+        'status.translatingToJp': 'Translating to 日本語 (with Furigana) …',
+        'status.translatingToSource': 'Translating to {language} …',
+        'status.generating': 'Generating text in {language} …',
+        'status.annotating': 'Annotating entire text with Furigana …',
+        'status.done': 'Done.',
+        'status.saved': 'Saved.',
+        'status.noSource': 'No source text available.',
+        'status.noJapanese': 'No Japanese text available.',
+        'status.noJapaneseToAnnotate': 'No Japanese text to annotate.',
+        'status.enterPrompt': 'Please enter a prompt.',
+        'status.lineBreaksRemoved': 'Line breaks removed from native language text.',
+        'status.error': 'Error: {message}',
+        'status.ok': 'OK: {message}',
+        
+        // Footer
+        'footer.furiganaInfo': 'Furigana are now generated <strong>directly</strong> by the language model as HTML <code>&lt;ruby&gt;</code>. You can still use bracket notation like <code>漢字(かんじ)</code> or <code>{漢字|かんじ}</code>.',
+        
+        // Native language options
+        'lang.german': 'German',
+        'lang.english': 'English',
+        'lang.french': 'French',
+        'lang.spanish': 'Spanish',
+        'lang.italian': 'Italian',
+
+        // HOW-TO Section
+        'howto.title': 'Schliemann\'s Way（シュリーマンの道）',
+        'howto.subtitle': '<strong>A lightweight, purely client-side practice tool for language learners following the Schliemann method</strong> (Heinrich Schliemann, the archaeologist).<br>Focus: <strong>parallel reading</strong>, <strong>sentence-by-sentence back-translation</strong>, <strong>reading aloud</strong> — with <strong>Furigana</strong>, <strong>Focus Mode</strong> and <strong>Dark Mode</strong>.',
+        
+        'howto.purpose.title': 'Purpose & Learning Principle',
+        'howto.purpose.intro': '<strong>Schliemann\'s Way</strong> is deliberately minimal: no course, no gamification — a <strong>tool</strong> for efficient work with <strong>your own texts</strong> or <strong>parallel sentences</strong>. It targets learners who want to work <strong>actively</strong>: reading, comparing, <strong>translating sentence by sentence</strong>, repeating and speaking aloud.',
+        'howto.purpose.method.title': 'Why the "Schliemann Method"?',
+        'howto.purpose.method.content': 'Heinrich Schliemann (archaeologist, 1822–1890) described how he learned languages through <strong>intensive reading</strong>, <strong>parallel texts</strong>, especially <strong>back-translation</strong> (from the target language back to the source language) and <strong>daily repetition</strong>. This app is <strong>inspired by this workflow</strong>:',
+        'howto.purpose.method.list': '<li><strong>Parallelism:</strong> Source ↔︎ Target displayed side by side</li><li><strong>Sentence fidelity:</strong> one sentence on the left corresponds exactly to one on the right</li><li><strong>Back-translation:</strong> deliberately convert the active sentence to the other language</li><li><strong>Reading aloud & Focus:</strong> keep one sentence in view, articulate clearly, repeat rhythmically</li><li><strong>Repetition:</strong> navigate quickly and work on difficult passages specifically</li>',
+        'howto.purpose.method.goal': 'The goal is <strong>active production</strong> and <strong>precise understanding</strong> — not passive scrolling.',
+        'howto.purpose.routine.title': 'Recommended Practice Routine (10–20 Min)',
+        'howto.purpose.routine.list': '<li><strong>Load/paste text</strong> (parallel or one-sided) and <strong>Render</strong>.</li><li><strong>Select sentence</strong>, read aloud in <strong>Focus Mode</strong>.</li><li><strong>Back-translate</strong> (e.g. JA → EN/DE or EN/DE → JA) — do it yourself first, then check with the <strong>Translate</strong> button.</li><li><strong>Toggle Furigana</strong> to strengthen Kanji as needed.</li><li><strong>Next sentence (→)</strong> — repeat difficult ones multiple times.</li><li><strong>Brief reflection:</strong> which structures were difficult? Start the next session with those.</li>',
+        
+        'howto.features.title': 'Features',
+        'howto.features.list': '<li>📖 <strong>Two-column reader:</strong> Native language left, Japanese right — sentence-synchronized</li><li>🎯 <strong>Focus Mode (Overlay):</strong> Fullscreen with only <strong>two focus lines</strong> + forward/back + zoom</li><li>🌓 <strong>Dark Mode:</strong> switchable, locally stored</li><li>🈶 <strong>Furigana:</strong> complete <code>&lt;ruby&gt;&lt;rt&gt;</code> support + automatic annotation of existing Japanese texts</li><li>🔁 <strong>Sentence-preserving translation:</strong> maintains sentence count in both directions</li><li>🧠 <strong>Generate:</strong> create practice texts in Japanese (with Furigana) or in the native language</li><li>⚙️ <strong>OpenAI-compatible:</strong> configurable API base & models (OpenAI, vLLM, proxies, etc.)</li><li>💾 <strong>Local persistence (<code>localStorage</code>):</strong> texts, UI status, models & prompts</li><li>🧰 <strong>Clean Admin tab:</strong> stacked fields, clear sections</li>',
+        
+        'howto.quickstart.title': 'Quick Start',
+        'howto.quickstart.list': '<li><strong>Open file:</strong> Open <code>schliemanns_weg.html</code> directly in browser (Chrome/Edge/Firefox).</li><li><strong>(Optional) Configure API:</strong> Fill in <code>API Base</code> & <code>API Key</code> in the <strong>Admin</strong> tab if you want to use Generate/Translate/Annotate.</li><li><strong>Paste your own texts:</strong> Left (native language) and/or right (Japanese) → <strong>Render</strong>.<br>Tip: <strong>"Remove line breaks"</strong> (left side) helps keep sentence alignment clean.</li>',
+        
+        'howto.usage.title': 'Usage',
+        'howto.usage.reading.title': 'Reading & Navigation',
+        'howto.usage.reading.list': '<li>Click on a sentence in the reading area to make it <strong>active</strong> (both sides synchronize).</li><li>Navigate with the arrow buttons or the <strong>← / →</strong> keys.</li><li>The <strong>focus lines</strong> (below the editors) always reflect the active sentence.</li>',
+        'howto.usage.focus.title': 'Focus Mode',
+        'howto.usage.focus.list': '<li>Toggle <strong>"Focus"</strong> at the top left.</li><li>Fullscreen overlay with <strong>only two lines</strong> (Native language | 日本語), ideal for <strong>reading aloud</strong>.</li><li>In overlay: <strong>A− / A+:</strong> Zoom, <strong>← / →:</strong> change sentence, <strong>Focus toggle</strong> or <strong>Esc:</strong> exit</li>',
+        'howto.usage.dark.title': 'Dark Mode',
+        'howto.usage.dark.list': '<li>Toggle <strong>"Dark"</strong> at the top left; stored in <code>localStorage</code>.</li>',
+        'howto.usage.furigana.title': 'Furigana',
+        'howto.usage.furigana.list': '<li><strong>"Show furigana"</strong> checkbox in the JP reader.</li><li><strong>"Add furigana"</strong> annotates existing JP text (<code>&lt;ruby&gt;&lt;rt&gt;</code>).</li>',
+        'howto.usage.generate.title': 'Generate / Translate / Annotate',
+        'howto.usage.generate.list': '<li><strong>Generate:</strong> Enter prompt at the top → click <strong>Generate</strong></li><li><strong>Translate → 日本語:</strong> left button (sentence-preserving, with Furigana)</li><li><strong>Translate ← Native language:</strong> right button (sentence-preserving)</li><li><strong>Annotate:</strong> add Furigana to existing JP text</li>',
+        
+        'howto.shortcuts.title': 'Keyboard Shortcuts',
+        'howto.shortcuts.list': '<li><code>←</code> / <code>→</code> — change active sentence</li><li><code>Esc</code> — exit Focus Mode</li>',
+        
+        'howto.limitations.title': 'Known Limitations',
+        'howto.limitations.list': '<li><strong>Sentence splitting:</strong> robust heuristics, but not perfect (abbreviations, edge cases).</li><li><strong>Model limits:</strong> very long inputs can reach token limits (configurable).</li><li><strong>Costs:</strong> costs may vary depending on the model used.</li><li><strong>Client keys:</strong> prefer a proxy for production use.</li>',
+        
+        'howto.privacy.title': 'Privacy & Security',
+        'howto.privacy.list': '<li><strong>Stored locally:</strong> API keys, texts & settings remain in the browser (<code>localStorage</code>), no server DB.</li><li><strong>API keys in client:</strong> when used directly in the browser, your key is technically visible.</li>'
+      }
+    };
+
+    let currentLanguage = localStorage.getItem('sw_language') || 'de';
+
+    function t(key) {
+      return translations[currentLanguage]?.[key] || translations.de[key] || key;
+    }
+
+    function applyTranslations() {
+      // Update all elements with data-i18n attributes
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const translation = t(key);
+        
+        if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'password')) {
+          element.placeholder = translation;
+        } else if (element.tagName === 'TEXTAREA') {
+          element.placeholder = translation;
+        } else {
+          element.textContent = translation;
+        }
+      });
+
+      // Update elements with data-i18n-html attributes (HTML content)
+      document.querySelectorAll('[data-i18n-html]').forEach(element => {
+        const key = element.getAttribute('data-i18n-html');
+        const translation = t(key);
+        element.innerHTML = translation;
+      });
+
+      // Update elements with data-i18n-title attributes (tooltips)
+      document.querySelectorAll('[data-i18n-title]').forEach(element => {
+        const key = element.getAttribute('data-i18n-title');
+        element.title = t(key);
+      });
+
+      // Update HTML lang attribute
+      document.documentElement.lang = currentLanguage;
+    }
+
+    function switchLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('sw_language', lang);
+      applyTranslations();
+      
+      // Update dynamic content that needs special handling
+      updateDynamicContent();
+    }
+
+    function updateDynamicContent() {
+      // Update focus line placeholders
+      updateFocuslines();
+      
+      // Update any status messages if they exist
+      const statusEl = document.getElementById('status');
+      if (statusEl && statusEl.textContent) {
+        // Re-render status if it contains translatable content
+        // This would need to be handled case by case for dynamic messages
+      }
+    }
+
     // === Utilities & State ====================================================
     const qs = s => document.querySelector(s);
     const qsa = s => Array.from(document.querySelectorAll(s));
@@ -643,7 +1050,7 @@
       // Muttersprache
       el.srcFocus.innerHTML = src
         ? `<span class="sent current">${escapeHTML(src)}</span>`
-        : '<span class="placeholder">Aktiver Satz (Muttersprache) …</span>';
+        : `<span class="placeholder">${t('placeholder.focusSource')}</span>`;
 
       // Japanisch mit Furigana-Option
       if(jp){
@@ -655,7 +1062,7 @@
           el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(jp)}</span>`;
         }
       } else {
-        el.jpFocus.innerHTML = '<span class="placeholder">現在の文（日本語）…</span>';
+        el.jpFocus.innerHTML = `<span class="placeholder">${t('placeholder.focusJapanese')}</span>`;
       }
       updateFocusFont();
       updateFocusOverlay();
@@ -958,6 +1365,20 @@
       // Persisted theme & focus mode
       applyDark();
       applyFocusMode();
+
+      // Initialize language selector
+      const languageSelect = qs('#languageSelect');
+      if (languageSelect) {
+        languageSelect.value = currentLanguage;
+        languageSelect.addEventListener('change', (e) => {
+          console.log('Language change event triggered:', e.target.value);
+          switchLanguage(e.target.value);
+        });
+        console.log('Language selector initialized with value:', currentLanguage);
+      } else {
+        console.error('Language selector not found!');
+      }
+      applyTranslations();
 
       // Prefill Admin
       el.apiBase.value = settings.apiBase; el.apiKey.value = settings.apiKey; el.motherLang.value = settings.mother;
