@@ -145,6 +145,11 @@
       <h1>Schliemanns Weg（シュリーマンの道）</h1>
     </div>
     <div class="top-controls">
+      <nav class="tabs" role="tablist" aria-label="Ansichten">
+        <button class="tab active" data-tab="lesen" role="tab" aria-selected="true">Lese-Tab</button>
+        <button class="tab" data-tab="howto" role="tab" aria-selected="false">How-to</button>
+        <button class="tab" data-tab="admin" role="tab" aria-selected="false">Admin</button>
+      </nav>
       <div class="toggle" title="Darkmode umschalten">
         <label for="toggleDark">Dark</label>
         <input id="toggleDark" type="checkbox" aria-label="Darkmode" />
@@ -153,10 +158,6 @@
         <label for="toggleFocusMode">Fokus</label>
         <input id="toggleFocusMode" type="checkbox" aria-label="Fokusmodus" />
       </div>
-      <nav class="tabs" role="tablist" aria-label="Ansichten">
-        <button class="tab active" data-tab="lesen" role="tab" aria-selected="true">Lese-Tab</button>
-        <button class="tab" data-tab="admin" role="tab" aria-selected="false">Admin</button>
-      </nav>
     </div>
   </header>
 
@@ -243,6 +244,129 @@
       </div>
 
       <div class="status" id="status"></div>
+    </section>
+
+    <!-- HOW-TO: ANLEITUNG -->
+    <section class="panel" id="panel-howto" role="tabpanel" aria-labelledby="tab-howto">
+      <div class="section">
+        <h3>Schliemann's Way（シュリーマンの道）</h3>
+        <p><strong>Ein leichtgewichtiges, rein clientseitiges Übungstool für Sprachlernende nach der Schliemann-Methode</strong> (Heinrich Schliemann, der Archäologe).<br>
+        Fokus: <strong>paralleles Lesen</strong>, <strong>satzweise Rückübersetzung</strong>, <strong>lautes Lesen</strong> — mit <strong>Furigana</strong>, <strong>Fokus-Modus</strong> und <strong>Dark Mode</strong>.</p>
+      </div>
+
+      <div class="section">
+        <h3>Zweck & Lernprinzip</h3>
+        <p><strong>Schliemann's Way</strong> ist bewusst minimal: kein Kurs, keine Gamification — ein <strong>Werkzeug</strong> für die effiziente Arbeit mit <strong>eigenen Texten</strong> oder <strong>parallelen Sätzen</strong>. Es richtet sich an Lernende, die <strong>aktiv</strong> arbeiten wollen: lesen, vergleichen, <strong>satzweise übersetzen</strong>, wiederholen und laut sprechen.</p>
+        
+        <h4>Warum die "Schliemann-Methode"?</h4>
+        <p>Heinrich Schliemann (Archäologe, 1822–1890) beschrieb, wie er Sprachen durch <strong>intensives Lesen</strong>, <strong>parallele Texte</strong>, besonders <strong>Rückübersetzung</strong> (aus der Zielsprache zurück in die Ausgangssprache) und <strong>tägliche Wiederholung</strong> lernte. Diese App ist <strong>von diesem Arbeitsablauf inspiriert</strong>:</p>
+        <ul>
+          <li><strong>Parallelität:</strong> Quelle ↔︎ Ziel nebeneinander angezeigt</li>
+          <li><strong>Satztreue:</strong> ein Satz links entspricht genau einem rechts</li>
+          <li><strong>Rückübersetzung:</strong> bewusst den aktiven Satz in die andere Sprache umwandeln</li>
+          <li><strong>Lautes Lesen & Fokus:</strong> einen Satz im Blick behalten, klar artikulieren, rhythmisch wiederholen</li>
+          <li><strong>Wiederholung:</strong> schnell navigieren und schwierige Stellen gezielt bearbeiten</li>
+        </ul>
+        <p>Das Ziel ist <strong>aktive Produktion</strong> und <strong>präzises Verstehen</strong> — nicht passives Scrollen.</p>
+
+        <h4>Empfohlene Übungsroutine (10–20 Min)</h4>
+        <ol>
+          <li><strong>Text laden/einfügen</strong> (parallel oder einseitig) und <strong>Rendern</strong>.</li>
+          <li><strong>Satz auswählen</strong>, im <strong>Fokus-Modus</strong> laut lesen.</li>
+          <li><strong>Rückübersetzen</strong> (z.B. JA → DE/EN oder DE/EN → JA) — erst selbst machen, dann mit dem <strong>Übersetzen</strong>-Button überprüfen.</li>
+          <li><strong>Furigana umschalten</strong> um Kanji bei Bedarf zu verstärken.</li>
+          <li><strong>Nächster Satz (→)</strong> — schwierige mehrmals wiederholen.</li>
+          <li><strong>Kurz reflektieren:</strong> welche Strukturen waren schwer? Nächste Session damit beginnen.</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h3>Funktionen</h3>
+        <ul>
+          <li>📖 <strong>Zwei-Spalten-Reader:</strong> Muttersprache links, Japanisch rechts — satz-synchronisiert</li>
+          <li>🎯 <strong>Fokus-Modus (Overlay):</strong> Vollbild mit nur <strong>zwei Fokuszeilen</strong> + vor/zurück + Zoom</li>
+          <li>🌓 <strong>Dark Mode:</strong> umschaltbar, lokal gespeichert</li>
+          <li>🈶 <strong>Furigana:</strong> vollständige <code>&lt;ruby&gt;&lt;rt&gt;</code> Unterstützung + automatische Annotation bestehender japanischer Texte</li>
+          <li>🔁 <strong>Satz-erhaltende Übersetzung:</strong> behält Satzanzahl in beide Richtungen bei</li>
+          <li>🧠 <strong>Generieren:</strong> Übungstexte in Japanisch (mit Furigana) oder in der Muttersprache erstellen</li>
+          <li>⚙️ <strong>OpenAI-kompatibel:</strong> konfigurierbare API-Basis & Modelle (OpenAI, vLLM, Proxies, etc.)</li>
+          <li>💾 <strong>Lokale Persistierung (<code>localStorage</code>):</strong> Texte, UI-Status, Modelle & Prompts</li>
+          <li>🧰 <strong>Sauberer Admin-Tab:</strong> gestapelte Felder, klare Abschnitte</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Schnellstart</h3>
+        <ol>
+          <li><strong>Datei öffnen:</strong> <code>schliemanns_weg.html</code> direkt im Browser (Chrome/Edge/Firefox) öffnen.</li>
+          <li><strong>(Optional) API konfigurieren:</strong> Im <strong>Admin</strong>-Tab <code>API Base</code> & <code>API Key</code> ausfüllen, wenn Sie Generieren/Übersetzen/Annotieren verwenden möchten.</li>
+          <li><strong>Eigene Texte einfügen:</strong> Links (Muttersprache) und/oder rechts (Japanisch) → <strong>Rendern</strong>.<br>
+          Tipp: <strong>"Umbrüche entfernen"</strong> (linke Seite) hilft, die Satzausrichtung sauber zu halten.</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h3>Verwendung</h3>
+        
+        <h4>Lesen & Navigation</h4>
+        <ul>
+          <li>Klicken Sie auf einen Satz im Lesebereich, um ihn <strong>aktiv</strong> zu machen (beide Seiten synchronisieren).</li>
+          <li>Navigieren Sie mit den Pfeil-Buttons oder den <strong>← / →</strong> Tasten.</li>
+          <li>Die <strong>Fokuszeilen</strong> (unter den Editoren) spiegeln immer den aktiven Satz wider.</li>
+        </ul>
+
+        <h4>Fokus-Modus</h4>
+        <ul>
+          <li><strong>"Fokus"</strong> oben links umschalten.</li>
+          <li>Vollbild-Overlay mit <strong>nur zwei Zeilen</strong> (Muttersprache | 日本語), ideal zum <strong>lauten Lesen</strong>.</li>
+          <li>Im Overlay: <strong>A− / A+:</strong> Zoom, <strong>← / →:</strong> Satz wechseln, <strong>Fokus-Toggle</strong> oder <strong>Esc:</strong> beenden</li>
+        </ul>
+
+        <h4>Dark Mode</h4>
+        <ul>
+          <li><strong>"Dark"</strong> oben links umschalten; in <code>localStorage</code> gespeichert.</li>
+        </ul>
+
+        <h4>Furigana</h4>
+        <ul>
+          <li><strong>"Furigana anzeigen"</strong> Checkbox im JP-Reader.</li>
+          <li><strong>"Furigana hinzufügen"</strong> annotiert einen bestehenden JP-Text (<code>&lt;ruby&gt;&lt;rt&gt;</code>).</li>
+        </ul>
+
+        <h4>Generieren / Übersetzen / Annotieren</h4>
+        <ul>
+          <li><strong>Generieren:</strong> Prompt oben eingeben → <strong>Generieren</strong> klicken</li>
+          <li><strong>Übersetzen → 日本語:</strong> linker Button (satz-erhaltend, mit Furigana)</li>
+          <li><strong>Übersetzen ← Muttersprache:</strong> rechter Button (satz-erhaltend)</li>
+          <li><strong>Annotieren:</strong> Furigana zu bestehendem JP-Text hinzufügen</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Tastaturkürzel</h3>
+        <ul>
+          <li><code>←</code> / <code>→</code> — aktiven Satz wechseln</li>
+          <li><code>Esc</code> — Fokus-Modus beenden</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Bekannte Einschränkungen</h3>
+        <ul>
+          <li><strong>Satz-Aufteilung:</strong> robuste Heuristiken, aber nicht perfekt (Abkürzungen, Grenzfälle).</li>
+          <li><strong>Modell-Limits:</strong> sehr lange Eingaben können Token-Limits erreichen (konfigurierbar).</li>
+          <li><strong>Kosten:</strong> je nach verwendetem Modell können Kosten variieren.</li>
+          <li><strong>Client-Schlüssel:</strong> für Produktionsnutzung einen Proxy bevorzugen.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>Datenschutz & Sicherheit</h3>
+        <ul>
+          <li><strong>Lokal gespeichert:</strong> API-Schlüssel, Texte & Einstellungen bleiben im Browser (<code>localStorage</code>), keine Server-DB.</li>
+          <li><strong>API-Schlüssel im Client:</strong> wenn direkt im Browser verwendet, ist Ihr Schlüssel technisch sichtbar.</li>
+        </ul>
+      </div>
     </section>
 
     <!-- ADMIN: NEU ORGANISIERT -->
@@ -743,8 +867,10 @@
       btn.classList.add('active');
       const tab = btn.dataset.tab;
       qs('#panel-lesen').classList.remove('active');
+      qs('#panel-howto').classList.remove('active');
       qs('#panel-admin').classList.remove('active');
       if(tab==='lesen'){ qs('#panel-lesen').classList.add('active'); }
+      if(tab==='howto'){ qs('#panel-howto').classList.add('active'); }
       if(tab==='admin'){ qs('#panel-admin').classList.add('active'); }
     }));
 
