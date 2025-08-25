@@ -140,7 +140,8 @@ Heinrich Schliemann (archaeologist, 1822–1890) described how he learned langua
 - **Models:** generation, translation, annotation/Furigana  
 - **Parameters:** temperature & max tokens per area  
 - **Prompts:** editable system prompts  
-- **Other:** `Native language`, **Save**, **Test connection**  
+- **Other:** `Native language`, **Save**, **Test connection**
+- **Text-to-Speech:** Select TTS voice and provide voice instructions. Check https://www.openai.fm/ how to make use of this functionality.
 > All values are stored **locally**.
 
 ---
@@ -189,7 +190,7 @@ Heinrich Schliemann (archaeologist, 1822–1890) described how he learned langua
 
 - **Sentence splitting:** robust heuristics, but not perfect (abbreviations, edge cases).  
 - **Model limits:** very long inputs may hit token limits (configurable).
-- **Costs:** depending on the model used costs may vary. A future version will implement local furigana support. 
+- **Costs:** depending on the model used costs may vary. A future version will implement local furigana support. GPT-5 is not recommend for the current interface.
 - **Client key:** prefer a proxy for production use.
 
 ---
@@ -201,7 +202,7 @@ Heinrich Schliemann (archaeologist, 1822–1890) described how he learned langua
 - [ ] Local Furigana Annotations
 - [ ] Hotkeys for Generate/Translate/Annotate  
 - [ ] Swap columns (JP ↔︎ native)  
-- [ ] TTS option for reading the focus lines  
+- [x] TTS option for reading the focus lines  
 - [ ] Customizable sentence‑splitting profiles per language  
 - [ ] Print/handout layout
 - [ ] MCP connectivity

@@ -88,8 +88,12 @@
     .tag{ font-size:12px; padding:3px 8px; border-radius:999px; background:var(--hl); color:#cfe3d2; border:1px solid #2b3a2d }
     body:not(.dark) .tag{ color:#3b463a; border-color:#dfe7da }
 
-    .focusline{ padding:12px 14px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line); background:var(--card); font: 500 18px/1.7 "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; letter-spacing:.2px; transition: font-size .2s ease }
+    .focusline{ padding:12px 14px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line); background:var(--card); font: 500 18px/1.7 "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; letter-spacing:.2px; transition: font-size .2s ease; position: relative }
     .focusline .placeholder{ color:#9aa098 }
+    .focusline .tts-btn{ position: absolute; right: 12px; top: 50%; transform: translateY(-50%); padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); cursor: pointer; opacity: 0.7; transition: opacity .2s }
+    .focusline .tts-btn:hover{ opacity: 1; background: var(--hl) }
+    .focusline .tts-btn:disabled{ opacity: 0.3; cursor: not-allowed }
+    .focusline .tts-btn .icon{ width: 16px; height: 16px; stroke: var(--ink) }
 
     .editor{ width:100%; min-height:140px; resize:vertical; border:none; padding:12px 14px; outline:none; font: 400 15px/1.6 "Noto Serif JP", serif; background:var(--card); color:var(--ink) }
     .controls{ display:flex; flex-wrap:wrap; gap:8px; padding:8px 12px; border-top:1px dashed var(--line); background:var(--card) }
@@ -163,8 +167,12 @@
     @media (max-width:1000px){ .focus-grid{ grid-template-columns:1fr } }
     .focus-panel{ border:1px solid var(--line); border-radius:16px; background:var(--card); box-shadow:var(--shadow-2); padding:12px 14px; display:flex; flex-direction:column }
     .focus-panel h4{ margin:0 0 8px; font-size:13px; color:var(--ink-soft); letter-spacing:.3px }
-    .focus-content{ flex:1; overflow:auto; font: 600 22px/1.7 "Noto Sans JP", system-ui; padding:6px 4px }
+    .focus-content{ flex:1; overflow:auto; font: 600 22px/1.7 "Noto Sans JP", system-ui; padding:6px 4px; position: relative }
     .focus-content .sent.current{ background:var(--text-highlight); border-radius:6px; padding:2px 3px }
+    .focus-content .tts-btn{ position: absolute; right: 8px; top: 8px; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); cursor: pointer; opacity: 0.7; transition: opacity .2s }
+    .focus-content .tts-btn:hover{ opacity: 1; background: var(--hl) }
+    .focus-content .tts-btn:disabled{ opacity: 0.3; cursor: not-allowed }
+    .focus-content .tts-btn .icon{ width: 18px; height: 18px; stroke: var(--ink) }
 
     /* In Fokusmodus: verstecke restliche UI außer Header (für Toggles) */
     body.focus-mode main, body.focus-mode footer{ display:none }
@@ -549,6 +557,40 @@
       </div>
 
       <div class="section">
+        <h3 data-i18n="admin.tts.title">Text-to-Speech</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="ttsModel" data-i18n="admin.tts.model">TTS Modell</label>
+            <input id="ttsModel" type="text" value="gpt-4o-mini-tts" readonly/>
+          </div>
+          <div class="field">
+            <label data-i18n="admin.tts.voice">Stimme auswählen</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 6px;" id="voiceButtons">
+              <button class="btn voice-btn" data-voice="alloy">Alloy</button>
+              <button class="btn voice-btn" data-voice="echo">Echo</button>
+              <button class="btn voice-btn" data-voice="fable">Fable</button>
+              <button class="btn voice-btn" data-voice="onyx">Onyx</button>
+              <button class="btn voice-btn" data-voice="nova">Nova</button>
+              <button class="btn voice-btn" data-voice="shimmer">Shimmer</button>
+              <button class="btn voice-btn primary" data-voice="ash">Ash</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="ttsInstructions" data-i18n="admin.tts.instructions">Stimm-Anweisungen</label>
+            <textarea id="ttsInstructions" placeholder="Voice: Calm but expressive. A japanese voice actor in a documentary on nhk...">Voice: Calm but expressive. A japanese voice actor in a documentary on nhk.
+
+Tone: What you would expect from a seasoned voice actor. 
+
+Dialect: No strong dialect, tokio based, clean
+
+Pronunciation: clear and precise
+
+Features: sticks to the script.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
         <h3 data-i18n="admin.settings">Weitere Einstellungen</h3>
         <div class="formstack">
           <div class="field">
@@ -726,6 +768,25 @@
         'admin.save': 'Speichern',
         'admin.test': 'Verbindung testen',
         'admin.privacy': 'Die Zugangsdaten & Einstellungen werden nur lokal im Browser (localStorage) gespeichert.',
+        
+        // TTS
+        'admin.tts.title': 'Text-to-Speech',
+        'admin.tts.model': 'TTS Modell',
+        'admin.tts.voice': 'Stimme auswählen',
+        'admin.tts.instructions': 'Stimm-Anweisungen',
+        'tts.playback': 'Japanischen Text vorlesen',
+        'tts.generating': 'Generiere Sprache …',
+        'tts.noJapanese': 'Kein japanischer Text zum Vorlesen.',
+        
+        // Status messages
+        // TTS
+        'admin.tts.title': 'Text-to-Speech',
+        'admin.tts.model': 'TTS Model',
+        'admin.tts.voice': 'Select Voice',
+        'admin.tts.instructions': 'Voice Instructions',
+        'tts.playback': 'Read Japanese text aloud',
+        'tts.generating': 'Generating speech …',
+        'tts.noJapanese': 'No Japanese text to read aloud.',
         
         // Status messages
         'status.testing': 'Teste Verbindung …',
@@ -1102,7 +1163,20 @@
 
       // Highlight colors
       highlightColorLight: localStorage.getItem('sw_highlightColorLight') || '#e9efe6',
-      highlightColorDark: localStorage.getItem('sw_highlightColorDark') || '#1a2a1f'
+      highlightColorDark: localStorage.getItem('sw_highlightColorDark') || '#1a2a1f',
+
+      // TTS settings
+      ttsVoice: localStorage.getItem('sw_ttsVoice') || 'ash',
+      ttsModel: localStorage.getItem('sw_ttsModel') || 'gpt-4o-mini-tts',
+      ttsInstructions: localStorage.getItem('sw_ttsInstructions') || `Voice: Calm but expressive. A japanese voice actor in a documentary on nhk.
+
+Tone: What you would expect from a seasoned voice actor. 
+
+Dialect: No strong dialect, tokio based, clean
+
+Pronunciation: clear and precise
+
+Features: sticks to the script.`
     };
 
     const state = {
@@ -1215,21 +1289,53 @@
         ? `<span class="sent current">${escapeHTML(src)}</span>`
         : `<span class="placeholder">${t('placeholder.focusSource')}</span>`;
 
-      // Japanisch mit Furigana-Option
+      // Japanisch mit Furigana-Option und TTS Button
       if(jp){
+        const ttsButtonHtml = `<button class="tts-btn" onclick="playCurrentJapanese()" title="${t('tts.playback')}" aria-label="${t('tts.playback')}">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93c3.9 3.9 3.9 10.24 0 14.14M15.54 8.46c1.95 1.95 1.95 5.12 0 7.07"/>
+          </svg>
+        </button>`;
+        
         if(/<ruby>/i.test(state.jpText) && state.showFuri){
           const html = state.furiganaHTMLByIndex[i] || escapeHTML(jp);
           const cleaned = sanitizeRubyHTML(html).replace(/\r?\n+/g, ' ');
-          el.jpFocus.innerHTML = `<span class="sent current">${cleaned}</span>`;
+          el.jpFocus.innerHTML = `<span class="sent current">${cleaned}</span>${ttsButtonHtml}`;
         } else {
           const cleanedJp = stripFurigana(jp);
-          el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(cleanedJp)}</span>`;
+          el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(cleanedJp)}</span>${ttsButtonHtml}`;
         }
       } else {
         el.jpFocus.innerHTML = `<span class="placeholder">${t('placeholder.focusJapanese')}</span>`;
       }
       updateFocusFont();
       updateFocusOverlay();
+    }
+    function updateFocusOverlay(){
+      // Mirror focus lines into overlay, including TTS buttons
+      const srcContent = qs('#srcFocus').innerHTML;
+      const jpContent = qs('#jpFocus').innerHTML;
+      
+      // Add TTS button to focus overlay japanese panel if not already present
+      if(jpContent.includes('sent current') && !jpContent.includes('tts-btn')){
+        const jp = state.jpSent[state.currentIndex] ?? '';
+        if(jp) {
+          const ttsButtonHtml = `<button class="tts-btn" onclick="playCurrentJapanese()" title="${t('tts.playback')}" aria-label="${t('tts.playback')}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93c3.9 3.9 3.9 10.24 0 14.14M15.54 8.46c1.95 1.95 1.95 5.12 0 7.07"/>
+            </svg>
+          </button>`;
+          el.focusJp.innerHTML = jpContent + ttsButtonHtml;
+        } else {
+          el.focusJp.innerHTML = jpContent;
+        }
+      } else {
+        el.focusJp.innerHTML = jpContent;
+      }
+      
+      el.focusSrc.innerHTML = srcContent;
     }
 
     function updateHighlights(){
@@ -1331,6 +1437,11 @@
       localStorage.setItem('sw_highlightColorLight', settings.highlightColorLight);
       localStorage.setItem('sw_highlightColorDark', settings.highlightColorDark);
 
+      // TTS settings
+      localStorage.setItem('sw_ttsVoice', settings.ttsVoice);
+      localStorage.setItem('sw_ttsModel', settings.ttsModel);
+      localStorage.setItem('sw_ttsInstructions', settings.ttsInstructions);
+
       localStorage.setItem('sw_src', state.srcText);
       localStorage.setItem('sw_jp',  state.jpText);
       localStorage.setItem('sw_hideEditors', state.hideEditors ? '1' : '0');
@@ -1409,6 +1520,109 @@
         state.jpText = sanitizeRubyHTML(out); el.jpInput.value = state.jpText; renderAll(); setStatus('Fertig.','ok');
       }catch(err){ setStatus(err.message,'err'); }
       persist();
+    }
+
+    // === TTS (Text-to-Speech) ===============================================
+    const ttsCache = new Map(); // Cache for audio blobs
+
+    function clearTTSCache() {
+      // Clear TTS cache when Japanese text changes
+      ttsCache.clear();
+    }
+
+    async function callTTS(text, voice = settings.ttsVoice, instructions = settings.ttsInstructions) {
+      const base = settings.apiBase?.trim();
+      const key = settings.apiKey?.trim();
+      if(!base || !key) throw new Error('API-Konfiguration fehlt. Bitte im Admin-Tab eintragen.');
+      
+      const url = base.replace(/\/$/,'') + '/v1/audio/speech';
+      const body = {
+        model: settings.ttsModel,
+        voice: voice,
+        input: text,
+        instructions: instructions,
+        response_format: 'wav'
+      };
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + key
+        },
+        body: JSON.stringify(body)
+      });
+
+      if(!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`TTS-Fehler: ${res.status} ${errorText || res.statusText}`);
+      }
+
+      return await res.blob();
+    }
+
+    async function playCurrentJapanese() {
+      const jpRaw = state.jpSent[state.currentIndex] ?? '';
+      if (!jpRaw) {
+        setStatus(t('tts.noJapanese'), 'err');
+        return;
+      }
+
+      // Strip furigana for TTS input
+      const cleanText = stripFurigana(jpRaw);
+      if (!cleanText.trim()) {
+        setStatus(t('tts.noJapanese'), 'err');
+        return;
+      }
+
+      // Check cache first
+      const cacheKey = cleanText + '|' + settings.ttsVoice + '|' + settings.ttsInstructions;
+      if (ttsCache.has(cacheKey)) {
+        const audioBlob = ttsCache.get(cacheKey);
+        playAudioBlob(audioBlob);
+        return;
+      }
+
+      try {
+        setStatus(t('tts.generating'));
+        
+        // Disable TTS buttons while generating
+        qsa('.tts-btn').forEach(btn => btn.disabled = true);
+
+        const audioBlob = await callTTS(cleanText, settings.ttsVoice, settings.ttsInstructions);
+        
+        // Cache the result
+        ttsCache.set(cacheKey, audioBlob);
+        
+        // Play the audio
+        playAudioBlob(audioBlob);
+        
+        setStatus(t('status.done'), 'ok');
+      } catch (err) {
+        setStatus('TTS-Fehler: ' + err.message, 'err');
+      } finally {
+        // Re-enable TTS buttons
+        qsa('.tts-btn').forEach(btn => btn.disabled = false);
+      }
+    }
+
+    function playAudioBlob(blob) {
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+      };
+      
+      audio.onerror = (e) => {
+        URL.revokeObjectURL(audioUrl);
+        setStatus('Audio-Wiedergabe-Fehler', 'err');
+      };
+      
+      audio.play().catch(e => {
+        URL.revokeObjectURL(audioUrl);
+        setStatus('Audio-Wiedergabe-Fehler: ' + e.message, 'err');
+      });
     }
 
     // === Navigation (Prev/Next) ==============================================
@@ -1925,6 +2139,48 @@
     qs('#focusZoomMinus2').addEventListener('click', zoomMinus);
     qs('#focusZoomPlus2').addEventListener('click', zoomPlus);
 
+    // TTS voice selection event handlers
+    function updateVoiceSelection() {
+      qsa('.voice-btn').forEach(btn => {
+        btn.classList.remove('primary');
+        if (btn.dataset.voice === settings.ttsVoice) {
+          btn.classList.add('primary');
+        }
+      });
+    }
+
+    qsa('.voice-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        settings.ttsVoice = btn.dataset.voice;
+        updateVoiceSelection();
+        clearTTSCache(); // Clear cache when voice changes
+        persist();
+        setStatus(`Stimme auf ${btn.dataset.voice} geändert.`, 'ok');
+      });
+    });
+
+    // TTS instructions change handler
+    const ttsInstructionsEl = qs('#ttsInstructions');
+    if (ttsInstructionsEl) {
+      ttsInstructionsEl.addEventListener('input', () => {
+        settings.ttsInstructions = ttsInstructionsEl.value;
+        clearTTSCache(); // Clear cache when instructions change
+      });
+    }
+
+    // Japanese text change detection for cache invalidation
+    function setupTTSCacheInvalidation() {
+      let prevJpText = state.jpText;
+      
+      el.jpInput.addEventListener('input', () => {
+        const currentJpText = el.jpInput.value;
+        if (currentJpText !== prevJpText) {
+          clearTTSCache();
+          prevJpText = currentJpText;
+        }
+      });
+    }
+
     // Admin save/test
     qs('#btnSave').addEventListener('click',()=>{
       settings.apiBase = el.apiBase.value.trim();
@@ -1945,6 +2201,8 @@
       // Save highlight colors
       settings.highlightColorLight = el.highlightColorLight.value;
       settings.highlightColorDark = el.highlightColorDark.value;
+      // Save TTS settings
+      settings.ttsInstructions = qs('#ttsInstructions').value || settings.ttsInstructions;
       persist(); setStatus('Gespeichert.','ok');
       qs('#motherTag').textContent = {Deutsch:'DE',Englisch:'EN',Französisch:'FR',Spanisch:'ES',Italienisch:'IT'}[settings.mother]||'SRC';
     });
@@ -2025,6 +2283,11 @@
       el.highlightColorLight.value = settings.highlightColorLight;
       el.highlightColorDark.value = settings.highlightColorDark;
 
+      // Initialize TTS admin fields
+      qs('#ttsModel').value = settings.ttsModel;
+      qs('#ttsInstructions').value = settings.ttsInstructions;
+      updateVoiceSelection();
+
       // Prefill readers
       el.srcInput.value = state.srcText; el.jpInput.value = state.jpText;
 
@@ -2044,6 +2307,7 @@
       applySidebarState();
       renderSessionList();
       setupAutoSave();
+      setupTTSCacheInvalidation();
 
       // Initialize all toggle states
       syncFuriganaToggles();
