@@ -196,8 +196,8 @@ Heinrich Schliemann (archaeologist, 1822–1890) described how he learned langua
 
 ## Roadmap
 
-- [ ] Export/Import sessions (JSON)
-- [ ] Multilanguage Support for the interface
+- [x] Export/Import sessions (JSON)
+- [x] Multilanguage Support for the interface
 - [ ] Local Furigana Annotations
 - [ ] Hotkeys for Generate/Translate/Annotate  
 - [ ] Swap columns (JP ↔︎ native)  
