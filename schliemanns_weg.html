@@ -12,10 +12,14 @@
     :root{
       --bg:#f5f3f1; --ink:#20201e; --ink-soft:#40403c; --line:#e4e0dc; --accent:#8a8f87; --hl:#e9efe6; --danger:#9d4b4b; --ok:#4e7a5a; --card:#ffffff; --grad-top:#fffcf8;
       --btn-ghost-bg:transparent; --shadow-1:0 1px 0 #fff, 0 1px 1px #00000006; --shadow-2:0 4px 16px #00000008;
+      /* Configurable text highlighting colors */
+      --text-highlight:#e9efe6;
     }
     body.dark{
       --bg:#0f1113; --ink:#eae9e6; --ink-soft:#b5b3ae; --line:#23272b; --accent:#9aa09a; --hl:#1a2a1f; --danger:#b86a6a; --ok:#5ba279; --card:#14171a; --grad-top:#15191d;
       --btn-ghost-bg:transparent; --shadow-1:0 1px 0 #000, 0 1px 1px #00000040; --shadow-2:0 6px 20px #00000055;
+      /* Configurable text highlighting colors */
+      --text-highlight:#1a2a1f;
     }
 
     *{box-sizing:border-box}
@@ -94,7 +98,7 @@
     body.dark .render{ background:repeating-linear-gradient(180deg,var(--card),var(--card) 28px,rgba(255,255,255,.02) 28px,rgba(255,255,255,.02) 56px) }
     .render p{ margin:0 0 16px }
     .render .sent{ padding:2px 3px; border-radius:6px; transition:background-color .15s ease }
-    .render .sent.current{ background:var(--hl) }
+    .render .sent.current{ background:var(--text-highlight) }
 
     .reader.active{ outline:2px dashed var(--accent); outline-offset:2px }
 
@@ -160,7 +164,7 @@
     .focus-panel{ border:1px solid var(--line); border-radius:16px; background:var(--card); box-shadow:var(--shadow-2); padding:12px 14px; display:flex; flex-direction:column }
     .focus-panel h4{ margin:0 0 8px; font-size:13px; color:var(--ink-soft); letter-spacing:.3px }
     .focus-content{ flex:1; overflow:auto; font: 600 22px/1.7 "Noto Sans JP", system-ui; padding:6px 4px }
-    .focus-content .sent.current{ background:var(--hl); border-radius:6px; padding:2px 3px }
+    .focus-content .sent.current{ background:var(--text-highlight); border-radius:6px; padding:2px 3px }
 
     /* In Fokusmodus: verstecke restliche UI außer Header (für Toggles) */
     body.focus-mode main, body.focus-mode footer{ display:none }
@@ -192,6 +196,10 @@
           <option value="de">🇩🇪 DE</option>
           <option value="en">🇬🇧 EN</option>
         </select>
+      </div>
+      <div class="toggle" title="Furigana anzeigen/ausblenden" data-i18n-title="tooltip.furiganaToggle">
+        <label for="toggleFuriHeader" data-i18n="furigana.show">Furigana anzeigen</label>
+        <input id="toggleFuriHeader" type="checkbox" checked aria-label="Furigana" />
       </div>
       <div class="toggle" title="Darkmode umschalten" data-i18n-title="tooltip.darkMode">
         <label for="toggleDark" data-i18n="toggle.dark">Dark</label>
@@ -305,11 +313,7 @@
           <div class="controls">
             <button class="btn" id="btnRenderJp" data-i18n="editor.render">Rendern ⤵</button>
             <button class="btn ghost" id="btnClearJp" data-i18n="editor.clear">Leeren</button>
-            <span class="switch" style="margin-left:auto">
-              <label for="toggleFuri" data-i18n="furigana.show">Furigana anzeigen</label>
-              <input id="toggleFuri" type="checkbox" checked>
-            </span>
-            <button class="btn" id="btnAddFuri" data-i18n="furigana.add">Furigana hinzufügen</button>
+            <button class="btn" id="btnAddFuri" data-i18n="furigana.add" style="margin-left:auto">Furigana hinzufügen</button>
           </div>
           <div class="focusline" id="jpFocus"><span class="placeholder">現在の文（日本語）…</span></div>
           <div class="render" id="jpRender" aria-live="polite"></div>
@@ -525,6 +529,26 @@
       </div>
 
       <div class="section">
+        <h3 data-i18n="admin.highlighting">Text-Hervorhebung</h3>
+        <div class="formstack">
+          <div class="field">
+            <label for="highlightColorLight" data-i18n="admin.highlightColorLight">Hervorhebungsfarbe (Hell-Modus)</label>
+            <input id="highlightColorLight" type="color" value="#e9efe6"/>
+          </div>
+          <div class="field">
+            <label for="highlightColorDark" data-i18n="admin.highlightColorDark">Hervorhebungsfarbe (Dunkel-Modus)</label>
+            <input id="highlightColorDark" type="color" value="#1a2a1f"/>
+          </div>
+          <div class="field">
+            <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+              <div style="padding: 8px 12px; border-radius: 6px; background: var(--text-highlight); border: 1px solid var(--line); font-size: 14px;" id="highlightPreview" data-i18n="admin.highlightPreview">Beispieltext mit Hervorhebung</div>
+              <button class="btn ghost" id="btnResetHighlightColors" data-i18n="admin.resetHighlightColors">Zurücksetzen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
         <h3 data-i18n="admin.settings">Weitere Einstellungen</h3>
         <div class="formstack">
           <div class="field">
@@ -567,9 +591,19 @@
           <button class="btn iconbtn" id="focusZoomPlus2" aria-label="Fokus größer" data-i18n-title="focus.larger">A+</button>
         </span>
       </div>
-      <div class="toggle" title="Fokusmodus beenden" data-i18n-title="focus.toolbar.exit">
-        <label for="toggleFocusMode2" data-i18n="toggle.focus">Fokus</label>
-        <input id="toggleFocusMode2" type="checkbox" aria-label="Fokusmodus" data-i18n-title="tooltip.focusMode" />
+      <div style="display:flex; gap:8px; align-items:center">
+        <div class="toggle" title="Furigana anzeigen/ausblenden" data-i18n-title="tooltip.furiganaToggle">
+          <label for="toggleFuriFocus" data-i18n="furigana.show">Furigana anzeigen</label>
+          <input id="toggleFuriFocus" type="checkbox" checked aria-label="Furigana" />
+        </div>
+        <div class="toggle" title="Darkmode umschalten" data-i18n-title="tooltip.darkMode">
+          <label for="toggleDarkFocus" data-i18n="toggle.dark">Dark</label>
+          <input id="toggleDarkFocus" type="checkbox" aria-label="Darkmode" />
+        </div>
+        <div class="toggle" title="Fokusmodus beenden" data-i18n-title="focus.toolbar.exit">
+          <label for="toggleFocusMode2" data-i18n="toggle.focus">Fokus</label>
+          <input id="toggleFocusMode2" type="checkbox" aria-label="Fokusmodus" data-i18n-title="tooltip.focusMode" />
+        </div>
       </div>
     </div>
     <div class="focus-grid">
@@ -600,6 +634,7 @@
         // Tooltips
         'tooltip.darkMode': 'Darkmode umschalten',
         'tooltip.focusMode': 'Fokusmodus umschalten',
+        'tooltip.furiganaToggle': 'Furigana anzeigen/ausblenden',
         'tooltip.focusZoom': 'Fokuszeilen-Zoom',
         'tooltip.editorsToggle': 'Editoren ein/ausblenden',
         'tooltip.stripBreaks': 'Zeilenumbrüche im Muttersprache-Text entfernen',
@@ -681,6 +716,11 @@
         'admin.promptGen': 'Prompt: Generierung (Japanisch mit Furigana)',
         'admin.promptTrans': 'Prompt: Übersetzung (→ Japanisch mit Furigana)',
         'admin.promptAnno': 'Prompt: Annotation (bestehenden Text mit Furigana versehen)',
+        'admin.highlighting': 'Text-Hervorhebung',
+        'admin.highlightColorLight': 'Hervorhebungsfarbe (Hell-Modus)',
+        'admin.highlightColorDark': 'Hervorhebungsfarbe (Dunkel-Modus)',
+        'admin.highlightPreview': 'Beispieltext mit Hervorhebung',
+        'admin.resetHighlightColors': 'Zurücksetzen',
         'admin.settings': 'Weitere Einstellungen',
         'admin.motherLang': 'Muttersprache',
         'admin.save': 'Speichern',
@@ -787,6 +827,7 @@
         // Tooltips
         'tooltip.darkMode': 'Toggle dark mode',
         'tooltip.focusMode': 'Toggle focus mode',
+        'tooltip.furiganaToggle': 'Show/hide furigana',
         'tooltip.focusZoom': 'Focus line zoom',
         'tooltip.editorsToggle': 'Show/hide editors',
         'tooltip.stripBreaks': 'Remove line breaks in native language text',
@@ -868,6 +909,11 @@
         'admin.promptGen': 'Prompt: Generation (Japanese with Furigana)',
         'admin.promptTrans': 'Prompt: Translation (→ Japanese with Furigana)',
         'admin.promptAnno': 'Prompt: Annotation (add Furigana to existing text)',
+        'admin.highlighting': 'Text Highlighting',
+        'admin.highlightColorLight': 'Highlight Color (Light Mode)',
+        'admin.highlightColorDark': 'Highlight Color (Dark Mode)',
+        'admin.highlightPreview': 'Sample text with highlighting',
+        'admin.resetHighlightColors': 'Reset',
         'admin.settings': 'Additional Settings',
         'admin.motherLang': 'Native Language',
         'admin.save': 'Save',
@@ -1052,7 +1098,11 @@
       ),
       promptAnno: localStorage.getItem('sw_promptAnno') || (
         `Annotiere den folgenden japanischen Text vollständig mit Furigana: Versehe alle Kanji mit Furigana als HTML <ruby><rt>. Behalte Inhalt, Reihenfolge und Zeilenumbrüche exakt bei. Gib nur den annotierten Text zurück.`
-      )
+      ),
+
+      // Highlight colors
+      highlightColorLight: localStorage.getItem('sw_highlightColorLight') || '#e9efe6',
+      highlightColorDark: localStorage.getItem('sw_highlightColorDark') || '#1a2a1f'
     };
 
     const state = {
@@ -1078,7 +1128,7 @@
       srcRender:qs('#srcRender'), jpRender:qs('#jpRender'),
       btnRenderSrc:qs('#btnRenderSrc'), btnRenderJp:qs('#btnRenderJp'),
       btnClearSrc:qs('#btnClearSrc'), btnClearJp:qs('#btnClearJp'),
-      btnAddFuri:qs('#btnAddFuri'), toggleFuri:qs('#toggleFuri'),
+      btnAddFuri:qs('#btnAddFuri'), 
       toggleHL:qs('#toggleHL'), toggleEditors:qs('#toggleEditors'),
       btnSrcToJp:qs('#btnSrcToJp'), btnJpToSrc:qs('#btnJpToSrc'),
       prevSrc:qs('#prevSrc'), nextSrc:qs('#nextSrc'), prevJp:qs('#prevJp'), nextJp:qs('#nextJp'),
@@ -1091,10 +1141,14 @@
       maxGen:qs('#maxGen'), maxTrans:qs('#maxTrans'), maxAnno:qs('#maxAnno'),
       promptGen:qs('#promptGen'), promptTrans:qs('#promptTrans'), promptAnno:qs('#promptAnno'),
       motherLang:qs('#motherLang'), motherTag:qs('#motherTag'),
+      // highlight colors
+      highlightColorLight:qs('#highlightColorLight'), highlightColorDark:qs('#highlightColorDark'),
+      highlightPreview:qs('#highlightPreview'), btnResetHighlightColors:qs('#btnResetHighlightColors'),
       // focus zoom
       focusZoomMinus:qs('#focusZoomMinus'), focusZoomPlus:qs('#focusZoomPlus'),
-      // new toggles
-      toggleDark:qs('#toggleDark'),
+      // toggles
+      toggleFuriHeader:qs('#toggleFuriHeader'), toggleFuriFocus:qs('#toggleFuriFocus'),
+      toggleDark:qs('#toggleDark'), toggleDarkFocus:qs('#toggleDarkFocus'),
       toggleFocusMode:qs('#toggleFocusMode'), toggleFocusMode2:qs('#toggleFocusMode2'),
       // overlay
       focusOverlay:qs('#focusOverlay'), focusSrc:qs('#focusSrc'), focusJp:qs('#focusJp'),
@@ -1123,8 +1177,13 @@
       for(const s of sentences){
         if(isJapanese && s==='\n'){ const p=document.createElement('p'); p.innerHTML='&nbsp;'; container.appendChild(p); continue; }
         const span=document.createElement('span'); span.className='sent'; span.dataset.idx=String(idx);
-        if(isJapanese && state.furiganaHTMLByIndex[idx] && state.showFuri){ span.innerHTML = state.furiganaHTMLByIndex[idx]; }
-        else { span.textContent = s; }
+        if(isJapanese && state.furiganaHTMLByIndex[idx] && state.showFuri){ 
+          span.innerHTML = state.furiganaHTMLByIndex[idx]; 
+        } else if(isJapanese && !state.showFuri) { 
+          span.textContent = stripFurigana(s); 
+        } else { 
+          span.textContent = s; 
+        }
         const p=document.createElement('p'); p.appendChild(span); container.appendChild(p); idx++;
       }
       updateHighlights();
@@ -1163,7 +1222,8 @@
           const cleaned = sanitizeRubyHTML(html).replace(/\r?\n+/g, ' ');
           el.jpFocus.innerHTML = `<span class="sent current">${cleaned}</span>`;
         } else {
-          el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(jp)}</span>`;
+          const cleanedJp = stripFurigana(jp);
+          el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(cleanedJp)}</span>`;
         }
       } else {
         el.jpFocus.innerHTML = `<span class="placeholder">${t('placeholder.focusJapanese')}</span>`;
@@ -1228,6 +1288,23 @@
       return (s||'').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
     }
 
+    function stripFurigana(text) {
+      if (!text) return '';
+      
+      let result = text;
+      
+      // Remove HTML ruby tags: <ruby>漢字<rt>かんじ</rt></ruby> -> 漢字
+      result = result.replace(/<ruby[^>]*>(.*?)<rt[^>]*>.*?<\/rt>(.*?)<\/ruby>/gi, '$1$2');
+      
+      // Handle bracket notation: 漢字(かんじ) -> 漢字
+      result = result.replace(/([一-龯々〆〤ヶ]+)\([ひらがなカタカナ\u3040-\u309F\u30A0-\u30FF]+\)/g, '$1');
+      
+      // Handle brace notation: {漢字|かんじ} -> 漢字
+      result = result.replace(/\{([一-龯々〆〤ヶ]+)\|[ひらがなカタカナ\u3040-\u309F\u30A0-\u30FF]+\}/g, '$1');
+      
+      return result;
+    }
+
     // === Persist & Render =====================================================
     function persist(){
       localStorage.setItem('sw_apiBase', settings.apiBase);
@@ -1249,6 +1326,10 @@
       localStorage.setItem('sw_promptGen',  settings.promptGen);
       localStorage.setItem('sw_promptTrans',settings.promptTrans);
       localStorage.setItem('sw_promptAnno', settings.promptAnno);
+
+      // Highlight colors
+      localStorage.setItem('sw_highlightColorLight', settings.highlightColorLight);
+      localStorage.setItem('sw_highlightColorDark', settings.highlightColorDark);
 
       localStorage.setItem('sw_src', state.srcText);
       localStorage.setItem('sw_jp',  state.jpText);
@@ -1356,10 +1437,19 @@
     }
 
     // === Dark mode ============================================================
+    function applyHighlightColors() {
+      // Apply the correct highlight color based on current theme
+      const currentHighlightColor = state.dark ? settings.highlightColorDark : settings.highlightColorLight;
+      document.documentElement.style.setProperty('--text-highlight', currentHighlightColor);
+    }
+
     function applyDark(){
       document.body.classList.toggle('dark', state.dark);
       const t = qs('#toggleDark');
       if (t) t.checked = state.dark;
+      
+      // Update highlight colors when theme changes
+      applyHighlightColors();
     }
 
     // === Fokusmodus ===========================================================
@@ -1723,7 +1813,92 @@
       setStatus('Zeilenumbrüche in Muttersprache entfernt.','ok');
     });
 
-    el.toggleFuri?.addEventListener('change',()=>{ state.showFuri = el.toggleFuri.checked; if(el.toggleFuri.checked) el.jpRender.classList.remove('furigana-off'); else el.jpRender.classList.add('furigana-off'); renderAll(); persist(); });
+    // Furigana toggles - synchronized between header and focus mode
+    function updateFuriganaDisplay() {
+      if(state.showFuri) {
+        el.jpRender.classList.remove('furigana-off');
+      } else {
+        el.jpRender.classList.add('furigana-off');
+      }
+      renderAll();
+      persist();
+    }
+
+    function syncFuriganaToggles() {
+      if (el.toggleFuriHeader) el.toggleFuriHeader.checked = state.showFuri;
+      if (el.toggleFuriFocus) el.toggleFuriFocus.checked = state.showFuri;
+    }
+
+    if (el.toggleFuriHeader) {
+      el.toggleFuriHeader.addEventListener('change', (e) => {
+        state.showFuri = e.target.checked;
+        syncFuriganaToggles();
+        updateFuriganaDisplay();
+      });
+    }
+
+    if (el.toggleFuriFocus) {
+      el.toggleFuriFocus.addEventListener('change', (e) => {
+        state.showFuri = e.target.checked;
+        syncFuriganaToggles();
+        updateFuriganaDisplay();
+      });
+    }
+
+    // Dark mode toggles - synchronized between header and focus mode
+    function syncDarkToggles() {
+      if (el.toggleDark) el.toggleDark.checked = state.dark;
+      if (el.toggleDarkFocus) el.toggleDarkFocus.checked = state.dark;
+    }
+
+    function updateDarkMode() {
+      applyDark();
+      persist();
+    }
+
+    if (el.toggleDark) {
+      el.toggleDark.addEventListener('change', (e) => {
+        state.dark = e.target.checked;
+        syncDarkToggles();
+        updateDarkMode();
+      });
+    }
+
+    if (el.toggleDarkFocus) {
+      el.toggleDarkFocus.addEventListener('change', (e) => {
+        state.dark = e.target.checked;
+        syncDarkToggles();
+        updateDarkMode();
+      });
+    }
+
+    // Focus mode toggles - synchronized
+    function syncFocusToggles() {
+      if (el.toggleFocusMode) el.toggleFocusMode.checked = state.focusMode;
+      if (el.toggleFocusMode2) el.toggleFocusMode2.checked = state.focusMode;
+    }
+
+    function updateFocusMode() {
+      applyFocusMode();
+      persist();
+    }
+
+    if (el.toggleFocusMode) {
+      el.toggleFocusMode.addEventListener('change', (e) => {
+        state.focusMode = e.target.checked;
+        syncFocusToggles();
+        updateFocusMode();
+      });
+    }
+
+    if (el.toggleFocusMode2) {
+      el.toggleFocusMode2.addEventListener('change', (e) => {
+        state.focusMode = e.target.checked;
+        syncFocusToggles();
+        updateFocusMode();
+      });
+    }
+
     el.toggleHL.addEventListener('change',()=>{ state.highlightOn = el.toggleHL.checked; updateHighlights(); persist(); });
 
     // Prev/Next – beide Header steuern denselben Index
@@ -1750,13 +1925,6 @@
     qs('#focusZoomMinus2').addEventListener('click', zoomMinus);
     qs('#focusZoomPlus2').addEventListener('click', zoomPlus);
 
-    // Dark toggle
-    qs('#toggleDark').addEventListener('change', (e)=>{ state.dark = e.target.checked; applyDark(); persist(); });
-
-    // Fokusmodus toggles
-    qs('#toggleFocusMode').addEventListener('change', (e)=>{ state.focusMode = e.target.checked; applyFocusMode(); persist(); });
-    qs('#toggleFocusMode2').addEventListener('change', (e)=>{ state.focusMode = e.target.checked; applyFocusMode(); persist(); });
-
     // Admin save/test
     qs('#btnSave').addEventListener('click',()=>{
       settings.apiBase = el.apiBase.value.trim();
@@ -1774,10 +1942,50 @@
       settings.promptTrans = el.promptTrans.value || settings.promptTrans;
       settings.promptAnno  = el.promptAnno.value || settings.promptAnno;
       settings.mother = el.motherLang.value;
+      // Save highlight colors
+      settings.highlightColorLight = el.highlightColorLight.value;
+      settings.highlightColorDark = el.highlightColorDark.value;
       persist(); setStatus('Gespeichert.','ok');
       qs('#motherTag').textContent = {Deutsch:'DE',Englisch:'EN',Französisch:'FR',Spanisch:'ES',Italienisch:'IT'}[settings.mother]||'SRC';
     });
     qs('#btnTest').addEventListener('click', testConnection);
+
+    // Highlight color event handlers
+    function updateHighlightColors() {
+      const lightColor = el.highlightColorLight.value;
+      const darkColor = el.highlightColorDark.value;
+      
+      // Save to settings and localStorage
+      settings.highlightColorLight = lightColor;
+      settings.highlightColorDark = darkColor;
+      localStorage.setItem('sw_highlightColorLight', lightColor);
+      localStorage.setItem('sw_highlightColorDark', darkColor);
+      
+      // Apply the correct color based on current theme
+      applyHighlightColors();
+    }
+
+    el.highlightColorLight.addEventListener('input', updateHighlightColors);
+    el.highlightColorDark.addEventListener('input', updateHighlightColors);
+
+    // Reset highlight colors to defaults
+    el.btnResetHighlightColors.addEventListener('click', () => {
+      const defaultLight = '#e9efe6';
+      const defaultDark = '#1a2a1f';
+      
+      el.highlightColorLight.value = defaultLight;
+      el.highlightColorDark.value = defaultDark;
+      
+      settings.highlightColorLight = defaultLight;
+      settings.highlightColorDark = defaultDark;
+      
+      // Update CSS and localStorage
+      document.documentElement.style.setProperty('--text-highlight', state.dark ? defaultDark : defaultLight);
+      localStorage.setItem('sw_highlightColorLight', defaultLight);
+      localStorage.setItem('sw_highlightColorDark', defaultDark);
+      
+      setStatus('Hervorhebungsfarben zurückgesetzt.', 'ok');
+    });
 
     // Session management event handlers
     qs('#sidebarToggle').addEventListener('click', toggleSidebar);
@@ -1812,6 +2020,10 @@
       el.tempGen.value = settings.tempGen; el.tempTrans.value = settings.tempTrans; el.tempAnno.value = settings.tempAnno;
       el.maxGen.value = settings.maxGen; el.maxTrans.value = settings.maxTrans; el.maxAnno.value = settings.maxAnno;
       el.promptGen.value = settings.promptGen; el.promptTrans.value = settings.promptTrans; el.promptAnno.value = settings.promptAnno;
+      
+      // Initialize highlight color pickers with saved values
+      el.highlightColorLight.value = settings.highlightColorLight;
+      el.highlightColorDark.value = settings.highlightColorDark;
 
       // Prefill readers
       el.srcInput.value = state.srcText; el.jpInput.value = state.jpText;
@@ -1832,6 +2044,11 @@
       applySidebarState();
       renderSessionList();
       setupAutoSave();
+
+      // Initialize all toggle states
+      syncFuriganaToggles();
+      syncDarkToggles();
+      syncFocusToggles();
     })();
 
     // Click sentence to set focus
