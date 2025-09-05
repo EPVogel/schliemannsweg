@@ -1139,7 +1139,7 @@ Features: sticks to the script.</textarea>
       apiKey:  localStorage.getItem('sw_apiKey')  || '',
       mother:  localStorage.getItem('sw_mother') || 'Deutsch',
 
-      modelGen:  localStorage.getItem('sw_modelGen')  || 'gpt-4o-mini',
+      modelGen:  localStorage.getItem('sw_modelGen')  || 'gpt-4o',
       modelTrans:localStorage.getItem('sw_modelTrans')|| 'gpt-4o-mini',
       modelAnno: localStorage.getItem('sw_modelAnno') || 'gpt-4o-mini',
 
@@ -1147,9 +1147,9 @@ Features: sticks to the script.</textarea>
       tempTrans:parseFloat(localStorage.getItem('sw_tempTrans')?? '0.2'),
       tempAnno: parseFloat(localStorage.getItem('sw_tempAnno') ?? '0.0'),
 
-      maxGen:   parseInt(localStorage.getItem('sw_maxGen')   ?? '2000'),
-      maxTrans: parseInt(localStorage.getItem('sw_maxTrans') ?? '4000'),
-      maxAnno:  parseInt(localStorage.getItem('sw_maxAnno')  ?? '4000'),
+      maxGen:   parseInt(localStorage.getItem('sw_maxGen')   ?? '12000'),
+      maxTrans: parseInt(localStorage.getItem('sw_maxTrans') ?? '12000'),
+      maxAnno:  parseInt(localStorage.getItem('sw_maxAnno')  ?? '12000'),
 
       promptGen:  localStorage.getItem('sw_promptGen')  || (
         `Du bist ein Lehrtext-Generator. Schreibe in Japanisch und statte alle Kanji mit Furigana als HTML <ruby><rt> aus. Antworte nur mit dem Text, ohne Erklärungen. Jeder Satz in einer neuen Zeile. Stil: natürlich, alltagsnah.`
@@ -2312,12 +2312,6 @@ Features: sticks to the script.`
       // Initialize all toggle states
       syncFuriganaToggles();
       syncDarkToggles();
-      syncFocusToggles();
-    })();
-
-    // Click sentence to set focus
-    el.srcRender.addEventListener('click', (e)=>{
-      const t = e.target.closest('.sent'); if(!t) return; setIndex(parseInt(t.dataset.idx,10)||0);
     });
     el.jpRender.addEventListener('click', (e)=>{
       const t = e.target.closest('.sent'); if(!t) return; setIndex(parseInt(t.dataset.idx,10)||0);
