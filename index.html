@@ -185,6 +185,18 @@
     .field label{ font-size:12px; color:var(--ink-soft) }
     .field input[type="text"], .field input[type="password"], .field input[type="url"], .field input[type="number"], .field select, .field textarea{ padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); width:100% }
     .stack-actions{ display:flex; gap:8px; align-items:center }
+    
+    /* Reset buttons for admin fields */
+    .field-with-reset{ display:flex; flex-direction:column; gap:6px }
+    .field-with-reset .label-row{ display:flex; align-items:center; gap:6px }
+    .field-with-reset .label-row label{ margin:0 }
+    .field-with-reset input,
+    .field-with-reset select,
+    .field-with-reset textarea{ width:100% }
+    .field-with-reset textarea{ resize:vertical !important; min-height:120px }
+    .reset-btn{ background:none; border:none; color:var(--ink-soft); cursor:pointer; padding:2px; border-radius:4px; opacity:0.6; transition:opacity .2s; flex-shrink:0 }
+    .reset-btn:hover{ opacity:1; background:var(--hl) }
+    .reset-btn svg{ width:12px; height:12px; stroke:currentColor; stroke-width:2 }
   </style>
 </head>
 <body>
@@ -295,7 +307,7 @@
           <div class="controls">
             <button class="btn" id="btnRenderSrc" data-i18n="editor.render">Rendern ⤵</button>
             <button class="btn ghost" id="btnClearSrc" data-i18n="editor.clear">Leeren</button>
-            <button class="btn" id="btnStripSrcBreaks" title="Zeilenumbrüche im Muttersprache-Text entfernen" data-i18n="editor.stripBreaks">Umbrüche entfernen</button>
+            <button class="btn" id="btnStripSrcBreaks" title="Text in Muttersprache für bessere Satzerkennung aufräumen" data-i18n="editor.cleanText">Text aufräumen</button>
           </div>
           <div class="focusline" id="srcFocus"><span class="placeholder">Aktiver Satz (Muttersprache) …</span></div>
           <div class="render" id="srcRender" aria-live="polite"></div>
@@ -321,6 +333,7 @@
           <div class="controls">
             <button class="btn" id="btnRenderJp" data-i18n="editor.render">Rendern ⤵</button>
             <button class="btn ghost" id="btnClearJp" data-i18n="editor.clear">Leeren</button>
+            <button class="btn" id="btnStripJpBreaks" title="Japanischen Text für bessere Satzerkennung aufräumen" data-i18n="editor.cleanText">Text aufräumen</button>
             <button class="btn" id="btnAddFuri" data-i18n="furigana.add" style="margin-left:auto">Furigana hinzufügen</button>
           </div>
           <div class="focusline" id="jpFocus"><span class="placeholder">現在の文（日本語）…</span></div>
@@ -473,16 +486,40 @@
       <div class="section">
         <h3 data-i18n="admin.models">Modelle</h3>
         <div class="formstack">
-          <div class="field">
-            <label for="modelGen" title="Wird zum Generieren von neuen Texten verwendet" data-i18n="admin.modelGen">Modell (Generierung)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="modelGen" title="Wird zum Generieren von neuen Texten verwendet" data-i18n="admin.modelGen">Modell (Generierung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('modelGen')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="modelGen" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
-          <div class="field">
-            <label for="modelTrans" title="Wird für Übersetzungen verwendet" data-i18n="admin.modelTrans">Modell (Übersetzung)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="modelTrans" title="Wird für Übersetzungen verwendet" data-i18n="admin.modelTrans">Modell (Übersetzung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('modelTrans')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="modelTrans" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
-          <div class="field">
-            <label for="modelAnno" title="Wird zum Annotieren mit Furigana verwendet" data-i18n="admin.modelAnno">Modell (Annotation/Furigana)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="modelAnno" title="Wird zum Annotieren mit Furigana verwendet" data-i18n="admin.modelAnno">Modell (Annotation/Furigana)</label>
+              <button type="button" class="reset-btn" onclick="resetField('modelAnno')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="modelAnno" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
         </div>
@@ -491,28 +528,76 @@
       <div class="section">
         <h3 data-i18n="admin.parameters">Parameter</h3>
         <div class="formstack">
-          <div class="field">
-            <label for="tempGen" data-i18n="admin.tempGen">Temperatur (Generierung)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="tempGen" data-i18n="admin.tempGen">Temperatur (Generierung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('tempGen')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="tempGen" type="number" step="0.1" min="0" max="2">
           </div>
-          <div class="field">
-            <label for="maxGen" data-i18n="admin.maxGen">Max Tokens (Generierung)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="maxGen" data-i18n="admin.maxGen">Max Tokens (Generierung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('maxGen')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="maxGen" type="number" step="1" min="1">
           </div>
-          <div class="field">
-            <label for="tempTrans" data-i18n="admin.tempTrans">Temperatur (Übersetzung)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="tempTrans" data-i18n="admin.tempTrans">Temperatur (Übersetzung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('tempTrans')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="tempTrans" type="number" step="0.1" min="0" max="2">
           </div>
-          <div class="field">
-            <label for="maxTrans" data-i18n="admin.maxTrans">Max Tokens (Übersetzung)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="maxTrans" data-i18n="admin.maxTrans">Max Tokens (Übersetzung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('maxTrans')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="maxTrans" type="number" step="1" min="1">
           </div>
-          <div class="field">
-            <label for="tempAnno" data-i18n="admin.tempAnno">Temperatur (Annotation)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="tempAnno" data-i18n="admin.tempAnno">Temperatur (Annotation)</label>
+              <button type="button" class="reset-btn" onclick="resetField('tempAnno')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="tempAnno" type="number" step="0.1" min="0" max="2">
           </div>
-          <div class="field">
-            <label for="maxAnno" data-i18n="admin.maxAnno">Max Tokens (Annotation)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="maxAnno" data-i18n="admin.maxAnno">Max Tokens (Annotation)</label>
+              <button type="button" class="reset-btn" onclick="resetField('maxAnno')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <input id="maxAnno" type="number" step="1" min="1">
           </div>
         </div>
@@ -521,16 +606,40 @@
       <div class="section">
         <h3 data-i18n="admin.prompts">Prompts (bearbeitbar)</h3>
         <div class="formstack">
-          <div class="field">
-            <label for="promptGen" data-i18n="admin.promptGen">Prompt: Generierung (Japanisch mit Furigana)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="promptGen" data-i18n="admin.promptGen">Prompt: Generierung (Japanisch mit Furigana)</label>
+              <button type="button" class="reset-btn" onclick="resetField('promptGen')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <textarea id="promptGen" placeholder="Prompt für Generieren in Japanisch mit Furigana"></textarea>
           </div>
-          <div class="field">
-            <label for="promptTrans" data-i18n="admin.promptTrans">Prompt: Übersetzung (→ Japanisch mit Furigana)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="promptTrans" data-i18n="admin.promptTrans">Prompt: Übersetzung (→ Japanisch mit Furigana)</label>
+              <button type="button" class="reset-btn" onclick="resetField('promptTrans')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <textarea id="promptTrans" placeholder="Prompt für Übersetzen ins Japanische mit Furigana"></textarea>
           </div>
-          <div class="field">
-            <label for="promptAnno" data-i18n="admin.promptAnno">Prompt: Annotation (bestehenden Text mit Furigana versehen)</label>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="promptAnno" data-i18n="admin.promptAnno">Prompt: Annotation (bestehenden Text mit Furigana versehen)</label>
+              <button type="button" class="reset-btn" onclick="resetField('promptAnno')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
             <textarea id="promptAnno" placeholder="Annotiere den folgenden japanischen Text vollständig mit Furigana …"></textarea>
           </div>
         </div>
@@ -722,6 +831,7 @@ Features: sticks to the script.</textarea>
         'editor.render': 'Rendern ⤵',
         'editor.clear': 'Leeren',
         'editor.stripBreaks': 'Umbrüche entfernen',
+        'editor.cleanText': 'Text aufräumen',
         'furigana.show': 'Furigana anzeigen',
         'furigana.add': 'Furigana hinzufügen',
         
@@ -763,6 +873,7 @@ Features: sticks to the script.</textarea>
         'admin.highlightColorDark': 'Hervorhebungsfarbe (Dunkel-Modus)',
         'admin.highlightPreview': 'Beispieltext mit Hervorhebung',
         'admin.resetHighlightColors': 'Zurücksetzen',
+        'reset.tooltip': 'Auf Standardwert zurücksetzen',
         'admin.settings': 'Weitere Einstellungen',
         'admin.motherLang': 'Muttersprache',
         'admin.save': 'Speichern',
@@ -869,7 +980,7 @@ Features: sticks to the script.</textarea>
         'howto.shortcuts.list': '<li><code>←</code> / <code>→</code> — aktiven Satz wechseln</li><li><code>Esc</code> — Fokus-Modus beenden</li>',
         
         'howto.limitations.title': 'Bekannte Einschränkungen',
-        'howto.limitations.list': '<li><strong>Satz-Aufteilung:</strong> robuste Heuristiken, aber nicht perfekt (Abkürzungen, Grenzfälle).</li><li><strong>Modell-Limits:</strong> sehr lange Eingaben können Token-Limits erreichen (konfigurierbar).</li><li><strong>Kosten:</strong> je nach verwendetem Modell können Kosten variieren.</li><li><strong>Client-Schlüssel:</strong> für Produktionsnutzung einen Proxy bevorzugen.</li>',
+        'howto.limitations.list': '<li><strong>Satz-Aufteilung:</strong> stark verbesserte Heuristiken mit Schutz für Dialoge, Datumsangaben, Zahlen und Abkürzungen. Sehr robust, aber bei extremen Grenzfällen möglicherweise nicht perfekt.</li><li><strong>Modell-Limits:</strong> sehr lange Eingaben können Token-Limits erreichen (konfigurierbar).</li><li><strong>Kosten:</strong> je nach verwendetem Modell können Kosten variieren.</li><li><strong>Client-Schlüssel:</strong> für Produktionsnutzung einen Proxy bevorzugen.</li>',
         
         'howto.privacy.title': 'Datenschutz & Sicherheit',
         'howto.privacy.list': '<li><strong>Lokal gespeichert:</strong> API-Schlüssel, Texte & Einstellungen bleiben im Browser (<code>localStorage</code>), keine Server-DB.</li><li><strong>API-Schlüssel im Client:</strong> wenn direkt im Browser verwendet, ist Ihr Schlüssel technisch sichtbar.</li>'
@@ -934,6 +1045,7 @@ Features: sticks to the script.</textarea>
         'editor.render': 'Render ⤵',
         'editor.clear': 'Clear',
         'editor.stripBreaks': 'Remove line breaks',
+        'editor.cleanText': 'Clean text',
         'furigana.show': 'Show furigana',
         'furigana.add': 'Add furigana',
         
@@ -975,6 +1087,7 @@ Features: sticks to the script.</textarea>
         'admin.highlightColorDark': 'Highlight Color (Dark Mode)',
         'admin.highlightPreview': 'Sample text with highlighting',
         'admin.resetHighlightColors': 'Reset',
+        'reset.tooltip': 'Reset to default value',
         'admin.settings': 'Additional Settings',
         'admin.motherLang': 'Native Language',
         'admin.save': 'Save',
@@ -1062,7 +1175,7 @@ Features: sticks to the script.</textarea>
         'howto.shortcuts.list': '<li><code>←</code> / <code>→</code> — change active sentence</li><li><code>Esc</code> — exit Focus Mode</li>',
         
         'howto.limitations.title': 'Known Limitations',
-        'howto.limitations.list': '<li><strong>Sentence splitting:</strong> robust heuristics, but not perfect (abbreviations, edge cases).</li><li><strong>Model limits:</strong> very long inputs can reach token limits (configurable).</li><li><strong>Costs:</strong> costs may vary depending on the model used.</li><li><strong>Client keys:</strong> prefer a proxy for production use.</li>',
+        'howto.limitations.list': '<li><strong>Sentence splitting:</strong> greatly improved heuristics with protection for dialogue, dates, numbers, and abbreviations. Very robust, but may not be perfect for extreme edge cases.</li><li><strong>Model limits:</strong> very long inputs can reach token limits (configurable).</li><li><strong>Costs:</strong> costs may vary depending on the model used.</li><li><strong>Client keys:</strong> prefer a proxy for production use.</li>',
         
         'howto.privacy.title': 'Privacy & Security',
         'howto.privacy.list': '<li><strong>Stored locally:</strong> API keys, texts & settings remain in the browser (<code>localStorage</code>), no server DB.</li><li><strong>API keys in client:</strong> when used directly in the browser, your key is technically visible.</li>'
@@ -1134,6 +1247,79 @@ Features: sticks to the script.</textarea>
 
     const stripNewlines = (txt) => (txt||'').replace(/\r?\n+/g, ' ').trim();
 
+    // Enhanced text cleaning function for better sentence recognition
+    function cleanTextForSentenceRecognition(text, isJapanese = false) {
+      if (!text) return '';
+      
+      let cleaned = text;
+      
+      if (isJapanese) {
+        // Japanese-specific cleaning
+        
+        // Normalize full-width to half-width for punctuation and numbers
+        cleaned = cleaned.replace(/[１２３４５６７８９０]/g, (match) => {
+          return String.fromCharCode(match.charCodeAt(0) - 0xFEE0);
+        });
+        cleaned = cleaned.replace(/[！？（）]/g, (match) => {
+          const map = { '！': '!', '？': '?', '（': '(', '）': ')' };
+          return map[match] || match;
+        });
+        
+        // Normalize western quotes to Japanese quotes in Japanese text
+        cleaned = cleaned.replace(/[""]/g, '「');
+        cleaned = cleaned.replace(/['']/g, '」');
+        
+        // Remove duplicate sentence endings
+        cleaned = cleaned.replace(/[。！？]{2,}/g, (match) => match.charAt(0));
+        
+        // Clean up furigana notation inconsistencies
+        cleaned = cleaned.replace(/\s*\([ひらがなカタカナ\u3040-\u309F\u30A0-\u30FF]+\)\s*/g, (match) => match.trim());
+        
+      } else {
+        // Western text cleaning (German, English, etc.)
+        
+        // Normalize various quotation marks
+        cleaned = cleaned.replace(/[""„"]/g, '"');
+        cleaned = cleaned.replace(/['']/g, "'");
+        
+        // Normalize dashes
+        cleaned = cleaned.replace(/[–—]/g, '-');
+        
+        // Remove speaker names at line start (theater format: "NAME:")
+        cleaned = cleaned.replace(/^[A-ZÜÄÖ][A-ZÜÄÖa-züäö\s]+:/gm, '');
+        
+        // Remove stage directions in parentheses
+        cleaned = cleaned.replace(/\([^)]*stage[^)]*\)/gi, '');
+        cleaned = cleaned.replace(/\([^)]*exit[^)]*\)/gi, '');
+        cleaned = cleaned.replace(/\([^)]*enter[^)]*\)/gi, '');
+        
+        // Remove footnote markers
+        cleaned = cleaned.replace(/[*†‡¹²³⁴⁵⁶⁷⁸⁹⁰]/g, '');
+        
+        // Clean biblical/verse references (e.g., "Johannes 3:16", "1. Mose 1:1")
+        cleaned = cleaned.replace(/\b\d*\.?\s*[A-Za-züäöÜÄÖ]+\s+\d+:\d+\b/g, '');
+        
+        // Remove multiple spaces
+        cleaned = cleaned.replace(/\s+/g, ' ');
+      }
+      
+      // Common cleaning for both languages
+      
+      // Replace line breaks with spaces
+      cleaned = cleaned.replace(/\r?\n+/g, ' ');
+      
+      // Remove control characters and other problematic invisible characters
+      cleaned = cleaned.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+      
+      // Clean up multiple spaces
+      cleaned = cleaned.replace(/\s+/g, ' ');
+      
+      // Trim
+      cleaned = cleaned.trim();
+      
+      return cleaned;
+    }
+
     const settings = {
       apiBase: localStorage.getItem('sw_apiBase') || '',
       apiKey:  localStorage.getItem('sw_apiKey')  || '',
@@ -1152,7 +1338,60 @@ Features: sticks to the script.</textarea>
       maxAnno:  parseInt(localStorage.getItem('sw_maxAnno')  ?? '12000'),
 
       promptGen:  localStorage.getItem('sw_promptGen')  || (
-        `Du bist ein Lehrtext-Generator. Schreibe in Japanisch und statte alle Kanji mit Furigana als HTML <ruby><rt> aus. Antworte nur mit dem Text, ohne Erklärungen. Jeder Satz in einer neuen Zeile. Stil: natürlich, alltagsnah.`
+        `Du bist ein Generator für natürlich klingende japanische Texte mit Furigana. Befolge den Userprompt strikt (Textart, Thema, Stil, Register, Länge, Zusatzvorgaben).
+
+Ausgabeformat
+
+Sprache: Japanisch.
+
+Furigana: Statte alle Kanji-Blöcke sowie alle Zahlen im japanischen Kontext (z. B. <ruby>３<rt>さん</rt></ruby>月, <ruby>５<rt>ご</rt></ruby>人, <ruby>２０<rt>はたち</rt></ruby>, <ruby>１５００<rt>せんごひゃく</rt></ruby>円) mit HTML-Furigana aus: <ruby>漢字<rt>かんじ</rt></ruby>.
+Keine Furigana für reine Katakana-Lehnwörter, Emoji oder lateinische Wörter.
+
+Zeilen: Jeder Satz in neuer Zeile.
+
+Nur Text: Keine Erklärungen, Übersetzungen, Glossare, Listen, Metakommentare oder Markdown.
+
+Dialoge: Jede Äußerung als eigener Satz/Zeile; verwende japanische Anführungszeichen „「…」“.
+
+Natürlichkeit & Stil
+
+Zielsprache zuerst: Schreibe idiomatisch und alltagsnah, vermeide Lehrbuch-Ton und übermäßige Förmlichkeit.
+
+Register: Nutze das vom User gewünschte Register (z. B. です・ます, カジュアル). Ohne Vorgabe: neutral-alltagsnah.
+
+Genre-Konventionen: Halte die Konventionen der gewünschten Textart (z. B. Zeitungsartikel, Kurzgeschichte, Blog, Dialog, E-Mail).
+
+Kohärenz: Klare, flüssige Sätze; natürliche Kollokationen; passende Konnektoren; konsistente Perspektive/Tempus.
+
+Länge & Struktur
+
+Befolge die gewünschte Länge (z. B. Anzahl Sätze oder Zeichen).
+Ohne klare Angabe: 8–12 Sätze.
+Toleranz: ±10 % bei natürlich klingender Abrundung.
+
+Wenn der User konkrete Punkte/Themen nennt, integriere sie organisch (nicht als Liste, außer ausdrücklich gefordert).
+
+Inhaltliche Vorgaben
+
+Befolge alle inhaltlichen Einschränkungen (Wortschatz, Grammatikpunkte, Lernziel, Zielgruppe, Schwierigkeit).
+
+Eigennamen/Ortsnamen: Wähle plausible Lesungen für Furigana; vermeide seltene/ungewisse Lesungen.
+
+Sprachdetails
+
+Keine ローマ字.
+
+Zahlen: Immer Furigana bei japanischer Lesung.
+
+Datum/Uhrzeit/Geld: Mit Furigana (例: <ruby>２０２５<rt>にせんにじゅうご</rt></ruby>年<ruby>９<rt>く</rt></ruby>月<ruby>６<rt>むいか</rt></ruby>日).
+
+Zeichensetzung: Japanische Satzzeichen; natürliche Pausen.
+
+Sicherheits-/Policy-Hinweise
+
+Kein beleidigender, diskriminierender oder verbotener Inhalt.
+
+Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regeln einhält.`
       ),
       promptTrans:localStorage.getItem('sw_promptTrans')|| (
         `Du bist ein präziser Übersetzer. Übersetze Satz für Satz aus {MUTTERSPRACHE} ins Japanische. Behalte die Anzahl der Sätze exakt bei. Gib nur den Zieltext zurück, mit Furigana als HTML <ruby><rt>. Jeder Satz in einer neuen Zeile. Keine Erklärungen.`
@@ -1237,12 +1476,133 @@ Features: sticks to the script.`
     // === Sentence handling ====================================================
     function splitSentences(text, isJapanese = false) {
       if (!text) return [];
+      
+      if (isJapanese) {
+        return splitJapaneseSentences(text);
+      } else {
+        return splitWesternSentences(text);
+      }
+    }
+
+    function splitJapaneseSentences(text) {
       const norm = text.replace(/\r?\n/g, '\n').trim();
-      const re = isJapanese
-        ? /[^。！？\n]+[。！？]*|\n/g
-        : /[^.!?…;:\n]+[.!?…;:]*?/g;
+      const re = /[^。！？\n]+[。！？]*|\n/g;
       const parts = (norm.match(re) || []).map(s => s.trim()).filter(Boolean);
       return parts;
+    }
+
+    function splitWesternSentences(text) {
+      if (!text) return [];
+      
+      const norm = text.replace(/\r?\n/g, '\n').trim();
+      
+      // Step 1: Protect patterns that shouldn't be split
+      const protectedPatterns = [];
+      let protectedText = norm;
+      
+      // Protect quoted dialogue and text in various quote types
+      const quotePatterns = [
+        /"[^"]*"/g,           // "quoted text"
+        /'[^']*'/g,           // 'quoted text'  
+        /„[^"]*"/g,           // „German quotes"
+        /«[^»]*»/g,           // «French quotes»
+        /<[^>]*>/g,           // <angle brackets>
+        /\([^)]*\)/g          // (parentheses) - but be careful with abbreviations
+      ];
+      
+      quotePatterns.forEach(pattern => {
+        protectedText = protectedText.replace(pattern, (match, offset) => {
+          const index = protectedPatterns.length;
+          protectedPatterns.push(match);
+          return `__PROTECTED_${index}__`;
+        });
+      });
+      
+      // Protect date patterns
+      const datePatterns = [
+        /\b\d{1,2}\.\d{1,2}\.\d{4}\b/g,        // 11.2.2024
+        /\b\d{1,2}\.\s*[A-Z][a-z]+\b/g,       // 31. November
+        /\b\d{1,2}\.\s*[A-Z][a-z]+\s+\d{4}\b/g, // 31. November 2024
+        /\b[A-Z][a-z]+\s+\d{1,2},\s+\d{4}\b/g  // November 31, 2024
+      ];
+      
+      datePatterns.forEach(pattern => {
+        protectedText = protectedText.replace(pattern, (match) => {
+          const index = protectedPatterns.length;
+          protectedPatterns.push(match);
+          return `__PROTECTED_${index}__`;
+        });
+      });
+      
+      // Protect decimal numbers and version numbers
+      const numberPatterns = [
+        /\b\d+\.\d+\b/g,                       // 12.34, 1.0
+        /\b\d+\.\d+\.\d+\b/g,                  // 1.2.3 (version numbers)
+        /\b\d+\.\d+\.\d+\.\d+\b/g              // 1.2.3.4 (IP addresses, etc.)
+      ];
+      
+      numberPatterns.forEach(pattern => {
+        protectedText = protectedText.replace(pattern, (match) => {
+          const index = protectedPatterns.length;
+          protectedPatterns.push(match);
+          return `__PROTECTED_${index}__`;
+        });
+      });
+      
+      // Protect common abbreviations
+      const abbreviations = [
+        /\b(?:Dr|Mr|Mrs|Ms|Prof|vs|etc|i\.e|e\.g|z\.B|u\.a|d\.h|o\.ä|ca|Inc|Ltd|Co|Corp)\./gi
+      ];
+      
+      abbreviations.forEach(pattern => {
+        protectedText = protectedText.replace(pattern, (match) => {
+          const index = protectedPatterns.length;
+          protectedPatterns.push(match);
+          return `__PROTECTED_${index}__`;
+        });
+      });
+      
+      // Step 2: Split sentences using improved regex
+      // Look for sentence endings followed by whitespace and capital letter, or end of string
+      const sentences = [];
+      const sentencePattern = /([.!?…]+)(\s+|$)/g;
+      
+      let lastIndex = 0;
+      let match;
+      
+      while ((match = sentencePattern.exec(protectedText)) !== null) {
+        const endIndex = match.index + match[1].length;
+        const nextChar = protectedText.charAt(endIndex + match[2].length);
+        
+        // Check if this looks like a real sentence ending
+        // (followed by capital letter, digit, end of string, or newline)
+        if (match[2] === '' || /[A-Z\n\d\w"]/.test(nextChar) || endIndex + match[2].length >= protectedText.length) {
+          const sentence = protectedText.substring(lastIndex, endIndex).trim();
+          if (sentence) {
+            sentences.push(sentence);
+          }
+          lastIndex = endIndex + match[2].length;
+        }
+      }
+      
+      // Add any remaining text as the last sentence
+      if (lastIndex < protectedText.length) {
+        const lastSentence = protectedText.substring(lastIndex).trim();
+        if (lastSentence) {
+          sentences.push(lastSentence);
+        }
+      }
+      
+      // Step 3: Restore protected patterns
+      const restoredSentences = sentences.map(sentence => {
+        let restored = sentence;
+        protectedPatterns.forEach((pattern, index) => {
+          restored = restored.replace(new RegExp(`__PROTECTED_${index}__`, 'g'), pattern);
+        });
+        return restored.trim();
+      }).filter(Boolean);
+      
+      return restoredSentences;
     }
 
     function renderReader(container, sentences, {isJapanese=false}={}){
@@ -1991,6 +2351,103 @@ Features: sticks to the script.`
       el.jpInput.addEventListener('input', scheduleAutoSave);
     }
 
+    // === Reset field functionality ===========================================
+    function resetField(fieldName) {
+      // Default values mapping
+      const defaults = {
+        modelGen: 'gpt-4.1',
+        modelTrans: 'gpt-4.1',
+        modelAnno: 'gpt-4.1',
+        tempGen: 0.7,
+        tempTrans: 0.2,
+        tempAnno: 0.0,
+        maxGen: 12000,
+        maxTrans: 12000,
+        maxAnno: 12000,
+        promptGen: `Du bist ein Generator für natürlich klingende japanische Texte mit Furigana. Befolge den Userprompt strikt (Textart, Thema, Stil, Register, Länge, Zusatzvorgaben).
+
+Ausgabeformat
+
+Sprache: Japanisch.
+
+Furigana: Statte alle Kanji-Blöcke sowie alle Zahlen im japanischen Kontext (z. B. <ruby>３<rt>さん</rt></ruby>月, <ruby>５<rt>ご</rt></ruby>人, <ruby>２０<rt>はたち</rt></ruby>, <ruby>１５００<rt>せんごひゃく</rt></ruby>円) mit HTML-Furigana aus: <ruby>漢字<rt>かんじ</rt></ruby>.
+Keine Furigana für reine Katakana-Lehnwörter, Emoji oder lateinische Wörter.
+
+Zeilen: Jeder Satz in neuer Zeile.
+
+Nur Text: Keine Erklärungen, Übersetzungen, Glossare, Listen, Metakommentare oder Markdown.
+
+Dialoge: Jede Äußerung als eigener Satz/Zeile; verwende japanische Anführungszeichen „「…」".
+
+Natürlichkeit & Stil
+
+Zielsprache zuerst: Schreibe idiomatisch und alltagsnah, vermeide Lehrbuch-Ton und übermäßige Förmlichkeit.
+
+Register: Nutze das vom User gewünschte Register (z. B. です・ます, カジュアル). Ohne Vorgabe: neutral-alltagsnah.
+
+Genre-Konventionen: Halte die Konventionen der gewünschten Textart (z. B. Zeitungsartikel, Kurzgeschichte, Blog, Dialog, E-Mail).
+
+Kohärenz: Klare, flüssige Sätze; natürliche Kollokationen; passende Konnektoren; konsistente Perspektive/Tempus.
+
+Länge & Struktur
+
+Befolge die gewünschte Länge (z. B. Anzahl Sätze oder Zeichen).
+Ohne klare Angabe: 8–12 Sätze.
+Toleranz: ±10 % bei natürlich klingender Abrundung.
+
+Wenn der User konkrete Punkte/Themen nennt, integriere sie organisch (nicht als Liste, außer ausdrücklich gefordert).
+
+Inhaltliche Vorgaben
+
+Befolge alle inhaltlichen Einschränkungen (Wortschatz, Grammatikpunkte, Lernziel, Zielgruppe, Schwierigkeit).
+
+Eigennamen/Ortsnamen: Wähle plausible Lesungen für Furigana; vermeide seltene/ungewisse Lesungen.
+
+Sprachdetails
+
+Keine ローマ字.
+
+Zahlen: Immer Furigana bei japanischer Lesung.
+
+Datum/Uhrzeit/Geld: Mit Furigana (例: <ruby>２０２５<rt>にせんにじゅうご</rt></ruby>年<ruby>９<rt>く</rt></ruby>月<ruby>６<rt>むいか</rt></ruby>日).
+
+Zeichensetzung: Japanische Satzzeichen; natürliche Pausen.
+
+Sicherheits-/Policy-Hinweise
+
+Kein beleidigender, diskriminierender oder verbotener Inhalt.
+
+Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regeln einhält.`,
+        promptTrans: `Du bist ein präziser Übersetzer. Übersetze Satz für Satz aus {MUTTERSPRACHE} ins Japanische. Behalte die Anzahl der Sätze exakt bei. Gib nur den Zieltext zurück. Du annotierst alle Kanji und Zahlen mit HTML-Furigana: <ruby>緑茶<rt>りょくちゃ</rt></ruby>は<ruby>日本<rt>にほん</rt></ruby>で<ruby>昔<rt>むかし</rt></ruby>から<ruby>親<rt>した</rt></ruby>しまれている<ruby>飲<rt>の</rt></ruby>み<ruby>物<rt>もの</rt></ruby>です。   Du gibst den Text als Block aus. Keine Absätze. Du verwendest entfernst alle Zeilenumbrüche. Keine Erklärungen.`,
+        promptAnno: `Annotiere den folgenden japanischen Text vollständig mit Furigana: Du annotierst alle Kanji und Zahlen mit HTML-Furigana: <ruby>緑茶<rt>りょくちゃ</rt></ruby>は<ruby>日本<rt>にほん</rt></ruby>で<ruby>昔<rt>むかし</rt></ruby>から<ruby>親<rt>した</rt></ruby>しまれている<ruby>飲<rt>の</rt></ruby>み<ruby>物<rt>もの</rt></ruby>です。  Behalte Inhalt, Reihenfolge und Zeilenumbrüche exakt bei. Gib nur den annotierten Text zurück.`
+      };
+
+      if (!(fieldName in defaults)) {
+        setStatus(`Unbekanntes Feld: ${fieldName}`, 'err');
+        return;
+      }
+
+      const defaultValue = defaults[fieldName];
+      const element = qs(`#${fieldName}`);
+      
+      if (!element) {
+        setStatus(`Element nicht gefunden: ${fieldName}`, 'err');
+        return;
+      }
+
+      // Update the DOM element
+      element.value = defaultValue;
+      
+      // Update settings object
+      settings[fieldName] = defaultValue;
+      
+      // Persist to localStorage
+      persist();
+      
+      // Provide user feedback
+      setStatus(`${fieldName} auf Standardwert zurückgesetzt.`, 'ok');
+    }
+
     // === Events ===============================================================
     qsa('.tab').forEach(btn => btn.addEventListener('click', () => {
       qsa('.tab').forEach(b => b.classList.remove('active'));
@@ -2021,10 +2478,21 @@ Features: sticks to the script.`
     qs('#btnAddFuri').addEventListener('click', addFurigana);
 
     el.btnStripSrcBreaks.addEventListener('click', ()=>{
-      el.srcInput.value = stripNewlines(el.srcInput.value);
-      state.srcText = el.srcInput.value;
+      const cleaned = cleanTextForSentenceRecognition(el.srcInput.value, false);
+      el.srcInput.value = cleaned;
+      state.srcText = cleaned;
       renderAll(); persist();
-      setStatus('Zeilenumbrüche in Muttersprache entfernt.','ok');
+      setStatus('Text in Muttersprache aufgeräumt.','ok');
+    });
+
+    // Japanese text cleaning button
+    qs('#btnStripJpBreaks').addEventListener('click', ()=>{
+      const cleaned = cleanTextForSentenceRecognition(el.jpInput.value, true);
+      el.jpInput.value = cleaned;
+      state.jpText = cleaned;
+      clearTTSCache(); // Clear TTS cache when Japanese text changes
+      renderAll(); persist();
+      setStatus('Japanischer Text aufgeräumt.','ok');
     });
 
     // Furigana toggles - synchronized between header and focus mode
@@ -2312,7 +2780,7 @@ Features: sticks to the script.`
       // Initialize all toggle states
       syncFuriganaToggles();
       syncDarkToggles();
-    });
+    })();
     el.jpRender.addEventListener('click', (e)=>{
       const t = e.target.closest('.sent'); if(!t) return; setIndex(parseInt(t.dataset.idx,10)||0);
     });
