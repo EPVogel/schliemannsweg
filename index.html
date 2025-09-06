@@ -84,7 +84,7 @@
     .tag{ font-size:12px; padding:3px 8px; border-radius:999px; background:var(--hl); color:#cfe3d2; border:1px solid #2b3a2d }
     body:not(.dark) .tag{ color:#3b463a; border-color:#dfe7da }
 
-    .focusline{ padding:12px 14px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line); background:var(--card); font: 500 18px/1.7 "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; letter-spacing:.2px; transition: font-size .2s ease; position: relative }
+    .focusline{ padding:12px 50px 12px 14px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line); background:var(--card); font: 500 18px/1.7 "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; letter-spacing:.2px; transition: font-size .2s ease; position: relative }
     .focusline .placeholder{ color:#9aa098 }
     .focusline .tts-btn{ position: absolute; right: 12px; top: 50%; transform: translateY(-50%); padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); cursor: pointer; opacity: 0.7; transition: opacity .2s }
     .focusline .tts-btn:hover{ opacity: 1; background: var(--hl) }
@@ -163,7 +163,7 @@
     @media (max-width:1000px){ .focus-grid{ grid-template-columns:1fr } }
     .focus-panel{ border:1px solid var(--line); border-radius:16px; background:var(--card); box-shadow:var(--shadow-2); padding:12px 14px; display:flex; flex-direction:column }
     .focus-panel h4{ margin:0 0 8px; font-size:13px; color:var(--ink-soft); letter-spacing:.3px }
-    .focus-content{ flex:1; overflow:auto; font: 600 22px/1.7 "Noto Sans JP", system-ui; padding:6px 4px; position: relative }
+    .focus-content{ flex:1; overflow:auto; font: 600 22px/1.7 "Noto Sans JP", system-ui; padding:6px 50px 6px 4px; position: relative }
     .focus-content .sent.current{ background:var(--text-highlight); border-radius:6px; padding:2px 3px }
     .focus-content .tts-btn{ position: absolute; right: 8px; top: 8px; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); cursor: pointer; opacity: 0.7; transition: opacity .2s }
     .focus-content .tts-btn:hover{ opacity: 1; background: var(--hl) }
@@ -282,6 +282,8 @@
         <button class="btn iconbtn" id="toggleEditors" title="Editoren ein/ausblenden" aria-label="Editoren ein/ausblenden" data-i18n-title="editors.toggle"></button>
       </div>
 
+      <div class="status" id="status"></div>
+
       <div class="row">
         <article class="reader" id="reader-src" tabindex="0" aria-label="Reader Muttersprache">
           <header>
@@ -336,8 +338,6 @@
           <div class="render" id="jpRender" aria-live="polite"></div>
         </article>
       </div>
-
-      <div class="status" id="status"></div>
     </section>
 
     <!-- HOW-TO: ANLEITUNG -->
@@ -713,6 +713,9 @@ Features: sticks to the script.</textarea>
             <button class="btn primary" id="btnTest" data-i18n="admin.test">Verbindung testen</button>
           </div>
         </div>
+
+        <div class="status" id="adminStatus"></div>
+
         <p class="status" data-i18n="admin.privacy">Die Zugangsdaten & Einstellungen werden nur lokal im Browser (localStorage) gespeichert.</p>
       </div>
     </section>
@@ -1432,6 +1435,7 @@ Features: sticks to the script.`
     const el = {
       tabs:qsa('.tab'),
       status:qs('#status'),
+      adminStatus:qs('#adminStatus'),
       // readers
       srcInput:qs('#srcInput'), jpInput:qs('#jpInput'),
       srcRender:qs('#srcRender'), jpRender:qs('#jpRender'),
@@ -1467,6 +1471,22 @@ Features: sticks to the script.`
 
     function setStatus(msg, kind=''){
       el.status.textContent = msg; el.status.className = 'status ' + (kind||'');
+    }
+
+    function setAdminStatus(msg, kind=''){
+      el.adminStatus.textContent = msg; el.adminStatus.className = 'status ' + (kind||'');
+    }
+
+    function setContextualStatus(msg, kind=''){
+      // Check if admin tab is currently active
+      const adminTab = qs('.tab[data-tab="admin"]');
+      const isAdminActive = adminTab && adminTab.classList.contains('active');
+      
+      if (isAdminActive) {
+        setAdminStatus(msg, kind);
+      } else {
+        setStatus(msg, kind);
+      }
     }
 
     // === Sentence handling ====================================================
@@ -1733,10 +1753,10 @@ Features: sticks to the script.`
 
     async function testConnection(){
       try{
-        setStatus('Teste Verbindung …');
+        setContextualStatus('Teste Verbindung …');
         const reply = await callLLM([{role:'user', content:'PING'}], {model: settings.modelGen, temperature:0, max_tokens:8});
-        setStatus(`OK: ${reply.slice(0,60)}…`,'ok');
-      }catch(err){ setStatus('Fehler: '+err.message,'err'); }
+        setContextualStatus(`OK: ${reply.slice(0,60)}…`,'ok');
+      }catch(err){ setContextualStatus('Fehler: '+err.message,'err'); }
     }
 
     // === Ruby helpers =========================================================
