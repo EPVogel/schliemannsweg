@@ -518,6 +518,18 @@
             </div>
             <input id="modelAnno" type="text" placeholder="z.B. gpt-4o-mini oder gpt-5"/>
           </div>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="modelCleanup" title="Wird für die Textaufräumung verwendet" data-i18n="admin.modelCleanup">Modell (Textaufräumung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('modelCleanup')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
+            <input id="modelCleanup" type="text" placeholder="z.B. gpt-4.1 oder gpt-4o-mini"/>
+          </div>
         </div>
       </div>
 
@@ -596,6 +608,30 @@
             </div>
             <input id="maxAnno" type="number" step="1" min="1">
           </div>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="tempCleanup" data-i18n="admin.tempCleanup">Temperatur (Textaufräumung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('tempCleanup')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
+            <input id="tempCleanup" type="number" step="0.1" min="0" max="2">
+          </div>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="maxCleanup" data-i18n="admin.maxCleanup">Max Tokens (Textaufräumung)</label>
+              <button type="button" class="reset-btn" onclick="resetField('maxCleanup')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
+            <input id="maxCleanup" type="number" step="1" min="1">
+          </div>
         </div>
       </div>
 
@@ -637,6 +673,18 @@
               </button>
             </div>
             <textarea id="promptAnno" placeholder="Annotiere den folgenden japanischen Text vollständig mit Furigana …"></textarea>
+          </div>
+          <div class="field field-with-reset">
+            <div class="label-row">
+              <label for="promptCleanup" data-i18n="admin.promptCleanup">Prompt: Textaufräumung (Satzreinheit für bessere Lernqualität)</label>
+              <button type="button" class="reset-btn" onclick="resetField('promptCleanup')" data-i18n-title="reset.tooltip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                </svg>
+              </button>
+            </div>
+            <textarea id="promptCleanup" placeholder="Räume den folgenden Text für bessere Satzerkennung auf …"></textarea>
           </div>
         </div>
       </div>
@@ -856,6 +904,7 @@ Features: sticks to the script.</textarea>
         'admin.modelGen': 'Modell (Generierung)',
         'admin.modelTrans': 'Modell (Übersetzung)',
         'admin.modelAnno': 'Modell (Annotation/Furigana)',
+        'admin.modelCleanup': 'Modell (Cleanup)',
         'admin.parameters': 'Parameter',
         'admin.tempGen': 'Temperatur (Generierung)',
         'admin.maxGen': 'Max Tokens (Generierung)',
@@ -863,10 +912,13 @@ Features: sticks to the script.</textarea>
         'admin.maxTrans': 'Max Tokens (Übersetzung)',
         'admin.tempAnno': 'Temperatur (Annotation)',
         'admin.maxAnno': 'Max Tokens (Annotation)',
+        'admin.tempCleanup': 'Temperatur (Cleanup)',
+        'admin.maxCleanup': 'Max Tokens (Cleanup)',
         'admin.prompts': 'Prompts (bearbeitbar)',
         'admin.promptGen': 'Prompt: Generierung (Japanisch mit Furigana)',
         'admin.promptTrans': 'Prompt: Übersetzung (→ Japanisch mit Furigana)',
         'admin.promptAnno': 'Prompt: Annotation (bestehenden Text mit Furigana versehen)',
+        'admin.promptCleanup': 'Prompt: Cleanup (bestehenden Text aufräumen)',
         'admin.highlighting': 'Text-Hervorhebung',
         'admin.highlightColorLight': 'Hervorhebungsfarbe (Hell-Modus)',
         'admin.highlightColorDark': 'Hervorhebungsfarbe (Dunkel-Modus)',
@@ -1070,6 +1122,7 @@ Features: sticks to the script.</textarea>
         'admin.modelGen': 'Model (Generation)',
         'admin.modelTrans': 'Model (Translation)',
         'admin.modelAnno': 'Model (Annotation/Furigana)',
+        'admin.modelCleanup': 'Model (Text Cleanup)',
         'admin.parameters': 'Parameters',
         'admin.tempGen': 'Temperature (Generation)',
         'admin.maxGen': 'Max Tokens (Generation)',
@@ -1077,6 +1130,8 @@ Features: sticks to the script.</textarea>
         'admin.maxTrans': 'Max Tokens (Translation)',
         'admin.tempAnno': 'Temperature (Annotation)',
         'admin.maxAnno': 'Max Tokens (Annotation)',
+        'admin.tempCleanup': 'Temperature (Text Cleanup)',
+        'admin.maxCleanup': 'Max Tokens (Text Cleanup)',
         'admin.prompts': 'Prompts (editable)',
         'admin.promptGen': 'Prompt: Generation (Japanese with Furigana)',
         'admin.promptTrans': 'Prompt: Translation (→ Japanese with Furigana)',
@@ -1324,20 +1379,25 @@ Features: sticks to the script.</textarea>
       apiKey:  localStorage.getItem('sw_apiKey')  || '',
       mother:  localStorage.getItem('sw_mother') || 'Deutsch',
 
-      modelGen:  localStorage.getItem('sw_modelGen')  || 'gpt-4o',
-      modelTrans:localStorage.getItem('sw_modelTrans')|| 'gpt-4o-mini',
-      modelAnno: localStorage.getItem('sw_modelAnno') || 'gpt-4o-mini',
+      modelGen:  localStorage.getItem('sw_modelGen')  || 'gpt-4.1',
+      modelTrans:localStorage.getItem('sw_modelTrans')|| 'gpt-4.1',
+      modelAnno: localStorage.getItem('sw_modelAnno') || 'gpt-4.1',
+      modelCleanup:localStorage.getItem('sw_modelCleanup') || 'gpt-4.1',
 
       tempGen:  parseFloat(localStorage.getItem('sw_tempGen')  ?? '0.7'),
       tempTrans:parseFloat(localStorage.getItem('sw_tempTrans')?? '0.2'),
       tempAnno: parseFloat(localStorage.getItem('sw_tempAnno') ?? '0.0'),
+      tempCleanup:parseFloat(localStorage.getItem('sw_tempCleanup') ?? '0.0'),
 
       maxGen:   parseInt(localStorage.getItem('sw_maxGen')   ?? '12000'),
       maxTrans: parseInt(localStorage.getItem('sw_maxTrans') ?? '12000'),
       maxAnno:  parseInt(localStorage.getItem('sw_maxAnno')  ?? '12000'),
+      maxCleanup:parseInt(localStorage.getItem('sw_maxCleanup') ?? '12000'),
 
-      promptGen:  localStorage.getItem('sw_promptGen')  || (
-        `Du bist ein Generator für natürlich klingende japanische Texte mit Furigana. Befolge den Userprompt strikt (Textart, Thema, Stil, Register, Länge, Zusatzvorgaben).
+      promptGen:  (function(){
+        const loaded = localStorage.getItem('sw_promptGen');
+        return loaded && loaded !== 'undefined' && loaded.trim() ? loaded : (
+          `Du bist ein Generator für natürlich klingende japanische Texte mit Furigana. Befolge den Userprompt strikt (Textart, Thema, Stil, Register, Länge, Zusatzvorgaben).
 
 Ausgabeformat
 
@@ -1350,7 +1410,7 @@ Zeilen: Jeder Satz in neuer Zeile.
 
 Nur Text: Keine Erklärungen, Übersetzungen, Glossare, Listen, Metakommentare oder Markdown.
 
-Dialoge: Jede Äußerung als eigener Satz/Zeile; verwende japanische Anführungszeichen „「…」“.
+Dialoge: Jede Äußerung als eigener Satz/Zeile; verwende japanische Anführungszeichen „「…」".
 
 Natürlichkeit & Stil
 
@@ -1391,13 +1451,27 @@ Sicherheits-/Policy-Hinweise
 Kein beleidigender, diskriminierender oder verbotener Inhalt.
 
 Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regeln einhält.`
-      ),
-      promptTrans:localStorage.getItem('sw_promptTrans')|| (
-        `Du bist ein präziser Übersetzer. Übersetze Satz für Satz aus {MUTTERSPRACHE} ins Japanische. Behalte die Anzahl der Sätze exakt bei. Gib nur den Zieltext zurück, mit Furigana als HTML <ruby><rt>. Jeder Satz in einer neuen Zeile. Keine Erklärungen.`
-      ),
-      promptAnno: localStorage.getItem('sw_promptAnno') || (
-        `Annotiere den folgenden japanischen Text vollständig mit Furigana: Versehe alle Kanji mit Furigana als HTML <ruby><rt>. Behalte Inhalt, Reihenfolge und Zeilenumbrüche exakt bei. Gib nur den annotierten Text zurück.`
-      ),
+        );
+      })(),
+      promptTrans:(function(){
+        const loaded = localStorage.getItem('sw_promptTrans');
+        return loaded && loaded !== 'undefined' && loaded.trim() ? loaded : (
+          `Du bist ein präziser Übersetzer. Übersetze Satz für Satz aus {MUTTERSPRACHE} ins Japanische. Behalte die Anzahl der Sätze exakt bei. Gib nur den Zieltext zurück, mit Furigana als HTML <ruby><rt>. Jeder Satz in einer neuen Zeile. Keine Erklärungen.`
+        );
+      })(),
+      promptAnno: (function(){
+        const loaded = localStorage.getItem('sw_promptAnno');
+        return loaded && loaded !== 'undefined' && loaded.trim() ? loaded : (
+          `Annotiere den folgenden japanischen Text vollständig mit Furigana: Versehe alle Kanji mit Furigana als HTML <ruby><rt>. Behalte Inhalt, Reihenfolge und Zeilenumbrüche exakt bei. Gib nur den annotierten Text zurück.`
+        );
+      })(),
+
+      promptCleanup:(function(){
+        const loaded = localStorage.getItem('sw_promptCleanup');
+        return loaded && loaded !== 'undefined' && loaded.trim() ? loaded : (
+          `Du bist ein Textaufräumungs-Experte. Räume den folgenden Text für bessere Satzerkennung und parallele Leselogik auf. Entferne manuelle Zeilenumbrüche, vereinheitliche Leerzeichen, behebe Inkonsistenzen in der Zeichensetzung und sorge für korrekte Satzgrenzen. Gib nur den aufgeräumten Text zurück, ohne Erklärungen oder zusätzlichen Text.`
+        );
+      })(),
 
       // Highlight colors
       highlightColorLight: localStorage.getItem('sw_highlightColorLight') || '#e9efe6',
@@ -1441,7 +1515,7 @@ Features: sticks to the script.`
       srcRender:qs('#srcRender'), jpRender:qs('#jpRender'),
       btnRenderSrc:qs('#btnRenderSrc'), btnRenderJp:qs('#btnRenderJp'),
       btnClearSrc:qs('#btnClearSrc'), btnClearJp:qs('#btnClearJp'),
-      btnAddFuri:qs('#btnAddFuri'), 
+      btnAddFuri:qs('#btnAddFuri'),
       toggleHL:qs('#toggleHL'), toggleEditors:qs('#toggleEditors'),
       btnSrcToJp:qs('#btnSrcToJp'), btnJpToSrc:qs('#btnJpToSrc'),
       prevSrc:qs('#prevSrc'), nextSrc:qs('#nextSrc'), prevJp:qs('#prevJp'), nextJp:qs('#nextJp'),
@@ -1449,10 +1523,10 @@ Features: sticks to the script.`
       btnStripSrcBreaks:qs('#btnStripSrcBreaks'),
       // admin
       apiBase:qs('#apiBase'), apiKey:qs('#apiKey'),
-      modelGen:qs('#modelGen'), modelTrans:qs('#modelTrans'), modelAnno:qs('#modelAnno'),
-      tempGen:qs('#tempGen'), tempTrans:qs('#tempTrans'), tempAnno:qs('#tempAnno'),
-      maxGen:qs('#maxGen'), maxTrans:qs('#maxTrans'), maxAnno:qs('#maxAnno'),
-      promptGen:qs('#promptGen'), promptTrans:qs('#promptTrans'), promptAnno:qs('#promptAnno'),
+      modelGen:qs('#modelGen'), modelTrans:qs('#modelTrans'), modelAnno:qs('#modelAnno'), modelCleanup:qs('#modelCleanup'),
+      tempGen:qs('#tempGen'), tempTrans:qs('#tempTrans'), tempAnno:qs('#tempAnno'), tempCleanup:qs('#tempCleanup'),
+      maxGen:qs('#maxGen'), maxTrans:qs('#maxTrans'), maxAnno:qs('#maxAnno'), maxCleanup:qs('#maxCleanup'),
+      promptGen:qs('#promptGen'), promptTrans:qs('#promptTrans'), promptAnno:qs('#promptAnno'), promptCleanup:qs('#promptCleanup'),
       motherLang:qs('#motherLang'), motherTag:qs('#motherTag'),
       // highlight colors
       highlightColorLight:qs('#highlightColorLight'), highlightColorDark:qs('#highlightColorDark'),
@@ -1511,130 +1585,95 @@ Features: sticks to the script.`
       if (!text) return [];
 
       // Normalize newlines and trim
-      const norm = text.replace(/\r?\n/g, '\n').trim();
-
-      // ---------- Step 1: Protect patterns ----------
-      const protectedPatterns = [];
-      let protectedText = norm;
-
-      // Helper: stash & replace with placeholder
-      const protect = (pattern) => {
-        protectedText = protectedText.replace(pattern, (match) => {
-          const i = protectedPatterns.length;
-          protectedPatterns.push(match);
-          return `__PROTECTED_${i}__`;
-        });
-      };
-
-      // 1) Quotes / brackets (include German/“smart” quotes)
-      const quotePatterns = [
-        /"[^"]*"/g,            // "..."
-        /'[^']*'/g,            // '...'
-        /„[^“]*“/g,            // „...“
-        /“[^”]*”/g,            // “...”
-        /‚[^‘]*‘/g,            // ‚...‘
-        /«[^»]*»/g,            // «...»
-        /<[^>]*>/g,            // <...>
-        /\([^)]*\)/g,          // ( ... )
-        /\[[^\]]*\]/g,         // [ ... ]
-        /\{[^}]*\}/g           // { ... }
-      ];
-      quotePatterns.forEach(protect);
-
-      // 2) Dates (German + English month names; allow optional dot after short months)
-      const months = [
-        "Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember",
-        "January","February","March","April","May","June","July","August","September","October","November","December",
-        "Jan\\.?","Feb\\.?","Mrz\\.?","Mär\\.?","Apr\\.?","Jun\\.?","Jul\\.?","Aug\\.?","Sep\\.?","Okt\\.?","Nov\\.?","Dez\\.?"
-      ].join("|");
-
-      const datePatterns = [
-        /\b\d{1,2}\.\d{1,2}\.\d{2,4}\b/g,                                  // 11.02.2024, 11.2.24
-        new RegExp(`\\b\\d{1,2}\\.\\s*(?:${months})(?:\\s+\\d{4})?\\b`, "g"), // 31. März 2024 / 31. Mrz.
-        new RegExp(`\\b(?:${months})\\s+\\d{1,2},?\\s+\\d{4}\\b`, "g")        // March 31, 2024
-      ];
-      datePatterns.forEach(protect);
-
-      // 3) Numbers / versions / IPs / initials like "A. B. C."
-      const numberPatterns = [
-        /\b\d+\.\d+\.\d+\.\d+\b/g,           // 1.2.3.4 (IP)
-        /\b\d+\.\d+\.\d+\b/g,                // 1.2.3
-        /\b\d+\.\d+\b/g,                     // 12.34, 1.0
-        /\b(?:[A-ZÄÖÜ]\.){2,}(?:\s+[A-ZÄÖÜ][a-zäöüß]+)?\b/g // A. B. / A. B. C. / A. B. Smith
-      ];
-      numberPatterns.forEach(protect);
-
-      // 4) Common German/EN abbreviations that end with a dot (avoid splitting on the dot)
-      // Handles variants with thin/no-break spaces between letters: z. B., d. h., i. d. R., etc.
-      const sp = "[\\u00A0\\u202F\\s]?"; // NBSP, thin space, or regular space (optional)
-      const abbr = [
-        // German
-        `z\\.${sp}B\\.`,
-        `u\\.${sp}a\\.`, `u\\.${sp}U\\.`, `u\\.${sp}Ä\\.`, `d\\.${sp}h\\.`, `o\\.${sp}ä\\.`, `bzw\\.`, `usw\\.`, `evtl\\.`, `ggf\\.`, `ca\\.`, `vgl\\.`, `Nr\\.`, `S\\.`, `Abb\\.`, `Jh\\.`, `zz?t\\.`, `inkl\\.`, `zzgl\\.`, `s\\.`, // siehe
-        // Titles/firms/streets often seen in German texts
-        `Hr\\.`, `Fr\\.`, `Fa\\.`, `Str\\.`, `St\\.`, `Dr\\.`, `Prof\\.`, `Dipl\\.-?Ing\\.`, `Mag\\.`, `Ing\\.`, `Ltd\\.`, `Inc\\.`, `Co\\.`, `Corp\\.`,
-        // English
-        `i\\.${sp}e\\.`, `e\\.${sp}g\\.`, `vs\\.`, `etc\\.`
-      ].join("|");
-
-      protect(new RegExp(`\\b(?:${abbr})`, "gi"));
-
-      // ---------- Step 2: Split with punctuation OR newline boundaries ----------
-      // We consider either:
-      //  - one or more sentence-ending marks ([.!?…]+), OR
-      //  - one or more newlines (\\n+)
-      // followed by whitespace or end of string.
+      let cleanText = text.replace(/\r?\n/g, '\n').trim();
+      
+      // Split on both paragraph breaks (double newlines) and single newlines
+      // This allows manual control via line breaks while preserving paragraph structure
+      const lines = cleanText.split(/\n/);
       const sentences = [];
-      //const boundary = /([.!?…]+|\n+)(\s+|$)/g;
-      const boundary = /([.!?…]+)(\s+|$)|\n+/g;
-
-      let lastIndex = 0;
-      let m;
-
-      while ((m = boundary.exec(protectedText)) !== null) {
-        // Handle both punctuation matches (group 1 has content) and pure newline matches (group 1 is undefined)
-        const mark = m[1] || m[0];  // Use matched text as fallback for pure newlines
-        const sep = m[2] || "";      // Separator (may be empty for pure newlines)
-        const endIndex = m.index + mark.length;
-
-        // Always treat newline runs as a hard boundary,
-        // and punctuation as a boundary under typical conditions.
-        const isNewlineBoundary = /\n+/.test(mark);
-        let shouldCut = isNewlineBoundary;
-
-        if (!shouldCut) {
-          // Heuristic for punctuation: start of new sentence likely follows.
-          const nextCharIndex = endIndex + sep.length;
-          const nextChar = nextCharIndex < protectedText.length ? protectedText.charAt(nextCharIndex) : '';
-          shouldCut =
-            sep === "" ||
-            nextCharIndex >= protectedText.length ||
-            /[\nA-ZÄÖÜ0-9"“„(\[]/.test(nextChar); // capital/quote/digit/newline/opening bracket
-        }
-
-        if (shouldCut) {
-          const slice = protectedText.substring(lastIndex, endIndex).trim();
-          if (slice) sentences.push(slice);
-          lastIndex = endIndex + sep.length; // sep.length is safe now that we handled the undefined case
+      
+      for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        const line = lines[lineIndex].trim();
+        
+        // Skip empty lines
+        if (!line) continue;
+        
+        // Check if this line should be treated as a complete sentence
+        // (either ends with punctuation or is the result of manual line break)
+        const endsWithPunctuation = /[.!?…]\s*$/.test(line);
+        
+        // If line ends with punctuation, we may need to split it further
+        if (endsWithPunctuation && line.length > 10) {
+          // Try to split on sentence boundaries within this line
+          const splitSentences = [];
+          let currentSentence = '';
+          let i = 0;
+          
+          while (i < line.length) {
+            const char = line[i];
+            currentSentence += char;
+            
+            // Check if we're at a potential sentence ending
+            if (/[.!?…]/.test(char)) {
+              // Look ahead to see if this is really a sentence boundary
+              let j = i + 1;
+              
+              // Skip whitespace
+              while (j < line.length && /\s/.test(line[j])) {
+                currentSentence += line[j];
+                j++;
+              }
+              
+              // Check what comes after whitespace
+              if (j < line.length) {
+                const nextChar = line[j];
+                
+                // This is a sentence boundary if next character is uppercase letter, digit, quote, or opening bracket
+                if (/[A-ZÄÖÜ0-9""„(\[]/.test(nextChar)) {
+                  // But first check if this might be an abbreviation
+                  const beforePunctuation = currentSentence.substring(0, currentSentence.length - (j - i)).trim();
+                  
+                  // Simple abbreviation check
+                  const words = beforePunctuation.split(/\s+/);
+                  const lastWord = words[words.length - 1] || '';
+                  const isAbbreviation = /^(?:z\.B\.|u\.a\.|d\.h\.|bzw\.|usw\.|ca\.|vgl\.|Nr\.|Dr\.|Prof\.|Hr\.|Fr\.)$/i.test(lastWord) ||
+                                       (lastWord.length <= 3 && /^[A-ZÄÖÜ]+\.?$/.test(lastWord));
+                  
+                  if (!isAbbreviation) {
+                    // This is a sentence boundary within the line
+                    splitSentences.push(currentSentence.trim());
+                    currentSentence = '';
+                    i = j - 1; // j-1 because we'll increment i at the end of the loop
+                  }
+                }
+              } else {
+                // End of line - add the current sentence
+                splitSentences.push(currentSentence.trim());
+                currentSentence = '';
+                break;
+              }
+            }
+            
+            i++;
+          }
+          
+          // Add any remaining text as a sentence
+          if (currentSentence.trim()) {
+            splitSentences.push(currentSentence.trim());
+          }
+          
+          // Add all split sentences
+          sentences.push(...splitSentences.filter(s => s.length > 0));
+          
+        } else {
+          // Treat the entire line as one sentence
+          // This handles manual line breaks and short sentences
+          sentences.push(line);
         }
       }
-
-      // Tail
-      if (lastIndex < protectedText.length) {
-        const tail = protectedText.substring(lastIndex).trim();
-        if (tail) sentences.push(tail);
-      }
-
-      // ---------- Step 3: Restore protected spans ----------
-      const restored = sentences.map(s => {
-        let r = s;
-        protectedPatterns.forEach((orig, i) => {
-          r = r.replace(new RegExp(`__PROTECTED_${i}__`, "g"), orig);
-        });
-        return r.trim();
-      }).filter(Boolean);
-
-      return restored;
+      
+      // Clean up and filter empty sentences
+      return sentences.map(s => s.trim()).filter(s => s.length > 0);
     }
 
     function renderReader(container, sentences, {isJapanese=false}={}){
@@ -1810,18 +1849,22 @@ Features: sticks to the script.`
       localStorage.setItem('sw_modelGen',  settings.modelGen);
       localStorage.setItem('sw_modelTrans',settings.modelTrans);
       localStorage.setItem('sw_modelAnno', settings.modelAnno);
+      localStorage.setItem('sw_modelCleanup', settings.modelCleanup);
 
       localStorage.setItem('sw_tempGen',  String(settings.tempGen));
       localStorage.setItem('sw_tempTrans',String(settings.tempTrans));
       localStorage.setItem('sw_tempAnno', String(settings.tempAnno));
+      localStorage.setItem('sw_tempCleanup', String(settings.tempCleanup));
 
       localStorage.setItem('sw_maxGen',  String(settings.maxGen));
       localStorage.setItem('sw_maxTrans',String(settings.maxTrans));
       localStorage.setItem('sw_maxAnno', String(settings.maxAnno));
+      localStorage.setItem('sw_maxCleanup', String(settings.maxCleanup));
 
       localStorage.setItem('sw_promptGen',  settings.promptGen);
       localStorage.setItem('sw_promptTrans',settings.promptTrans);
       localStorage.setItem('sw_promptAnno', settings.promptAnno);
+      localStorage.setItem('sw_promptCleanup', settings.promptCleanup);
 
       // Highlight colors
       localStorage.setItem('sw_highlightColorLight', settings.highlightColorLight);
@@ -1849,6 +1892,32 @@ Features: sticks to the script.`
       renderReader(el.srcRender, state.srcSent, {isJapanese:false});
       renderReader(el.jpRender,  state.jpSent,  {isJapanese:true});
       updateFocuslines();
+    }
+
+    // === LLM Text Cleanup =====================================================
+    async function cleanTextWithLLM(text, isJapanese = false) {
+      if (!text || !text.trim()) {
+        return text;
+      }
+
+      const sys = settings.promptCleanup.replace('{MUTTERSPRACHE}', settings.mother);
+      const languageContext = isJapanese ? 'Japanese' : `{${settings.mother}}`;
+      const user = `Language: ${languageContext}\n\nText to clean:\n${text}`;
+
+      try {
+        const result = await callLLM([
+          { role: 'system', content: sys },
+          { role: 'user', content: user }
+        ], {
+          model: settings.modelCleanup,
+          temperature: settings.tempCleanup,
+          max_tokens: settings.maxCleanup
+        });
+        return result.trim();
+      } catch (err) {
+        console.error('Cleanup LLM error:', err);
+        throw new Error('LLM-Aufräumfunktion fehlgeschlagen: ' + err.message);
+      }
     }
 
     // === Core actions =========================================================
@@ -2514,22 +2583,48 @@ Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regel
     qs('#btnGenerate').addEventListener('click', generateText);
     qs('#btnAddFuri').addEventListener('click', addFurigana);
 
-    el.btnStripSrcBreaks.addEventListener('click', ()=>{
-      const cleaned = cleanTextForSentenceRecognition(el.srcInput.value, false);
-      el.srcInput.value = cleaned;
-      state.srcText = cleaned;
-      renderAll(); persist();
-      setStatus('Text in Muttersprache aufgeräumt.','ok');
+    el.btnStripSrcBreaks.addEventListener('click', async ()=>{
+      const text = el.srcInput.value;
+      if (!text || !text.trim()) {
+        setStatus('Kein Text zum Aufräumen vorhanden.', 'err');
+        return;
+      }
+
+      setStatus('Räume Text mit LLM auf …');
+
+      try {
+        const cleaned = await cleanTextWithLLM(text, false);
+        el.srcInput.value = cleaned;
+        state.srcText = cleaned;
+        renderAll();
+        persist();
+        setStatus('Text aufgeräumt.', 'ok');
+      } catch (err) {
+        setStatus('Fehler beim Aufräumen: ' + err.message, 'err');
+      }
     });
 
     // Japanese text cleaning button
-    qs('#btnStripJpBreaks').addEventListener('click', ()=>{
-      const cleaned = cleanTextForSentenceRecognition(el.jpInput.value, true);
-      el.jpInput.value = cleaned;
-      state.jpText = cleaned;
-      clearTTSCache(); // Clear TTS cache when Japanese text changes
-      renderAll(); persist();
-      setStatus('Japanischer Text aufgeräumt.','ok');
+    qs('#btnStripJpBreaks').addEventListener('click', async ()=>{
+      const text = el.jpInput.value;
+      if (!text || !text.trim()) {
+        setStatus('Kein japanischer Text zum Aufräumen vorhanden.', 'err');
+        return;
+      }
+
+      setStatus('Räume japanischen Text mit LLM auf …');
+
+      try {
+        const cleaned = await cleanTextWithLLM(text, true);
+        el.jpInput.value = cleaned;
+        state.jpText = cleaned;
+        clearTTSCache(); // Clear TTS cache when Japanese text changes
+        renderAll();
+        persist();
+        setStatus('Japanischer Text aufgeräumt.', 'ok');
+      } catch (err) {
+        setStatus('Fehler beim Aufräumen: ' + err.message, 'err');
+      }
     });
 
     // Furigana toggles - synchronized between header and focus mode
@@ -2707,15 +2802,19 @@ Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regel
       settings.modelGen   = el.modelGen.value.trim();
       settings.modelTrans = el.modelTrans.value.trim();
       settings.modelAnno  = el.modelAnno.value.trim();
+      settings.modelCleanup = el.modelCleanup.value.trim();
       settings.tempGen  = parseFloat(el.tempGen.value||settings.tempGen);
       settings.tempTrans= parseFloat(el.tempTrans.value||settings.tempTrans);
       settings.tempAnno = parseFloat(el.tempAnno.value||settings.tempAnno);
+      settings.tempCleanup = parseFloat(el.tempCleanup.value||settings.tempCleanup);
       settings.maxGen  = parseInt(el.maxGen.value||settings.maxGen);
       settings.maxTrans= parseInt(el.maxTrans.value||settings.maxTrans);
       settings.maxAnno = parseInt(el.maxAnno.value||settings.maxAnno);
-      settings.promptGen   = el.promptGen.value || settings.promptGen;
-      settings.promptTrans = el.promptTrans.value || settings.promptTrans;
-      settings.promptAnno  = el.promptAnno.value || settings.promptAnno;
+      settings.maxCleanup = parseInt(el.maxCleanup.value||settings.maxCleanup);
+      settings.promptGen   = el.promptGen.value && el.promptGen.value.trim() !== 'undefined' && el.promptGen.value.trim() ? el.promptGen.value : settings.promptGen;
+      settings.promptTrans = el.promptTrans.value && el.promptTrans.value.trim() !== 'undefined' && el.promptTrans.value.trim() ? el.promptTrans.value : settings.promptTrans;
+      settings.promptAnno  = el.promptAnno.value && el.promptAnno.value.trim() !== 'undefined' && el.promptAnno.value.trim() ? el.promptAnno.value : settings.promptAnno;
+      settings.promptCleanup = el.promptCleanup.value && el.promptCleanup.value.trim() !== 'undefined' && el.promptCleanup.value.trim() ? el.promptCleanup.value : settings.promptCleanup;
       settings.mother = el.motherLang.value;
       // Save highlight colors
       settings.highlightColorLight = el.highlightColorLight.value;
@@ -2795,10 +2894,10 @@ Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regel
 
       // Prefill Admin
       el.apiBase.value = settings.apiBase; el.apiKey.value = settings.apiKey; el.motherLang.value = settings.mother;
-      el.modelGen.value = settings.modelGen; el.modelTrans.value = settings.modelTrans; el.modelAnno.value = settings.modelAnno;
-      el.tempGen.value = settings.tempGen; el.tempTrans.value = settings.tempTrans; el.tempAnno.value = settings.tempAnno;
-      el.maxGen.value = settings.maxGen; el.maxTrans.value = settings.maxTrans; el.maxAnno.value = settings.maxAnno;
-      el.promptGen.value = settings.promptGen; el.promptTrans.value = settings.promptTrans; el.promptAnno.value = settings.promptAnno;
+      el.modelGen.value = settings.modelGen; el.modelTrans.value = settings.modelTrans; el.modelAnno.value = settings.modelAnno; el.modelCleanup.value = settings.modelCleanup;
+      el.tempGen.value = settings.tempGen; el.tempTrans.value = settings.tempTrans; el.tempAnno.value = settings.tempAnno; el.tempCleanup.value = settings.tempCleanup;
+      el.maxGen.value = settings.maxGen; el.maxTrans.value = settings.maxTrans; el.maxAnno.value = settings.maxAnno; el.maxCleanup.value = settings.maxCleanup;
+      el.promptGen.value = settings.promptGen; el.promptTrans.value = settings.promptTrans; el.promptAnno.value = settings.promptAnno; el.promptCleanup.value = settings.promptCleanup;
       
       // Initialize highlight color pickers with saved values
       el.highlightColorLight.value = settings.highlightColorLight;
