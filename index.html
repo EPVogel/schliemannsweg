@@ -1418,7 +1418,7 @@ Features: sticks to the script.`
     };
 
     const state = {
-      srcText: stripNewlines(localStorage.getItem('sw_src') || ''),
+      srcText: localStorage.getItem('sw_src') || '',          // ← Fix: preserve newlines in source text
       jpText:  localStorage.getItem('sw_jp')  || '',
       srcSent: [], jpSent: [],
       furiganaHTMLByIndex: {},
@@ -1509,116 +1509,132 @@ Features: sticks to the script.`
 
     function splitWesternSentences(text) {
       if (!text) return [];
-      
+
+      // Normalize newlines and trim
       const norm = text.replace(/\r?\n/g, '\n').trim();
-      
-      // Step 1: Protect patterns that shouldn't be split
+
+      // ---------- Step 1: Protect patterns ----------
       const protectedPatterns = [];
       let protectedText = norm;
-      
-      // Protect quoted dialogue and text in various quote types
+
+      // Helper: stash & replace with placeholder
+      const protect = (pattern) => {
+        protectedText = protectedText.replace(pattern, (match) => {
+          const i = protectedPatterns.length;
+          protectedPatterns.push(match);
+          return `__PROTECTED_${i}__`;
+        });
+      };
+
+      // 1) Quotes / brackets (include German/“smart” quotes)
       const quotePatterns = [
-        /"[^"]*"/g,           // "quoted text"
-        /'[^']*'/g,           // 'quoted text'  
-        /„[^"]*"/g,           // „German quotes"
-        /«[^»]*»/g,           // «French quotes»
-        /<[^>]*>/g,           // <angle brackets>
-        /\([^)]*\)/g          // (parentheses) - but be careful with abbreviations
+        /"[^"]*"/g,            // "..."
+        /'[^']*'/g,            // '...'
+        /„[^“]*“/g,            // „...“
+        /“[^”]*”/g,            // “...”
+        /‚[^‘]*‘/g,            // ‚...‘
+        /«[^»]*»/g,            // «...»
+        /<[^>]*>/g,            // <...>
+        /\([^)]*\)/g,          // ( ... )
+        /\[[^\]]*\]/g,         // [ ... ]
+        /\{[^}]*\}/g           // { ... }
       ];
-      
-      quotePatterns.forEach(pattern => {
-        protectedText = protectedText.replace(pattern, (match, offset) => {
-          const index = protectedPatterns.length;
-          protectedPatterns.push(match);
-          return `__PROTECTED_${index}__`;
-        });
-      });
-      
-      // Protect date patterns
+      quotePatterns.forEach(protect);
+
+      // 2) Dates (German + English month names; allow optional dot after short months)
+      const months = [
+        "Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember",
+        "January","February","March","April","May","June","July","August","September","October","November","December",
+        "Jan\\.?","Feb\\.?","Mrz\\.?","Mär\\.?","Apr\\.?","Jun\\.?","Jul\\.?","Aug\\.?","Sep\\.?","Okt\\.?","Nov\\.?","Dez\\.?"
+      ].join("|");
+
       const datePatterns = [
-        /\b\d{1,2}\.\d{1,2}\.\d{4}\b/g,        // 11.2.2024
-        /\b\d{1,2}\.\s*[A-Z][a-z]+\b/g,       // 31. November
-        /\b\d{1,2}\.\s*[A-Z][a-z]+\s+\d{4}\b/g, // 31. November 2024
-        /\b[A-Z][a-z]+\s+\d{1,2},\s+\d{4}\b/g  // November 31, 2024
+        /\b\d{1,2}\.\d{1,2}\.\d{2,4}\b/g,                                  // 11.02.2024, 11.2.24
+        new RegExp(`\\b\\d{1,2}\\.\\s*(?:${months})(?:\\s+\\d{4})?\\b`, "g"), // 31. März 2024 / 31. Mrz.
+        new RegExp(`\\b(?:${months})\\s+\\d{1,2},?\\s+\\d{4}\\b`, "g")        // March 31, 2024
       ];
-      
-      datePatterns.forEach(pattern => {
-        protectedText = protectedText.replace(pattern, (match) => {
-          const index = protectedPatterns.length;
-          protectedPatterns.push(match);
-          return `__PROTECTED_${index}__`;
-        });
-      });
-      
-      // Protect decimal numbers and version numbers
+      datePatterns.forEach(protect);
+
+      // 3) Numbers / versions / IPs / initials like "A. B. C."
       const numberPatterns = [
-        /\b\d+\.\d+\b/g,                       // 12.34, 1.0
-        /\b\d+\.\d+\.\d+\b/g,                  // 1.2.3 (version numbers)
-        /\b\d+\.\d+\.\d+\.\d+\b/g              // 1.2.3.4 (IP addresses, etc.)
+        /\b\d+\.\d+\.\d+\.\d+\b/g,           // 1.2.3.4 (IP)
+        /\b\d+\.\d+\.\d+\b/g,                // 1.2.3
+        /\b\d+\.\d+\b/g,                     // 12.34, 1.0
+        /\b(?:[A-ZÄÖÜ]\.){2,}(?:\s+[A-ZÄÖÜ][a-zäöüß]+)?\b/g // A. B. / A. B. C. / A. B. Smith
       ];
-      
-      numberPatterns.forEach(pattern => {
-        protectedText = protectedText.replace(pattern, (match) => {
-          const index = protectedPatterns.length;
-          protectedPatterns.push(match);
-          return `__PROTECTED_${index}__`;
-        });
-      });
-      
-      // Protect common abbreviations
-      const abbreviations = [
-        /\b(?:Dr|Mr|Mrs|Ms|Prof|vs|etc|i\.e|e\.g|z\.B|u\.a|d\.h|o\.ä|ca|Inc|Ltd|Co|Corp)\./gi
-      ];
-      
-      abbreviations.forEach(pattern => {
-        protectedText = protectedText.replace(pattern, (match) => {
-          const index = protectedPatterns.length;
-          protectedPatterns.push(match);
-          return `__PROTECTED_${index}__`;
-        });
-      });
-      
-      // Step 2: Split sentences using improved regex
-      // Look for sentence endings followed by whitespace and capital letter, or end of string
+      numberPatterns.forEach(protect);
+
+      // 4) Common German/EN abbreviations that end with a dot (avoid splitting on the dot)
+      // Handles variants with thin/no-break spaces between letters: z. B., d. h., i. d. R., etc.
+      const sp = "[\\u00A0\\u202F\\s]?"; // NBSP, thin space, or regular space (optional)
+      const abbr = [
+        // German
+        `z\\.${sp}B\\.`,
+        `u\\.${sp}a\\.`, `u\\.${sp}U\\.`, `u\\.${sp}Ä\\.`, `d\\.${sp}h\\.`, `o\\.${sp}ä\\.`, `bzw\\.`, `usw\\.`, `evtl\\.`, `ggf\\.`, `ca\\.`, `vgl\\.`, `Nr\\.`, `S\\.`, `Abb\\.`, `Jh\\.`, `zz?t\\.`, `inkl\\.`, `zzgl\\.`, `s\\.`, // siehe
+        // Titles/firms/streets often seen in German texts
+        `Hr\\.`, `Fr\\.`, `Fa\\.`, `Str\\.`, `St\\.`, `Dr\\.`, `Prof\\.`, `Dipl\\.-?Ing\\.`, `Mag\\.`, `Ing\\.`, `Ltd\\.`, `Inc\\.`, `Co\\.`, `Corp\\.`,
+        // English
+        `i\\.${sp}e\\.`, `e\\.${sp}g\\.`, `vs\\.`, `etc\\.`
+      ].join("|");
+
+      protect(new RegExp(`\\b(?:${abbr})`, "gi"));
+
+      // ---------- Step 2: Split with punctuation OR newline boundaries ----------
+      // We consider either:
+      //  - one or more sentence-ending marks ([.!?…]+), OR
+      //  - one or more newlines (\\n+)
+      // followed by whitespace or end of string.
       const sentences = [];
-      const sentencePattern = /([.!?…]+)(\s+|$)/g;
-      
+      //const boundary = /([.!?…]+|\n+)(\s+|$)/g;
+      const boundary = /([.!?…]+)(\s+|$)|\n+/g;
+
       let lastIndex = 0;
-      let match;
-      
-      while ((match = sentencePattern.exec(protectedText)) !== null) {
-        const endIndex = match.index + match[1].length;
-        const nextChar = protectedText.charAt(endIndex + match[2].length);
-        
-        // Check if this looks like a real sentence ending
-        // (followed by capital letter, digit, end of string, or newline)
-        if (match[2] === '' || /[A-Z\n\d\w"]/.test(nextChar) || endIndex + match[2].length >= protectedText.length) {
-          const sentence = protectedText.substring(lastIndex, endIndex).trim();
-          if (sentence) {
-            sentences.push(sentence);
-          }
-          lastIndex = endIndex + match[2].length;
+      let m;
+
+      while ((m = boundary.exec(protectedText)) !== null) {
+        // Handle both punctuation matches (group 1 has content) and pure newline matches (group 1 is undefined)
+        const mark = m[1] || m[0];  // Use matched text as fallback for pure newlines
+        const sep = m[2] || "";      // Separator (may be empty for pure newlines)
+        const endIndex = m.index + mark.length;
+
+        // Always treat newline runs as a hard boundary,
+        // and punctuation as a boundary under typical conditions.
+        const isNewlineBoundary = /\n+/.test(mark);
+        let shouldCut = isNewlineBoundary;
+
+        if (!shouldCut) {
+          // Heuristic for punctuation: start of new sentence likely follows.
+          const nextCharIndex = endIndex + sep.length;
+          const nextChar = nextCharIndex < protectedText.length ? protectedText.charAt(nextCharIndex) : '';
+          shouldCut =
+            sep === "" ||
+            nextCharIndex >= protectedText.length ||
+            /[\nA-ZÄÖÜ0-9"“„(\[]/.test(nextChar); // capital/quote/digit/newline/opening bracket
+        }
+
+        if (shouldCut) {
+          const slice = protectedText.substring(lastIndex, endIndex).trim();
+          if (slice) sentences.push(slice);
+          lastIndex = endIndex + sep.length; // sep.length is safe now that we handled the undefined case
         }
       }
-      
-      // Add any remaining text as the last sentence
+
+      // Tail
       if (lastIndex < protectedText.length) {
-        const lastSentence = protectedText.substring(lastIndex).trim();
-        if (lastSentence) {
-          sentences.push(lastSentence);
-        }
+        const tail = protectedText.substring(lastIndex).trim();
+        if (tail) sentences.push(tail);
       }
-      
-      // Step 3: Restore protected patterns
-      const restoredSentences = sentences.map(sentence => {
-        let restored = sentence;
-        protectedPatterns.forEach((pattern, index) => {
-          restored = restored.replace(new RegExp(`__PROTECTED_${index}__`, 'g'), pattern);
+
+      // ---------- Step 3: Restore protected spans ----------
+      const restored = sentences.map(s => {
+        let r = s;
+        protectedPatterns.forEach((orig, i) => {
+          r = r.replace(new RegExp(`__PROTECTED_${i}__`, "g"), orig);
         });
-        return restored.trim();
+        return r.trim();
       }).filter(Boolean);
-      
-      return restoredSentences;
+
+      return restored;
     }
 
     function renderReader(container, sentences, {isJapanese=false}={}){
@@ -1656,30 +1672,28 @@ Features: sticks to the script.`
       const i = state.currentIndex;
       const srcRaw = state.srcSent[i] ?? '';
       const jpRaw  = state.jpSent[i] ?? '';
-      const src = stripNewlines(srcRaw);
-      const jp  = stripNewlines(jpRaw);
-      const escapeHTML = (s)=> (s||'').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+      const escapeHTML = (s)=> (s||'').replace(/[&<>\"]/g, ch => ({'&':'&','<':'<','>':'>','"':'"'}[ch]));
 
       // Muttersprache
-      el.srcFocus.innerHTML = src
-        ? `<span class="sent current">${escapeHTML(src)}</span>`
+      el.srcFocus.innerHTML = srcRaw
+        ? `<span class="sent current">${escapeHTML(srcRaw)}</span>`
         : `<span class="placeholder">${t('placeholder.focusSource')}</span>`;
 
       // Japanisch mit Furigana-Option und TTS Button
-      if(jp){
+      if(jpRaw){
         const ttsButtonHtml = `<button class="tts-btn" onclick="playCurrentJapanese()" title="${t('tts.playback')}" aria-label="${t('tts.playback')}">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
             <path d="M19.07 4.93c3.9 3.9 3.9 10.24 0 14.14M15.54 8.46c1.95 1.95 1.95 5.12 0 7.07"/>
           </svg>
         </button>`;
-        
+
         if(/<ruby>/i.test(state.jpText) && state.showFuri){
-          const html = state.furiganaHTMLByIndex[i] || escapeHTML(jp);
+          const html = state.furiganaHTMLByIndex[i] || escapeHTML(jpRaw);
           const cleaned = sanitizeRubyHTML(html).replace(/\r?\n+/g, ' ');
           el.jpFocus.innerHTML = `<span class="sent current">${cleaned}</span>${ttsButtonHtml}`;
         } else {
-          const cleanedJp = stripFurigana(jp);
+          const cleanedJp = stripFurigana(jpRaw);
           el.jpFocus.innerHTML = `<span class="sent current">${escapeHTML(cleanedJp)}</span>${ttsButtonHtml}`;
         }
       } else {
@@ -1827,7 +1841,7 @@ Features: sticks to the script.`
     }
 
     function renderAll(){
-      const srcNormalized = stripNewlines(state.srcText);
+      const srcNormalized = state.srcText;
       state.srcSent = splitSentences(srcNormalized,false);
       state.jpSent  = splitSentences(state.jpText,true);
       state.furiganaHTMLByIndex = {};
@@ -2348,16 +2362,25 @@ Features: sticks to the script.`
       document.body.classList.toggle('sidebar-open', state.sidebarOpen);
     }
 
-    // Auto-save current session when content changes
+    // Auto-save text changes to prevent data loss
     function setupAutoSave() {
       let saveTimeout;
-      
+
       function scheduleAutoSave() {
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
+          // Update main state from textarea values - CRITICAL for persistence
+          state.srcText = el.srcInput.value;
+          state.jpText = el.jpInput.value;
+
+          // Save to sessions (for session management feature)
           if (el.srcInput.value.trim() || el.jpInput.value.trim()) {
             saveCurrentSession();
           }
+
+          // Save to main localStorage (for page reload persistence)
+          persist();
+
         }, 2000); // Auto-save after 2 seconds of inactivity
       }
 
@@ -2477,7 +2500,7 @@ Bei ungeeigneter Anfrage: liefere harmlosen thematisch nahen Text, der die Regel
 
     // Readers
     qs('#btnRenderSrc').addEventListener('click',()=>{
-      state.srcText = stripNewlines(el.srcInput.value);
+      state.srcText = el.srcInput.value;
       renderAll(); persist();
     });
     qs('#btnRenderJp').addEventListener('click',()=>{
